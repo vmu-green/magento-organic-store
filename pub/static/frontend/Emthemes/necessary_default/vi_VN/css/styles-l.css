@@ -3196,6 +3196,7 @@ body._has-modal {
 .popup-subscribe .em-wrapper-newsletter .form-subscribe-content .actions .action.subscribe {
   font-size: 100% !important;
   margin-left: -3px;
+  width: 100px;
 }
 .popup-newsletter .modal-popup .modal-inner-wrap {
   width: 40% !important;
@@ -8106,7 +8107,8 @@ body._has-modal {
     display: none;
   }
   .header.content {
-    padding: 30px 0;
+	  /**Yên edited: 30px -> 20px*/
+    padding: 20px 0;
   }
   .logo {
     margin: -4px auto 0 0;
