@@ -14585,7 +14585,7 @@ fieldset[disabled] .wishlist.window.popup .popup-actions .action.close {
   margin-left: -3px;
   padding: 11px 15px;
   font-size: 100%;
-  width: 90px;
+  width: 100px;
 }
 /*newletter clear button*/
 .newsletter-clearbutton .block.newsletter .actions {
@@ -15444,6 +15444,7 @@ fieldset[disabled] .wishlist.window.popup .popup-actions .action.close {
   padding-top: 10px;
   padding-bottom: 10px;
   position: relative;
+  padding: 10px 0 !important;
 }
 .logo {
   float: left;
@@ -19574,4 +19575,5 @@ fieldset[disabled] .sidebar .block-addbysku .action.remove {
 			//min-height:385px;
 		}
     }*/
+	
 }
