@@ -1,14 +1,13 @@
-<br />
-<b>Warning</b>:  Unknown: Input variables exceeded 1000. To increase the limit change max_input_vars in php.ini. in <b>Unknown</b> on line <b>0</b><br />
 -- phpMyAdmin SQL Dump
 -- version 4.6.5.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 24, 2017 at 08:33 AM
+-- Generation Time: Apr 24, 2017 at 04:00 AM
 -- Server version: 10.1.21-MariaDB
 -- PHP Version: 5.6.30
 
+SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 
 
@@ -18,8 +17,10 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `magento204`
+-- Database: `magento20`
 --
+CREATE DATABASE IF NOT EXISTS `magento20` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+USE `magento20`;
 
 -- --------------------------------------------------------
 
@@ -27,64 +28,66 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 -- Table structure for table `adminnotification_inbox`
 --
 
-CREATE TABLE `adminnotification_inbox` (
-  `notification_id` int(10) UNSIGNED NOT NULL COMMENT 'Notification id',
+DROP TABLE IF EXISTS `adminnotification_inbox`;
+CREATE TABLE IF NOT EXISTS `adminnotification_inbox` (
+  `notification_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Notification id',
   `severity` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Problem type',
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Create date',
   `title` varchar(255) NOT NULL COMMENT 'Title',
   `description` text COMMENT 'Description',
   `url` varchar(255) DEFAULT NULL COMMENT 'Url',
   `is_read` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Flag if notification read',
-  `is_remove` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Flag if notification might be removed'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Adminnotification Inbox';
+  `is_remove` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Flag if notification might be removed',
+  PRIMARY KEY (`notification_id`),
+  KEY `ADMINNOTIFICATION_INBOX_SEVERITY` (`severity`),
+  KEY `ADMINNOTIFICATION_INBOX_IS_READ` (`is_read`),
+  KEY `ADMINNOTIFICATION_INBOX_IS_REMOVE` (`is_remove`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Adminnotification Inbox';
 
 --
--- Truncate table before insert `adminnotification_inbox`
+-- Dumping data for table `adminnotification_inbox`
 --
 
-TRUNCATE TABLE `adminnotification_inbox`;
+INSERT INTO `adminnotification_inbox` (`notification_id`, `severity`, `date_added`, `title`, `description`, `url`, `is_read`, `is_remove`) VALUES
+(1, 4, '2017-04-11 23:46:39', 'Community Edition 2.1.6 Accelerates Performance – 4/11/2017', 'Community Edition 2.1.6 includes several exciting performance enhancements and optimizations to category pages, layered navigation, and image resizing. Review the release notes for more information: http://devdocs.magento.com/guides/v2.1/release-notes/bk-release-notes.html', 'http://devdocs.magento.com/guides/v2.1/release-notes/bk-release-notes.html', 0, 0);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `admin_passwords`
 --
 
-CREATE TABLE `admin_passwords` (
-  `password_id` int(10) UNSIGNED NOT NULL COMMENT 'Password Id',
+DROP TABLE IF EXISTS `admin_passwords`;
+CREATE TABLE IF NOT EXISTS `admin_passwords` (
+  `password_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Password Id',
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'User Id',
   `password_hash` varchar(100) DEFAULT NULL COMMENT 'Password Hash',
   `expires` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Expires',
-  `last_updated` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Last Updated'
+  `last_updated` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Last Updated',
+  PRIMARY KEY (`password_id`),
+  KEY `ADMIN_PASSWORDS_USER_ID` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admin Passwords';
 
---
--- Truncate table before insert `admin_passwords`
---
-
-TRUNCATE TABLE `admin_passwords`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `admin_system_messages`
 --
 
-CREATE TABLE `admin_system_messages` (
+DROP TABLE IF EXISTS `admin_system_messages`;
+CREATE TABLE IF NOT EXISTS `admin_system_messages` (
   `identity` varchar(100) NOT NULL COMMENT 'Message id',
   `severity` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Problem type',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Create date'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Create date',
+  PRIMARY KEY (`identity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admin System Messages';
 
---
--- Truncate table before insert `admin_system_messages`
---
-
-TRUNCATE TABLE `admin_system_messages`;
 --
 -- Dumping data for table `admin_system_messages`
 --
 
-INSERT DELAYED IGNORE INTO `admin_system_messages` VALUES
-('da332d712f3215b9b94bfa268c398323', 2, '2017-04-23 13:20:20');
+INSERT INTO `admin_system_messages` (`identity`, `severity`, `created_at`) VALUES
+('da332d712f3215b9b94bfa268c398323', 2, '2017-03-15 22:18:46');
 
 -- --------------------------------------------------------
 
@@ -92,8 +95,9 @@ INSERT DELAYED IGNORE INTO `admin_system_messages` VALUES
 -- Table structure for table `admin_user`
 --
 
-CREATE TABLE `admin_user` (
-  `user_id` int(10) UNSIGNED NOT NULL COMMENT 'User ID',
+DROP TABLE IF EXISTS `admin_user`;
+CREATE TABLE IF NOT EXISTS `admin_user` (
+  `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'User ID',
   `firstname` varchar(32) DEFAULT NULL COMMENT 'User First Name',
   `lastname` varchar(32) DEFAULT NULL COMMENT 'User Last Name',
   `email` varchar(128) DEFAULT NULL COMMENT 'User Email',
@@ -111,20 +115,17 @@ CREATE TABLE `admin_user` (
   `interface_locale` varchar(16) NOT NULL DEFAULT 'en_US' COMMENT 'Backend interface locale',
   `failures_num` smallint(6) DEFAULT '0' COMMENT 'Failure Number',
   `first_failure` timestamp NULL DEFAULT NULL COMMENT 'First Failure',
-  `lock_expires` timestamp NULL DEFAULT NULL COMMENT 'Expiration Lock Dates'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admin User Table';
+  `lock_expires` timestamp NULL DEFAULT NULL COMMENT 'Expiration Lock Dates',
+  PRIMARY KEY (`user_id`),
+  UNIQUE KEY `ADMIN_USER_USERNAME` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Admin User Table';
 
---
--- Truncate table before insert `admin_user`
---
-
-TRUNCATE TABLE `admin_user`;
 --
 -- Dumping data for table `admin_user`
 --
 
-INSERT DELAYED IGNORE INTO `admin_user` VALUES
-(1, 'admin', 'admin', 'admin@gmail.com', 'admin', 'a659bc35c7ac244968e9662606443c39fd03c49e41439ab5cd3e7d75e363435d:pzzXiEasO71l40Oi2huvmpaCLoBImr4F:1', '2017-04-23 11:49:04', '2017-04-24 13:11:00', '2017-04-24 13:11:00', 4, 0, 1, 'a:1:{s:11:\"configState\";a:8:{s:7:\"web_url\";s:1:\"1\";s:7:\"web_seo\";s:1:\"1\";s:12:\"web_unsecure\";s:1:\"1\";s:10:\"web_secure\";s:1:\"1\";s:11:\"web_default\";s:1:\"1\";s:10:\"web_cookie\";s:1:\"0\";s:11:\"web_session\";s:1:\"0\";s:24:\"web_browser_capabilities\";s:1:\"0\";}}', NULL, NULL, 'en_US', 0, NULL, NULL);
+INSERT INTO `admin_user` (`user_id`, `firstname`, `lastname`, `email`, `username`, `password`, `created`, `modified`, `logdate`, `lognum`, `reload_acl_flag`, `is_active`, `extra`, `rp_token`, `rp_token_created_at`, `interface_locale`, `failures_num`, `first_failure`, `lock_expires`) VALUES
+(1, 'admin', 'admin', 'admin@gmail.com', 'admin', 'e4bc236de475fbc4aaf4583b9fb1a95fb42733f394a9ae087d1e698e6dd19ab9:hOerNVPjodUZMyZnMLtyC5BDMyXilfkj:1', '2017-03-15 22:08:10', '2017-04-23 14:15:05', '2017-04-23 14:15:05', 18, 0, 1, 'a:1:{s:11:\"configState\";a:26:{s:11:\"web_default\";s:1:\"1\";s:7:\"web_url\";s:1:\"1\";s:7:\"web_seo\";s:1:\"1\";s:12:\"web_unsecure\";s:1:\"1\";s:10:\"web_secure\";s:1:\"1\";s:10:\"web_cookie\";s:1:\"1\";s:11:\"web_session\";s:1:\"1\";s:24:\"web_browser_capabilities\";s:1:\"1\";s:11:\"design_head\";s:1:\"1\";s:12:\"design_theme\";s:1:\"1\";s:27:\"design_search_engine_robots\";s:1:\"1\";s:13:\"design_header\";s:1:\"1\";s:13:\"design_footer\";s:1:\"1\";s:16:\"design_watermark\";s:1:\"1\";s:17:\"design_pagination\";s:1:\"1\";s:12:\"design_email\";s:1:\"1\";s:15:\"general_country\";s:1:\"1\";s:14:\"general_region\";s:1:\"1\";s:14:\"general_locale\";s:1:\"1\";s:25:\"general_store_information\";s:1:\"1\";s:25:\"general_single_store_mode\";s:1:\"1\";s:16:\"currency_options\";s:1:\"1\";s:20:\"currency_webservicex\";s:1:\"1\";s:15:\"currency_import\";s:1:\"1\";s:17:\"quickshop_general\";s:1:\"1\";s:7:\"dev_css\";s:1:\"1\";}}', NULL, NULL, 'en_US', 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -132,27 +133,26 @@ INSERT DELAYED IGNORE INTO `admin_user` VALUES
 -- Table structure for table `authorization_role`
 --
 
-CREATE TABLE `authorization_role` (
-  `role_id` int(10) UNSIGNED NOT NULL COMMENT 'Role ID',
+DROP TABLE IF EXISTS `authorization_role`;
+CREATE TABLE IF NOT EXISTS `authorization_role` (
+  `role_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Role ID',
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Parent Role ID',
   `tree_level` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Role Tree Level',
   `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Role Sort Order',
   `role_type` varchar(1) NOT NULL DEFAULT '0' COMMENT 'Role Type',
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'User ID',
   `user_type` varchar(16) DEFAULT NULL COMMENT 'User Type',
-  `role_name` varchar(50) DEFAULT NULL COMMENT 'Role Name'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admin Role Table';
+  `role_name` varchar(50) DEFAULT NULL COMMENT 'Role Name',
+  PRIMARY KEY (`role_id`),
+  KEY `AUTHORIZATION_ROLE_PARENT_ID_SORT_ORDER` (`parent_id`,`sort_order`),
+  KEY `AUTHORIZATION_ROLE_TREE_LEVEL` (`tree_level`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Admin Role Table';
 
---
--- Truncate table before insert `authorization_role`
---
-
-TRUNCATE TABLE `authorization_role`;
 --
 -- Dumping data for table `authorization_role`
 --
 
-INSERT DELAYED IGNORE INTO `authorization_role` VALUES
+INSERT INTO `authorization_role` (`role_id`, `parent_id`, `tree_level`, `sort_order`, `role_type`, `user_id`, `user_type`, `role_name`) VALUES
 (1, 0, 1, 1, 'G', 0, '2', 'Administrators'),
 (2, 1, 2, 0, 'U', 1, '2', 'admin');
 
@@ -162,24 +162,23 @@ INSERT DELAYED IGNORE INTO `authorization_role` VALUES
 -- Table structure for table `authorization_rule`
 --
 
-CREATE TABLE `authorization_rule` (
-  `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule ID',
+DROP TABLE IF EXISTS `authorization_rule`;
+CREATE TABLE IF NOT EXISTS `authorization_rule` (
+  `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule ID',
   `role_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Role ID',
   `resource_id` varchar(255) DEFAULT NULL COMMENT 'Resource ID',
   `privileges` varchar(20) DEFAULT NULL COMMENT 'Privileges',
-  `permission` varchar(10) DEFAULT NULL COMMENT 'Permission'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Admin Rule Table';
+  `permission` varchar(10) DEFAULT NULL COMMENT 'Permission',
+  PRIMARY KEY (`rule_id`),
+  KEY `AUTHORIZATION_RULE_RESOURCE_ID_ROLE_ID` (`resource_id`,`role_id`),
+  KEY `AUTHORIZATION_RULE_ROLE_ID_RESOURCE_ID` (`role_id`,`resource_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Admin Rule Table';
 
---
--- Truncate table before insert `authorization_rule`
---
-
-TRUNCATE TABLE `authorization_rule`;
 --
 -- Dumping data for table `authorization_rule`
 --
 
-INSERT DELAYED IGNORE INTO `authorization_rule` VALUES
+INSERT INTO `authorization_rule` (`rule_id`, `role_id`, `resource_id`, `privileges`, `permission`) VALUES
 (1, 1, 'Magento_Backend::all', NULL, 'allow');
 
 -- --------------------------------------------------------
@@ -188,75 +187,66 @@ INSERT DELAYED IGNORE INTO `authorization_rule` VALUES
 -- Table structure for table `cache`
 --
 
-CREATE TABLE `cache` (
+DROP TABLE IF EXISTS `cache`;
+CREATE TABLE IF NOT EXISTS `cache` (
   `id` varchar(200) NOT NULL COMMENT 'Cache Id',
   `data` mediumblob COMMENT 'Cache Data',
   `create_time` int(11) DEFAULT NULL COMMENT 'Cache Creation Time',
   `update_time` int(11) DEFAULT NULL COMMENT 'Time of Cache Updating',
-  `expire_time` int(11) DEFAULT NULL COMMENT 'Cache Expiration Time'
+  `expire_time` int(11) DEFAULT NULL COMMENT 'Cache Expiration Time',
+  PRIMARY KEY (`id`),
+  KEY `CACHE_EXPIRE_TIME` (`expire_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Caches';
 
---
--- Truncate table before insert `cache`
---
-
-TRUNCATE TABLE `cache`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cache_tag`
 --
 
-CREATE TABLE `cache_tag` (
+DROP TABLE IF EXISTS `cache_tag`;
+CREATE TABLE IF NOT EXISTS `cache_tag` (
   `tag` varchar(100) NOT NULL COMMENT 'Tag',
-  `cache_id` varchar(200) NOT NULL COMMENT 'Cache Id'
+  `cache_id` varchar(200) NOT NULL COMMENT 'Cache Id',
+  PRIMARY KEY (`tag`,`cache_id`),
+  KEY `CACHE_TAG_CACHE_ID` (`cache_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tag Caches';
 
---
--- Truncate table before insert `cache_tag`
---
-
-TRUNCATE TABLE `cache_tag`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `captcha_log`
 --
 
-CREATE TABLE `captcha_log` (
+DROP TABLE IF EXISTS `captcha_log`;
+CREATE TABLE IF NOT EXISTS `captcha_log` (
   `type` varchar(32) NOT NULL COMMENT 'Type',
   `value` varchar(32) NOT NULL COMMENT 'Value',
   `count` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Count',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Update Time'
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Update Time',
+  PRIMARY KEY (`type`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Count Login Attempts';
 
---
--- Truncate table before insert `captcha_log`
---
-
-TRUNCATE TABLE `captcha_log`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cataloginventory_stock`
 --
 
-CREATE TABLE `cataloginventory_stock` (
-  `stock_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Id',
+DROP TABLE IF EXISTS `cataloginventory_stock`;
+CREATE TABLE IF NOT EXISTS `cataloginventory_stock` (
+  `stock_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Stock Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
-  `stock_name` varchar(255) DEFAULT NULL COMMENT 'Stock Name'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock';
+  `stock_name` varchar(255) DEFAULT NULL COMMENT 'Stock Name',
+  PRIMARY KEY (`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_WEBSITE_ID` (`website_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock';
 
---
--- Truncate table before insert `cataloginventory_stock`
---
-
-TRUNCATE TABLE `cataloginventory_stock`;
 --
 -- Dumping data for table `cataloginventory_stock`
 --
 
-INSERT DELAYED IGNORE INTO `cataloginventory_stock` VALUES
+INSERT INTO `cataloginventory_stock` (`stock_id`, `website_id`, `stock_name`) VALUES
 (1, 0, 'Default');
 
 -- --------------------------------------------------------
@@ -265,8 +255,9 @@ INSERT DELAYED IGNORE INTO `cataloginventory_stock` VALUES
 -- Table structure for table `cataloginventory_stock_item`
 --
 
-CREATE TABLE `cataloginventory_stock_item` (
-  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+DROP TABLE IF EXISTS `cataloginventory_stock_item`;
+CREATE TABLE IF NOT EXISTS `cataloginventory_stock_item` (
+  `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product Id',
   `stock_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Stock Id',
   `qty` decimal(12,4) DEFAULT NULL COMMENT 'Qty',
@@ -291,79 +282,108 @@ CREATE TABLE `cataloginventory_stock_item` (
   `use_config_enable_qty_inc` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Use Config Enable Qty Increments',
   `enable_qty_increments` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Enable Qty Increments',
   `is_decimal_divided` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Divided into Multiple Boxes for Shipping',
-  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Divided into Multiple Boxes for Shipping'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock Item';
+  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Divided into Multiple Boxes for Shipping',
+  PRIMARY KEY (`item_id`),
+  UNIQUE KEY `CATALOGINVENTORY_STOCK_ITEM_PRODUCT_ID_WEBSITE_ID` (`product_id`,`website_id`),
+  KEY `CATALOGINVENTORY_STOCK_ITEM_WEBSITE_ID` (`website_id`),
+  KEY `CATALOGINVENTORY_STOCK_ITEM_STOCK_ID` (`stock_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock Item';
 
 --
--- Truncate table before insert `cataloginventory_stock_item`
+-- Dumping data for table `cataloginventory_stock_item`
 --
 
-TRUNCATE TABLE `cataloginventory_stock_item`;
+INSERT INTO `cataloginventory_stock_item` (`item_id`, `product_id`, `stock_id`, `qty`, `min_qty`, `use_config_min_qty`, `is_qty_decimal`, `backorders`, `use_config_backorders`, `min_sale_qty`, `use_config_min_sale_qty`, `max_sale_qty`, `use_config_max_sale_qty`, `is_in_stock`, `low_stock_date`, `notify_stock_qty`, `use_config_notify_stock_qty`, `manage_stock`, `use_config_manage_stock`, `stock_status_changed_auto`, `use_config_qty_increments`, `qty_increments`, `use_config_enable_qty_inc`, `enable_qty_increments`, `is_decimal_divided`, `website_id`) VALUES
+(1, 1, 1, '17.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '0.0000', 0, 0, 0, 1),
+(2, 2, 1, '11.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1),
+(3, 3, 1, '122.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '0.0000', 0, 0, 0, 1),
+(4, 4, 1, '45.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '0.0000', 0, 0, 0, 1),
+(5, 5, 1, '1234.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1),
+(6, 6, 1, '123.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '0.0000', 0, 0, 0, 1),
+(7, 7, 1, '34.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1),
+(8, 8, 1, '12.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1),
+(9, 9, 1, '3435.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1),
+(10, 10, 1, '45.0000', '0.0000', 1, 0, 0, 1, '1.0000', 1, '10000.0000', 1, 1, NULL, '1.0000', 1, 1, 1, 0, 1, '1.0000', 0, 0, 0, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cataloginventory_stock_status`
 --
 
-CREATE TABLE `cataloginventory_stock_status` (
+DROP TABLE IF EXISTS `cataloginventory_stock_status`;
+CREATE TABLE IF NOT EXISTS `cataloginventory_stock_status` (
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `stock_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Id',
   `qty` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty',
-  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status'
+  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status',
+  PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_STOCK_ID` (`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock Status';
 
 --
--- Truncate table before insert `cataloginventory_stock_status`
+-- Dumping data for table `cataloginventory_stock_status`
 --
 
-TRUNCATE TABLE `cataloginventory_stock_status`;
+INSERT INTO `cataloginventory_stock_status` (`product_id`, `website_id`, `stock_id`, `qty`, `stock_status`) VALUES
+(1, 1, 1, '17.0000', 1),
+(2, 1, 1, '11.0000', 1),
+(3, 1, 1, '122.0000', 1),
+(4, 1, 1, '45.0000', 1),
+(5, 1, 1, '1234.0000', 1),
+(6, 1, 1, '123.0000', 1),
+(7, 1, 1, '34.0000', 1),
+(8, 1, 1, '12.0000', 1),
+(9, 1, 1, '3435.0000', 1),
+(10, 1, 1, '45.0000', 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cataloginventory_stock_status_idx`
 --
 
-CREATE TABLE `cataloginventory_stock_status_idx` (
+DROP TABLE IF EXISTS `cataloginventory_stock_status_idx`;
+CREATE TABLE IF NOT EXISTS `cataloginventory_stock_status_idx` (
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `stock_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Id',
   `qty` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty',
-  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status'
+  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status',
+  PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_IDX_STOCK_ID` (`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_IDX_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock Status Indexer Idx';
 
---
--- Truncate table before insert `cataloginventory_stock_status_idx`
---
-
-TRUNCATE TABLE `cataloginventory_stock_status_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cataloginventory_stock_status_tmp`
 --
 
-CREATE TABLE `cataloginventory_stock_status_tmp` (
+DROP TABLE IF EXISTS `cataloginventory_stock_status_tmp`;
+CREATE TABLE IF NOT EXISTS `cataloginventory_stock_status_tmp` (
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `stock_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Id',
   `qty` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty',
-  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status'
+  `stock_status` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Status',
+  PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_TMP_STOCK_ID` (`stock_id`),
+  KEY `CATALOGINVENTORY_STOCK_STATUS_TMP_WEBSITE_ID` (`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Cataloginventory Stock Status Indexer Tmp';
 
---
--- Truncate table before insert `cataloginventory_stock_status_tmp`
---
-
-TRUNCATE TABLE `cataloginventory_stock_status_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule`
 --
 
-CREATE TABLE `catalogrule` (
-  `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
+DROP TABLE IF EXISTS `catalogrule`;
+CREATE TABLE IF NOT EXISTS `catalogrule` (
+  `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Id',
   `name` varchar(255) DEFAULT NULL COMMENT 'Name',
   `description` text COMMENT 'Description',
   `from_date` date DEFAULT NULL COMMENT 'From',
@@ -377,55 +397,50 @@ CREATE TABLE `catalogrule` (
   `discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount',
   `sub_is_enable` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Rule Enable For Subitems',
   `sub_simple_action` varchar(32) DEFAULT NULL COMMENT 'Simple Action For Subitems',
-  `sub_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount For Subitems'
+  `sub_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount For Subitems',
+  PRIMARY KEY (`rule_id`),
+  KEY `CATALOGRULE_IS_ACTIVE_SORT_ORDER_TO_DATE_FROM_DATE` (`is_active`,`sort_order`,`to_date`,`from_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CatalogRule';
 
---
--- Truncate table before insert `catalogrule`
---
-
-TRUNCATE TABLE `catalogrule`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule_customer_group`
 --
 
-CREATE TABLE `catalogrule_customer_group` (
+DROP TABLE IF EXISTS `catalogrule_customer_group`;
+CREATE TABLE IF NOT EXISTS `catalogrule_customer_group` (
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
-  `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id'
+  `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
+  PRIMARY KEY (`rule_id`,`customer_group_id`),
+  KEY `CATALOGRULE_CUSTOMER_GROUP_CUSTOMER_GROUP_ID` (`customer_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Rules To Customer Groups Relations';
 
---
--- Truncate table before insert `catalogrule_customer_group`
---
-
-TRUNCATE TABLE `catalogrule_customer_group`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule_group_website`
 --
 
-CREATE TABLE `catalogrule_group_website` (
+DROP TABLE IF EXISTS `catalogrule_group_website`;
+CREATE TABLE IF NOT EXISTS `catalogrule_group_website` (
   `rule_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rule Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Group Id',
-  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id'
+  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id',
+  PRIMARY KEY (`rule_id`,`customer_group_id`,`website_id`),
+  KEY `CATALOGRULE_GROUP_WEBSITE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOGRULE_GROUP_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CatalogRule Group Website';
 
---
--- Truncate table before insert `catalogrule_group_website`
---
-
-TRUNCATE TABLE `catalogrule_group_website`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule_product`
 --
 
-CREATE TABLE `catalogrule_product` (
-  `rule_product_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Product Id',
+DROP TABLE IF EXISTS `catalogrule_product`;
+CREATE TABLE IF NOT EXISTS `catalogrule_product` (
+  `rule_product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Product Id',
   `rule_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rule Id',
   `from_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'From Time',
   `to_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'To time',
@@ -437,77 +452,107 @@ CREATE TABLE `catalogrule_product` (
   `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `sub_simple_action` varchar(32) DEFAULT NULL COMMENT 'Simple Action For Subitems',
-  `sub_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount For Subitems'
+  `sub_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount For Subitems',
+  PRIMARY KEY (`rule_product_id`),
+  UNIQUE KEY `IDX_EAA51B56FF092A0DCB795D1CEF812B7B` (`rule_id`,`from_time`,`to_time`,`website_id`,`customer_group_id`,`product_id`,`sort_order`),
+  KEY `CATALOGRULE_PRODUCT_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOGRULE_PRODUCT_WEBSITE_ID` (`website_id`),
+  KEY `CATALOGRULE_PRODUCT_FROM_TIME` (`from_time`),
+  KEY `CATALOGRULE_PRODUCT_TO_TIME` (`to_time`),
+  KEY `CATALOGRULE_PRODUCT_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CatalogRule Product';
 
---
--- Truncate table before insert `catalogrule_product`
---
-
-TRUNCATE TABLE `catalogrule_product`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule_product_price`
 --
 
-CREATE TABLE `catalogrule_product_price` (
-  `rule_product_price_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Product PriceId',
+DROP TABLE IF EXISTS `catalogrule_product_price`;
+CREATE TABLE IF NOT EXISTS `catalogrule_product_price` (
+  `rule_product_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Product PriceId',
   `rule_date` date NOT NULL COMMENT 'Rule Date',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Group Id',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product Id',
   `rule_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Rule Price',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `latest_start_date` date DEFAULT NULL COMMENT 'Latest StartDate',
-  `earliest_end_date` date DEFAULT NULL COMMENT 'Earliest EndDate'
+  `earliest_end_date` date DEFAULT NULL COMMENT 'Earliest EndDate',
+  PRIMARY KEY (`rule_product_price_id`),
+  UNIQUE KEY `CATRULE_PRD_PRICE_RULE_DATE_WS_ID_CSTR_GROUP_ID_PRD_ID` (`rule_date`,`website_id`,`customer_group_id`,`product_id`),
+  KEY `CATALOGRULE_PRODUCT_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOGRULE_PRODUCT_PRICE_WEBSITE_ID` (`website_id`),
+  KEY `CATALOGRULE_PRODUCT_PRICE_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CatalogRule Product Price';
 
---
--- Truncate table before insert `catalogrule_product_price`
---
-
-TRUNCATE TABLE `catalogrule_product_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogrule_website`
 --
 
-CREATE TABLE `catalogrule_website` (
+DROP TABLE IF EXISTS `catalogrule_website`;
+CREATE TABLE IF NOT EXISTS `catalogrule_website` (
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
-  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id'
+  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
+  PRIMARY KEY (`rule_id`,`website_id`),
+  KEY `CATALOGRULE_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Rules To Websites Relations';
 
---
--- Truncate table before insert `catalogrule_website`
---
-
-TRUNCATE TABLE `catalogrule_website`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalogsearch_fulltext_scope1`
 --
 
-CREATE TABLE `catalogsearch_fulltext_scope1` (
+DROP TABLE IF EXISTS `catalogsearch_fulltext_scope1`;
+CREATE TABLE IF NOT EXISTS `catalogsearch_fulltext_scope1` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` int(10) UNSIGNED NOT NULL COMMENT 'Attribute_id',
-  `data_index` longtext COMMENT 'Data index'
+  `data_index` longtext COMMENT 'Data index',
+  PRIMARY KEY (`entity_id`,`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='catalogsearch_fulltext_scope1';
 
 --
--- Truncate table before insert `catalogsearch_fulltext_scope1`
+-- Dumping data for table `catalogsearch_fulltext_scope1`
 --
 
-TRUNCATE TABLE `catalogsearch_fulltext_scope1`;
+INSERT INTO `catalogsearch_fulltext_scope1` (`entity_id`, `attribute_id`, `data_index`) VALUES
+(1, 70, 'Cải bắp'),
+(1, 71, 'Cải bắp'),
+(1, 72, 'Ngon bổ rẻ'),
+(2, 70, 'Cải tím'),
+(2, 71, 'Cải tím'),
+(3, 70, 'Chanh Đà Lạt'),
+(3, 71, 'Chanh Đà Lạt'),
+(3, 72, 'Trong đời sống h&agrave;ng ng&agrave;y, chanh l&agrave; loại quả chua được sử dụng rỗng r&atilde;i hơn hết. Kh&ocirc;ng chỉ c&oacute; c&ocirc;ng dụng l&agrave;m nước giải kh&aacute;t, l&agrave;m chất phụ gia trong chế biến thực phẩm, l&agrave; th&agrave;nh phần chế tạo c&aacute;c loại thuốc trong y học, chanh c&ograve;n c&oacute; nhiều c&ocirc;ng dụng bất ngờ trong đời sống h&agrave;ng ng&agrave;y m&agrave; c&oacute; thế ch&uacute;ng ta chưa biết đến. Dưới đ&acirc;y l&agrave;&nbsp;14 t&aacute;c dụng của chanh trong đời sống h&agrave;ng ng&agrave;y&nbsp;m&agrave; mọi người n&ecirc;n biết.'),
+(4, 70, 'Bơ'),
+(4, 71, 'Bơ'),
+(5, 70, 'chuối'),
+(5, 71, 'chuối'),
+(5, 72, 'gdfgdfg'),
+(6, 70, 'Na'),
+(6, 71, 'Na'),
+(6, 72, 'iuhujiju'),
+(7, 70, 'cà chua'),
+(7, 71, 'cà chua'),
+(8, 70, 'Khoai tây'),
+(8, 71, 'Khoai tây'),
+(9, 70, 'Xà lách'),
+(9, 71, 'Xà lách'),
+(10, 70, 'Dâu tây'),
+(10, 71, 'Dâu tây'),
+(10, 72, 'ghfhafj');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_category_entity`
 --
 
-CREATE TABLE `catalog_category_entity` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
+DROP TABLE IF EXISTS `catalog_category_entity`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID',
   `attribute_set_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attriute Set ID',
   `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Parent Category ID',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Time',
@@ -515,27 +560,26 @@ CREATE TABLE `catalog_category_entity` (
   `path` varchar(255) NOT NULL COMMENT 'Tree Path',
   `position` int(11) NOT NULL COMMENT 'Position',
   `level` int(11) NOT NULL DEFAULT '0' COMMENT 'Tree Level',
-  `children_count` int(11) NOT NULL COMMENT 'Child Count'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Table';
+  `children_count` int(11) NOT NULL COMMENT 'Child Count',
+  PRIMARY KEY (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_LEVEL` (`level`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Table';
 
---
--- Truncate table before insert `catalog_category_entity`
---
-
-TRUNCATE TABLE `catalog_category_entity`;
 --
 -- Dumping data for table `catalog_category_entity`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity` VALUES
-(1, 0, 0, '2017-04-23 11:47:29', '2017-04-24 13:19:02', '1', 0, 0, 7),
-(2, 3, 1, '2017-04-23 11:47:31', '2017-04-24 13:19:02', '1/2', 1, 1, 6),
-(3, 3, 2, '2017-04-24 13:13:49', '2017-04-24 13:19:02', '1/2/3', 1, 2, 1),
-(4, 3, 2, '2017-04-24 13:14:43', '2017-04-24 13:14:44', '1/2/4', 2, 2, 0),
-(5, 3, 2, '2017-04-24 13:17:02', '2017-04-24 13:17:02', '1/2/5', 3, 2, 0),
-(6, 3, 2, '2017-04-24 13:17:37', '2017-04-24 13:17:37', '1/2/6', 4, 2, 0),
-(7, 3, 2, '2017-04-24 13:18:22', '2017-04-24 13:18:22', '1/2/7', 5, 2, 0),
-(8, 3, 3, '2017-04-24 13:19:02', '2017-04-24 13:19:02', '1/2/3/8', 1, 3, 0);
+INSERT INTO `catalog_category_entity` (`entity_id`, `attribute_set_id`, `parent_id`, `created_at`, `updated_at`, `path`, `position`, `level`, `children_count`) VALUES
+(1, 0, 0, '2017-03-15 22:06:35', '2017-04-23 14:50:56', '1', 0, 0, 9),
+(2, 3, 1, '2017-03-15 22:06:37', '2017-04-23 14:50:56', '1/2', 1, 1, 8),
+(3, 3, 2, '2017-03-15 23:13:27', '2017-03-15 23:18:49', '1/2/3', 1, 2, 2),
+(4, 3, 2, '2017-03-15 23:15:16', '2017-04-23 14:50:56', '1/2/4', 2, 2, 1),
+(5, 3, 2, '2017-03-15 23:15:56', '2017-03-15 23:15:56', '1/2/5', 3, 2, 0),
+(6, 3, 2, '2017-03-15 23:16:51', '2017-03-15 23:16:53', '1/2/6', 4, 2, 0),
+(7, 3, 3, '2017-03-15 23:17:49', '2017-03-15 23:17:49', '1/2/3/7', 1, 3, 0),
+(8, 3, 3, '2017-03-15 23:18:49', '2017-03-15 23:18:50', '1/2/3/8', 2, 3, 0),
+(9, 3, 2, '2017-04-23 14:49:31', '2017-04-23 14:49:31', '1/2/9', 5, 2, 0),
+(10, 3, 4, '2017-04-23 14:50:56', '2017-04-23 14:50:56', '1/2/4/10', 1, 3, 0);
 
 -- --------------------------------------------------------
 
@@ -543,24 +587,25 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity` VALUES
 -- Table structure for table `catalog_category_entity_datetime`
 --
 
-CREATE TABLE `catalog_category_entity_datetime` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_category_entity_datetime`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity_datetime` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` datetime DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Datetime Attribute Backend Table';
+  `value` datetime DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DATETIME_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Datetime Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_category_entity_datetime`
---
-
-TRUNCATE TABLE `catalog_category_entity_datetime`;
 --
 -- Dumping data for table `catalog_category_entity_datetime`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity_datetime` VALUES
+INSERT INTO `catalog_category_entity_datetime` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
 (1, 58, 0, 1, NULL),
 (2, 58, 0, 2, NULL),
 (3, 58, 0, 3, NULL),
@@ -574,7 +619,11 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_datetime` VALUES
 (11, 58, 0, 7, NULL),
 (12, 59, 0, 7, NULL),
 (13, 58, 0, 8, NULL),
-(14, 59, 0, 8, NULL);
+(14, 59, 0, 8, NULL),
+(15, 58, 0, 9, NULL),
+(16, 59, 0, 9, NULL),
+(17, 58, 0, 10, NULL),
+(18, 59, 0, 10, NULL);
 
 -- --------------------------------------------------------
 
@@ -582,30 +631,33 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_datetime` VALUES
 -- Table structure for table `catalog_category_entity_decimal`
 --
 
-CREATE TABLE `catalog_category_entity_decimal` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_category_entity_decimal`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity_decimal` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` decimal(12,4) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Decimal Attribute Backend Table';
+  `value` decimal(12,4) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Decimal Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_category_entity_decimal`
---
-
-TRUNCATE TABLE `catalog_category_entity_decimal`;
 --
 -- Dumping data for table `catalog_category_entity_decimal`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity_decimal` VALUES
+INSERT INTO `catalog_category_entity_decimal` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
 (1, 69, 0, 3, NULL),
 (2, 69, 0, 4, NULL),
 (3, 69, 0, 5, NULL),
 (4, 69, 0, 6, NULL),
 (5, 69, 0, 7, NULL),
-(6, 69, 0, 8, NULL);
+(6, 69, 0, 8, NULL),
+(7, 69, 0, 9, NULL),
+(8, 69, 0, 10, NULL);
 
 -- --------------------------------------------------------
 
@@ -613,24 +665,25 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_decimal` VALUES
 -- Table structure for table `catalog_category_entity_int`
 --
 
-CREATE TABLE `catalog_category_entity_int` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_category_entity_int`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity_int` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` int(11) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Integer Attribute Backend Table';
+  `value` int(11) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_CATEGORY_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_INT_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_INT_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Integer Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_category_entity_int`
---
-
-TRUNCATE TABLE `catalog_category_entity_int`;
 --
 -- Dumping data for table `catalog_category_entity_int`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity_int` VALUES
+INSERT INTO `catalog_category_entity_int` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
 (1, 66, 0, 1, 1),
 (2, 43, 0, 2, 1),
 (3, 66, 0, 2, 1),
@@ -669,7 +722,19 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_int` VALUES
 (36, 50, 0, 8, NULL),
 (37, 51, 0, 8, 1),
 (38, 67, 0, 8, 0),
-(39, 68, 0, 8, 0);
+(39, 68, 0, 8, 0),
+(40, 43, 0, 9, 1),
+(41, 66, 0, 9, 1),
+(42, 50, 0, 9, NULL),
+(43, 51, 0, 9, 1),
+(44, 67, 0, 9, 0),
+(45, 68, 0, 9, 0),
+(46, 43, 0, 10, 1),
+(47, 66, 0, 10, 1),
+(48, 50, 0, 10, NULL),
+(49, 51, 0, 10, 1),
+(50, 67, 0, 10, 0),
+(51, 68, 0, 10, 0);
 
 -- --------------------------------------------------------
 
@@ -677,24 +742,25 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_int` VALUES
 -- Table structure for table `catalog_category_entity_text`
 --
 
-CREATE TABLE `catalog_category_entity_text` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_category_entity_text`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity_text` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` text COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Text Attribute Backend Table';
+  `value` text COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_CATEGORY_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_TEXT_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_TEXT_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Text Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_category_entity_text`
---
-
-TRUNCATE TABLE `catalog_category_entity_text`;
 --
 -- Dumping data for table `catalog_category_entity_text`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity_text` VALUES
+INSERT INTO `catalog_category_entity_text` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
 (1, 64, 0, 1, NULL),
 (2, 64, 0, 2, NULL),
 (3, 44, 0, 3, NULL),
@@ -726,7 +792,17 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_text` VALUES
 (29, 47, 0, 8, NULL),
 (30, 48, 0, 8, NULL),
 (31, 64, 0, 8, NULL),
-(32, 61, 0, 8, NULL);
+(32, 61, 0, 8, NULL),
+(33, 44, 0, 9, NULL),
+(34, 47, 0, 9, NULL),
+(35, 48, 0, 9, NULL),
+(36, 64, 0, 9, NULL),
+(37, 61, 0, 9, NULL),
+(38, 44, 0, 10, NULL),
+(39, 47, 0, 10, NULL),
+(40, 48, 0, 10, NULL),
+(41, 64, 0, 10, NULL),
+(42, 61, 0, 10, NULL);
 
 -- --------------------------------------------------------
 
@@ -734,75 +810,92 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_text` VALUES
 -- Table structure for table `catalog_category_entity_varchar`
 --
 
-CREATE TABLE `catalog_category_entity_varchar` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_category_entity_varchar`;
+CREATE TABLE IF NOT EXISTS `catalog_category_entity_varchar` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Varchar Attribute Backend Table';
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=68 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Varchar Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_category_entity_varchar`
---
-
-TRUNCATE TABLE `catalog_category_entity_varchar`;
 --
 -- Dumping data for table `catalog_category_entity_varchar`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_category_entity_varchar` VALUES
+INSERT INTO `catalog_category_entity_varchar` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
 (1, 42, 0, 1, 'Root Catalog'),
 (2, 42, 0, 2, 'Default Category'),
 (3, 49, 0, 2, 'PRODUCTS'),
 (4, 42, 0, 3, 'Rau xanh'),
-(5, 113, 0, 3, 'rauxanh'),
+(5, 113, 0, 3, 'rau-xanh'),
 (6, 46, 0, 3, NULL),
 (7, 49, 0, 3, 'PRODUCTS'),
-(8, 57, 0, 3, NULL),
+(8, 57, 0, 3, '4'),
 (9, 60, 0, 3, NULL),
 (10, 65, 0, 3, NULL),
-(11, 114, 0, 3, 'rauxanh'),
+(11, 114, 0, 3, 'rau-xanh'),
 (12, 42, 0, 4, 'Trái cây'),
-(13, 113, 0, 4, 'traicay'),
+(13, 113, 0, 4, 'trai-cay'),
 (14, 46, 0, 4, NULL),
 (15, 49, 0, 4, 'PRODUCTS'),
-(16, 57, 0, 4, NULL),
+(16, 57, 0, 4, '4'),
 (17, 60, 0, 4, NULL),
 (18, 65, 0, 4, NULL),
-(19, 114, 0, 4, 'traicay'),
+(19, 114, 0, 4, 'trai-cay'),
 (20, 42, 0, 5, 'Rau gia vị'),
-(21, 113, 0, 5, 'raugiavi'),
+(21, 113, 0, 5, 'rau-gia-vi'),
 (22, 46, 0, 5, NULL),
 (23, 49, 0, 5, 'PRODUCTS'),
-(24, 57, 0, 5, NULL),
+(24, 57, 0, 5, '4'),
 (25, 60, 0, 5, NULL),
 (26, 65, 0, 5, NULL),
-(27, 114, 0, 5, 'raugiavi'),
+(27, 114, 0, 5, 'rau-gia-vi'),
 (28, 42, 0, 6, 'Hạt giống'),
-(29, 113, 0, 6, 'hatgiong'),
+(29, 113, 0, 6, 'hat-giong'),
 (30, 46, 0, 6, NULL),
 (31, 49, 0, 6, 'PRODUCTS'),
-(32, 57, 0, 6, NULL),
+(32, 57, 0, 6, '4'),
 (33, 60, 0, 6, NULL),
 (34, 65, 0, 6, NULL),
-(35, 114, 0, 6, 'hatgiong'),
-(36, 42, 0, 7, 'Món ngon'),
-(37, 113, 0, 7, 'monngon'),
+(35, 114, 0, 6, 'hat-giong'),
+(36, 42, 0, 7, 'Rau cải'),
+(37, 113, 0, 7, 'rau-cai'),
 (38, 46, 0, 7, NULL),
 (39, 49, 0, 7, 'PRODUCTS'),
-(40, 57, 0, 7, NULL),
+(40, 57, 0, 7, '4'),
 (41, 60, 0, 7, NULL),
 (42, 65, 0, 7, NULL),
-(43, 114, 0, 7, 'monngon'),
-(44, 42, 0, 8, 'Rau cải'),
-(45, 113, 0, 8, 'raucai'),
+(43, 114, 0, 7, 'rau-xanh/rau-cai'),
+(44, 42, 0, 8, 'Rau muống'),
+(45, 113, 0, 8, 'rau-muong'),
 (46, 46, 0, 8, NULL),
 (47, 49, 0, 8, 'PRODUCTS'),
-(48, 57, 0, 8, NULL),
+(48, 57, 0, 8, '4'),
 (49, 60, 0, 8, NULL),
 (50, 65, 0, 8, NULL),
-(51, 114, 0, 8, 'rauxanh/raucai');
+(51, 114, 0, 8, 'rau-xanh/rau-muong'),
+(52, 42, 0, 9, 'Món ngon'),
+(53, 113, 0, 9, 'mon-ngon'),
+(54, 46, 0, 9, NULL),
+(55, 49, 0, 9, 'PRODUCTS'),
+(56, 57, 0, 9, NULL),
+(57, 60, 0, 9, NULL),
+(58, 65, 0, 9, NULL),
+(59, 114, 0, 9, 'mon-ngon'),
+(60, 42, 0, 10, 'Táo'),
+(61, 113, 0, 10, 'tao'),
+(62, 46, 0, 10, NULL),
+(63, 49, 0, 10, 'PRODUCTS'),
+(64, 57, 0, 10, NULL),
+(65, 60, 0, 10, NULL),
+(66, 65, 0, 10, NULL),
+(67, 114, 0, 10, 'trai-cay/tao');
 
 -- --------------------------------------------------------
 
@@ -810,83 +903,131 @@ INSERT DELAYED IGNORE INTO `catalog_category_entity_varchar` VALUES
 -- Table structure for table `catalog_category_product`
 --
 
-CREATE TABLE `catalog_category_product` (
+DROP TABLE IF EXISTS `catalog_category_product`;
+CREATE TABLE IF NOT EXISTS `catalog_category_product` (
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
-  `position` int(11) NOT NULL DEFAULT '0' COMMENT 'Position'
+  `position` int(11) NOT NULL DEFAULT '0' COMMENT 'Position',
+  PRIMARY KEY (`category_id`,`product_id`),
+  KEY `CATALOG_CATEGORY_PRODUCT_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product To Category Linkage Table';
 
 --
--- Truncate table before insert `catalog_category_product`
+-- Dumping data for table `catalog_category_product`
 --
 
-TRUNCATE TABLE `catalog_category_product`;
+INSERT INTO `catalog_category_product` (`category_id`, `product_id`, `position`) VALUES
+(7, 1, 1),
+(7, 2, 1),
+(7, 3, 1),
+(7, 4, 1),
+(7, 5, 1),
+(7, 6, 1),
+(7, 7, 1),
+(7, 8, 1),
+(7, 9, 1),
+(7, 10, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_category_product_index`
 --
 
-CREATE TABLE `catalog_category_product_index` (
+DROP TABLE IF EXISTS `catalog_category_product_index`;
+CREATE TABLE IF NOT EXISTS `catalog_category_product_index` (
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `position` int(11) DEFAULT NULL COMMENT 'Position',
   `is_parent` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Parent',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `visibility` smallint(5) UNSIGNED NOT NULL COMMENT 'Visibility'
+  `visibility` smallint(5) UNSIGNED NOT NULL COMMENT 'Visibility',
+  PRIMARY KEY (`category_id`,`product_id`,`store_id`),
+  KEY `CAT_CTGR_PRD_IDX_PRD_ID_STORE_ID_CTGR_ID_VISIBILITY` (`product_id`,`store_id`,`category_id`,`visibility`),
+  KEY `CAT_CTGR_PRD_IDX_STORE_ID_CTGR_ID_VISIBILITY_IS_PARENT_POSITION` (`store_id`,`category_id`,`visibility`,`is_parent`,`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Category Product Index';
 
 --
--- Truncate table before insert `catalog_category_product_index`
+-- Dumping data for table `catalog_category_product_index`
 --
 
-TRUNCATE TABLE `catalog_category_product_index`;
+INSERT INTO `catalog_category_product_index` (`category_id`, `product_id`, `position`, `is_parent`, `store_id`, `visibility`) VALUES
+(2, 1, 1, 1, 1, 4),
+(2, 2, 1, 1, 1, 4),
+(2, 3, 1, 1, 1, 4),
+(2, 4, 1, 1, 1, 4),
+(2, 5, 1, 1, 1, 4),
+(2, 6, 1, 1, 1, 4),
+(2, 7, 1, 1, 1, 4),
+(2, 8, 1, 1, 1, 4),
+(2, 9, 1, 1, 1, 4),
+(2, 10, 1, 1, 1, 4),
+(3, 1, 10001, 0, 1, 4),
+(3, 2, 10001, 0, 1, 4),
+(3, 3, 10001, 0, 1, 4),
+(3, 4, 10001, 0, 1, 4),
+(3, 5, 10001, 0, 1, 4),
+(3, 6, 10001, 0, 1, 4),
+(3, 7, 10001, 0, 1, 4),
+(3, 8, 10001, 0, 1, 4),
+(3, 9, 10001, 0, 1, 4),
+(3, 10, 10001, 0, 1, 4),
+(7, 1, 1, 1, 1, 4),
+(7, 2, 1, 1, 1, 4),
+(7, 3, 1, 1, 1, 4),
+(7, 4, 1, 1, 1, 4),
+(7, 5, 1, 1, 1, 4),
+(7, 6, 1, 1, 1, 4),
+(7, 7, 1, 1, 1, 4),
+(7, 8, 1, 1, 1, 4),
+(7, 9, 1, 1, 1, 4),
+(7, 10, 1, 1, 1, 4);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_category_product_index_tmp`
 --
 
-CREATE TABLE `catalog_category_product_index_tmp` (
+DROP TABLE IF EXISTS `catalog_category_product_index_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_category_product_index_tmp` (
   `category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Category ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `position` int(11) NOT NULL DEFAULT '0' COMMENT 'Position',
   `is_parent` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Parent',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `visibility` smallint(5) UNSIGNED NOT NULL COMMENT 'Visibility'
+  `visibility` smallint(5) UNSIGNED NOT NULL COMMENT 'Visibility',
+  KEY `CAT_CTGR_PRD_IDX_TMP_PRD_ID_CTGR_ID_STORE_ID` (`product_id`,`category_id`,`store_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Category Product Indexer Temp Table';
 
---
--- Truncate table before insert `catalog_category_product_index_tmp`
---
-
-TRUNCATE TABLE `catalog_category_product_index_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_compare_item`
 --
 
-CREATE TABLE `catalog_compare_item` (
-  `catalog_compare_item_id` int(10) UNSIGNED NOT NULL COMMENT 'Compare Item ID',
+DROP TABLE IF EXISTS `catalog_compare_item`;
+CREATE TABLE IF NOT EXISTS `catalog_compare_item` (
+  `catalog_compare_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Compare Item ID',
   `visitor_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Visitor ID',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
-  `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store ID'
+  `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store ID',
+  PRIMARY KEY (`catalog_compare_item_id`),
+  KEY `CATALOG_COMPARE_ITEM_PRODUCT_ID` (`product_id`),
+  KEY `CATALOG_COMPARE_ITEM_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
+  KEY `CATALOG_COMPARE_ITEM_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
+  KEY `CATALOG_COMPARE_ITEM_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Compare Table';
 
---
--- Truncate table before insert `catalog_compare_item`
---
-
-TRUNCATE TABLE `catalog_compare_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_eav_attribute`
 --
 
-CREATE TABLE `catalog_eav_attribute` (
+DROP TABLE IF EXISTS `catalog_eav_attribute`;
+CREATE TABLE IF NOT EXISTS `catalog_eav_attribute` (
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `frontend_input_renderer` varchar(255) DEFAULT NULL COMMENT 'Frontend Input Renderer',
   `is_global` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Is Global',
@@ -910,19 +1051,17 @@ CREATE TABLE `catalog_eav_attribute` (
   `is_visible_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible in Grid',
   `is_filterable_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Filterable in Grid',
   `search_weight` float NOT NULL DEFAULT '1' COMMENT 'Search Weight',
-  `additional_data` text COMMENT 'Additional swatch attributes data'
+  `additional_data` text COMMENT 'Additional swatch attributes data',
+  PRIMARY KEY (`attribute_id`),
+  KEY `CATALOG_EAV_ATTRIBUTE_USED_FOR_SORT_BY` (`used_for_sort_by`),
+  KEY `CATALOG_EAV_ATTRIBUTE_USED_IN_PRODUCT_LISTING` (`used_in_product_listing`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog EAV Attribute Table';
 
---
--- Truncate table before insert `catalog_eav_attribute`
---
-
-TRUNCATE TABLE `catalog_eav_attribute`;
 --
 -- Dumping data for table `catalog_eav_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_eav_attribute` VALUES
+INSERT INTO `catalog_eav_attribute` (`attribute_id`, `frontend_input_renderer`, `is_global`, `is_visible`, `is_searchable`, `is_filterable`, `is_comparable`, `is_visible_on_front`, `is_html_allowed_on_front`, `is_used_for_price_rules`, `is_filterable_in_search`, `used_in_product_listing`, `used_for_sort_by`, `apply_to`, `is_visible_in_advanced_search`, `position`, `is_wysiwyg_enabled`, `is_used_for_promo_rules`, `is_required_in_admin_store`, `is_used_in_grid`, `is_visible_in_grid`, `is_filterable_in_grid`, `search_weight`, `additional_data`) VALUES
 (42, NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 1, NULL),
 (43, NULL, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 1, NULL),
 (44, NULL, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, NULL, 0, 0, 1, 0, 0, 0, 0, 0, 1, NULL),
@@ -1022,64 +1161,60 @@ INSERT DELAYED IGNORE INTO `catalog_eav_attribute` VALUES
 -- Table structure for table `catalog_product_bundle_option`
 --
 
-CREATE TABLE `catalog_product_bundle_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
+DROP TABLE IF EXISTS `catalog_product_bundle_option`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `required` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Required',
   `position` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Position',
-  `type` varchar(255) DEFAULT NULL COMMENT 'Type'
+  `type` varchar(255) DEFAULT NULL COMMENT 'Type',
+  PRIMARY KEY (`option_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_OPTION_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Option';
 
---
--- Truncate table before insert `catalog_product_bundle_option`
---
-
-TRUNCATE TABLE `catalog_product_bundle_option`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_bundle_option_value`
 --
 
-CREATE TABLE `catalog_product_bundle_option_value` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `catalog_product_bundle_option_value`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_option_value` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title'
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_BUNDLE_OPTION_VALUE_OPTION_ID_STORE_ID` (`option_id`,`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Option Value';
 
---
--- Truncate table before insert `catalog_product_bundle_option_value`
---
-
-TRUNCATE TABLE `catalog_product_bundle_option_value`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_bundle_price_index`
 --
 
-CREATE TABLE `catalog_product_bundle_price_index` (
+DROP TABLE IF EXISTS `catalog_product_bundle_price_index`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_price_index` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `min_price` decimal(12,4) NOT NULL COMMENT 'Min Price',
-  `max_price` decimal(12,4) NOT NULL COMMENT 'Max Price'
+  `max_price` decimal(12,4) NOT NULL COMMENT 'Max Price',
+  PRIMARY KEY (`entity_id`,`website_id`,`customer_group_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_PRICE_INDEX_WEBSITE_ID` (`website_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_PRICE_INDEX_CUSTOMER_GROUP_ID` (`customer_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Price Index';
 
---
--- Truncate table before insert `catalog_product_bundle_price_index`
---
-
-TRUNCATE TABLE `catalog_product_bundle_price_index`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_bundle_selection`
 --
 
-CREATE TABLE `catalog_product_bundle_selection` (
-  `selection_id` int(10) UNSIGNED NOT NULL COMMENT 'Selection Id',
+DROP TABLE IF EXISTS `catalog_product_bundle_selection`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_selection` (
+  `selection_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Selection Id',
   `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
   `parent_product_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Product Id',
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
@@ -1088,401 +1223,856 @@ CREATE TABLE `catalog_product_bundle_selection` (
   `selection_price_type` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Selection Price Type',
   `selection_price_value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Selection Price Value',
   `selection_qty` decimal(12,4) DEFAULT NULL COMMENT 'Selection Qty',
-  `selection_can_change_qty` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Selection Can Change Qty'
+  `selection_can_change_qty` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Selection Can Change Qty',
+  PRIMARY KEY (`selection_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_OPTION_ID` (`option_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Selection';
 
---
--- Truncate table before insert `catalog_product_bundle_selection`
---
-
-TRUNCATE TABLE `catalog_product_bundle_selection`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_bundle_selection_price`
 --
 
-CREATE TABLE `catalog_product_bundle_selection_price` (
+DROP TABLE IF EXISTS `catalog_product_bundle_selection_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_selection_price` (
   `selection_id` int(10) UNSIGNED NOT NULL COMMENT 'Selection Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `selection_price_type` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Selection Price Type',
-  `selection_price_value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Selection Price Value'
+  `selection_price_value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Selection Price Value',
+  PRIMARY KEY (`selection_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_PRICE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Selection Price';
 
---
--- Truncate table before insert `catalog_product_bundle_selection_price`
---
-
-TRUNCATE TABLE `catalog_product_bundle_selection_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_bundle_stock_index`
 --
 
-CREATE TABLE `catalog_product_bundle_stock_index` (
+DROP TABLE IF EXISTS `catalog_product_bundle_stock_index`;
+CREATE TABLE IF NOT EXISTS `catalog_product_bundle_stock_index` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `stock_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Stock Id',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option Id',
-  `stock_status` smallint(6) DEFAULT '0' COMMENT 'Stock Status'
+  `stock_status` smallint(6) DEFAULT '0' COMMENT 'Stock Status',
+  PRIMARY KEY (`entity_id`,`website_id`,`stock_id`,`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Bundle Stock Index';
 
---
--- Truncate table before insert `catalog_product_bundle_stock_index`
---
-
-TRUNCATE TABLE `catalog_product_bundle_stock_index`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity`
 --
 
-CREATE TABLE `catalog_product_entity` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
+DROP TABLE IF EXISTS `catalog_product_entity`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID',
   `attribute_set_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Set ID',
   `type_id` varchar(32) NOT NULL DEFAULT 'simple' COMMENT 'Type ID',
   `sku` varchar(64) DEFAULT NULL COMMENT 'SKU',
   `has_options` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Has Options',
   `required_options` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Required Options',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Time',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update Time'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Table';
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update Time',
+  PRIMARY KEY (`entity_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_ATTRIBUTE_SET_ID` (`attribute_set_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_SKU` (`sku`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Table';
 
 --
--- Truncate table before insert `catalog_product_entity`
+-- Dumping data for table `catalog_product_entity`
 --
 
-TRUNCATE TABLE `catalog_product_entity`;
+INSERT INTO `catalog_product_entity` (`entity_id`, `attribute_set_id`, `type_id`, `sku`, `has_options`, `required_options`, `created_at`, `updated_at`) VALUES
+(1, 4, 'simple', 'Cải bắp', 0, 0, '2017-03-15 23:53:40', '2017-04-23 14:58:29'),
+(2, 4, 'simple', 'Cải tím', 0, 0, '2017-03-15 23:57:37', '2017-03-15 23:57:37'),
+(3, 4, 'simple', 'Chanh Đà Lạt', 0, 0, '2017-04-22 09:34:05', '2017-04-23 14:34:16'),
+(4, 4, 'simple', 'Bơ', 0, 0, '2017-04-23 14:26:33', '2017-04-23 14:33:07'),
+(5, 4, 'simple', 'chuối', 0, 0, '2017-04-23 14:35:28', '2017-04-23 14:35:28'),
+(6, 4, 'simple', 'Na', 0, 0, '2017-04-23 14:36:55', '2017-04-23 14:38:52'),
+(7, 4, 'simple', 'cà chua', 0, 0, '2017-04-23 14:40:24', '2017-04-23 14:40:24'),
+(8, 4, 'simple', 'Khoai tây', 0, 0, '2017-04-23 14:42:42', '2017-04-23 14:42:42'),
+(9, 4, 'simple', 'Xà lách', 0, 0, '2017-04-23 14:43:52', '2017-04-23 14:43:52'),
+(10, 4, 'simple', 'Dâu tây', 0, 0, '2017-04-23 14:45:18', '2017-04-23 14:45:18');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_datetime`
 --
 
-CREATE TABLE `catalog_product_entity_datetime` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_datetime`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_datetime` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` datetime DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Datetime Attribute Backend Table';
+  `value` datetime DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_DATETIME_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Datetime Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_datetime`
+-- Dumping data for table `catalog_product_entity_datetime`
 --
 
-TRUNCATE TABLE `catalog_product_entity_datetime`;
+INSERT INTO `catalog_product_entity_datetime` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
+(1, 76, 0, 1, '2017-04-23 00:00:00'),
+(2, 77, 0, 1, '2017-04-24 00:00:00'),
+(3, 98, 0, 1, '2017-04-23 14:58:29'),
+(4, 99, 0, 1, NULL),
+(5, 91, 0, 1, '2017-04-23 14:58:29'),
+(6, 92, 0, 1, NULL),
+(7, 76, 0, 2, NULL),
+(8, 77, 0, 2, NULL),
+(9, 98, 0, 2, NULL),
+(10, 99, 0, 2, NULL),
+(11, 91, 0, 2, NULL),
+(12, 92, 0, 2, NULL),
+(13, 76, 0, 3, NULL),
+(14, 77, 0, 3, NULL),
+(15, 98, 0, 3, NULL),
+(16, 99, 0, 3, NULL),
+(17, 91, 0, 3, NULL),
+(18, 92, 0, 3, NULL),
+(19, 76, 0, 4, NULL),
+(20, 77, 0, 4, NULL),
+(21, 98, 0, 4, NULL),
+(22, 99, 0, 4, NULL),
+(23, 91, 0, 4, NULL),
+(24, 92, 0, 4, NULL),
+(37, 76, 0, 5, NULL),
+(38, 77, 0, 5, NULL),
+(39, 98, 0, 5, NULL),
+(40, 99, 0, 5, NULL),
+(41, 91, 0, 5, NULL),
+(42, 92, 0, 5, NULL),
+(43, 76, 0, 6, NULL),
+(44, 77, 0, 6, NULL),
+(45, 98, 0, 6, NULL),
+(46, 99, 0, 6, NULL),
+(47, 91, 0, 6, NULL),
+(48, 92, 0, 6, NULL),
+(61, 76, 0, 7, NULL),
+(62, 77, 0, 7, NULL),
+(63, 98, 0, 7, NULL),
+(64, 99, 0, 7, NULL),
+(65, 91, 0, 7, NULL),
+(66, 92, 0, 7, NULL),
+(67, 76, 0, 8, NULL),
+(68, 77, 0, 8, NULL),
+(69, 98, 0, 8, NULL),
+(70, 99, 0, 8, NULL),
+(71, 91, 0, 8, NULL),
+(72, 92, 0, 8, NULL),
+(73, 76, 0, 9, NULL),
+(74, 77, 0, 9, NULL),
+(75, 98, 0, 9, NULL),
+(76, 99, 0, 9, NULL),
+(77, 91, 0, 9, NULL),
+(78, 92, 0, 9, NULL),
+(79, 76, 0, 10, NULL),
+(80, 77, 0, 10, NULL),
+(81, 98, 0, 10, NULL),
+(82, 99, 0, 10, NULL),
+(83, 91, 0, 10, NULL),
+(84, 92, 0, 10, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_decimal`
 --
 
-CREATE TABLE `catalog_product_entity_decimal` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_decimal`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_decimal` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` decimal(12,4) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Decimal Attribute Backend Table';
+  `value` decimal(12,4) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Decimal Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_decimal`
+-- Dumping data for table `catalog_product_entity_decimal`
 --
 
-TRUNCATE TABLE `catalog_product_entity_decimal`;
+INSERT INTO `catalog_product_entity_decimal` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
+(1, 74, 0, 1, '24000.0000'),
+(2, 79, 0, 1, NULL),
+(3, 75, 0, 1, '1000.0000'),
+(4, 78, 0, 1, '2000.0000'),
+(5, 74, 0, 2, '35000.0000'),
+(6, 79, 0, 2, NULL),
+(7, 75, 0, 2, NULL),
+(8, 78, 0, 2, NULL),
+(9, 74, 0, 3, '34000.0000'),
+(10, 79, 0, 3, NULL),
+(11, 75, 0, 3, NULL),
+(12, 78, 0, 3, NULL),
+(13, 74, 0, 4, '12000.0000'),
+(14, 79, 0, 4, NULL),
+(15, 75, 0, 4, NULL),
+(16, 78, 0, 4, NULL),
+(25, 74, 0, 5, '12000.0000'),
+(26, 79, 0, 5, NULL),
+(27, 75, 0, 5, NULL),
+(28, 78, 0, 5, NULL),
+(29, 74, 0, 6, '25.0000'),
+(30, 79, 0, 6, NULL),
+(31, 75, 0, 6, NULL),
+(32, 78, 0, 6, NULL),
+(39, 74, 0, 7, '20000.0000'),
+(40, 79, 0, 7, NULL),
+(41, 75, 0, 7, NULL),
+(42, 78, 0, 7, NULL),
+(43, 74, 0, 8, '21000.0000'),
+(44, 79, 0, 8, NULL),
+(45, 75, 0, 8, NULL),
+(46, 78, 0, 8, NULL),
+(47, 74, 0, 9, '20000.0000'),
+(48, 79, 0, 9, NULL),
+(49, 75, 0, 9, NULL),
+(50, 78, 0, 9, NULL),
+(51, 74, 0, 10, '90000.0000'),
+(52, 79, 0, 10, NULL),
+(53, 75, 0, 10, NULL),
+(54, 78, 0, 10, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_gallery`
 --
 
-CREATE TABLE `catalog_product_entity_gallery` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_gallery`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_gallery` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
   `position` int(11) NOT NULL DEFAULT '0' COMMENT 'Position',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_GALLERY_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Gallery Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_product_entity_gallery`
---
-
-TRUNCATE TABLE `catalog_product_entity_gallery`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_int`
 --
 
-CREATE TABLE `catalog_product_entity_int` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_int`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_int` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` int(11) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Integer Attribute Backend Table';
+  `value` int(11) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_INT_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=75 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Integer Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_int`
+-- Dumping data for table `catalog_product_entity_int`
 --
 
-TRUNCATE TABLE `catalog_product_entity_int`;
+INSERT INTO `catalog_product_entity_int` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
+(1, 129, 0, 1, 0),
+(2, 94, 0, 1, 1),
+(3, 131, 0, 1, 1),
+(4, 132, 0, 1, 0),
+(5, 133, 0, 1, 1),
+(6, 96, 0, 1, 4),
+(7, 112, 0, 1, 1),
+(8, 129, 0, 2, 0),
+(9, 94, 0, 2, 1),
+(10, 131, 0, 2, 0),
+(11, 132, 0, 2, 1),
+(12, 133, 0, 2, 1),
+(13, 96, 0, 2, 4),
+(14, 112, 0, 2, 1),
+(15, 129, 0, 3, 2),
+(16, 94, 0, 3, 1),
+(17, 131, 0, 3, 1),
+(18, 132, 0, 3, 0),
+(19, 133, 0, 3, 0),
+(20, 96, 0, 3, 4),
+(21, 112, 0, 3, 1),
+(22, 129, 0, 4, 2),
+(23, 94, 0, 4, 1),
+(24, 131, 0, 4, 1),
+(25, 132, 0, 4, 0),
+(26, 133, 0, 4, 0),
+(27, 96, 0, 4, 4),
+(28, 112, 0, 4, 1),
+(31, 129, 0, 5, 2),
+(32, 94, 0, 5, 1),
+(33, 131, 0, 5, 1),
+(34, 132, 0, 5, 0),
+(35, 133, 0, 5, 0),
+(36, 96, 0, 5, 4),
+(37, 112, 0, 5, 1),
+(38, 129, 0, 6, 2),
+(39, 94, 0, 6, 1),
+(40, 131, 0, 6, 0),
+(41, 132, 0, 6, 0),
+(42, 133, 0, 6, 0),
+(43, 96, 0, 6, 4),
+(44, 112, 0, 6, 1),
+(47, 129, 0, 7, 2),
+(48, 94, 0, 7, 1),
+(49, 131, 0, 7, 0),
+(50, 132, 0, 7, 0),
+(51, 133, 0, 7, 0),
+(52, 96, 0, 7, 4),
+(53, 112, 0, 7, 1),
+(54, 129, 0, 8, 2),
+(55, 94, 0, 8, 1),
+(56, 131, 0, 8, 0),
+(57, 132, 0, 8, 0),
+(58, 133, 0, 8, 0),
+(59, 96, 0, 8, 4),
+(60, 112, 0, 8, 1),
+(61, 129, 0, 9, 2),
+(62, 94, 0, 9, 1),
+(63, 131, 0, 9, 0),
+(64, 132, 0, 9, 0),
+(65, 133, 0, 9, 0),
+(66, 96, 0, 9, 4),
+(67, 112, 0, 9, 1),
+(68, 129, 0, 10, 2),
+(69, 94, 0, 10, 1),
+(70, 131, 0, 10, 0),
+(71, 132, 0, 10, 0),
+(72, 133, 0, 10, 0),
+(73, 96, 0, 10, 4),
+(74, 112, 0, 10, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_media_gallery`
 --
 
-CREATE TABLE `catalog_product_entity_media_gallery` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_media_gallery`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_media_gallery` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `value` varchar(255) DEFAULT NULL COMMENT 'Value',
   `media_type` varchar(32) NOT NULL DEFAULT 'image' COMMENT 'Media entry type',
-  `disabled` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Visibility status'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Media Gallery Attribute Backend Table';
+  `disabled` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Visibility status',
+  PRIMARY KEY (`value_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_ATTRIBUTE_ID` (`attribute_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Media Gallery Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_media_gallery`
+-- Dumping data for table `catalog_product_entity_media_gallery`
 --
 
-TRUNCATE TABLE `catalog_product_entity_media_gallery`;
+INSERT INTO `catalog_product_entity_media_gallery` (`value_id`, `attribute_id`, `value`, `media_type`, `disabled`) VALUES
+(1, 87, '/1/3/137-bapcaixanh.jpg', 'image', 0),
+(2, 87, '/1/3/138.jpg', 'image', 0),
+(3, 87, '/1/3/136-sk4.jpg', 'image', 0),
+(4, 87, '/6/_/6_1_8.jpg', 'image', 0),
+(5, 87, '/3/_/3_4_10.jpg', 'image', 0),
+(6, 87, '/8/_/8_2.jpg', 'image', 0),
+(7, 87, '/7/_/7_3.jpg', 'image', 0),
+(8, 87, '/1/4/140-ca-chua.jpg', 'image', 0),
+(9, 87, '/1/0/10_2_7.jpg', 'image', 0),
+(10, 87, '/x/a/xalachxoan.jpg', 'image', 0),
+(11, 87, '/1/_/1_3_5.jpg', 'image', 0);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_media_gallery_value`
 --
 
-CREATE TABLE `catalog_product_entity_media_gallery_value` (
+DROP TABLE IF EXISTS `catalog_product_entity_media_gallery_value`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_media_gallery_value` (
   `value_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Value ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
   `label` varchar(255) DEFAULT NULL COMMENT 'Label',
   `position` int(10) UNSIGNED DEFAULT NULL COMMENT 'Position',
   `disabled` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Disabled',
-  `record_id` int(10) UNSIGNED NOT NULL COMMENT 'Record Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Media Gallery Attribute Value Table';
+  `record_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Record Id',
+  PRIMARY KEY (`record_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_ENTITY_ID` (`entity_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_VALUE_ID` (`value_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Media Gallery Attribute Value Table';
 
 --
--- Truncate table before insert `catalog_product_entity_media_gallery_value`
+-- Dumping data for table `catalog_product_entity_media_gallery_value`
 --
 
-TRUNCATE TABLE `catalog_product_entity_media_gallery_value`;
+INSERT INTO `catalog_product_entity_media_gallery_value` (`value_id`, `store_id`, `entity_id`, `label`, `position`, `disabled`, `record_id`) VALUES
+(3, 0, 2, NULL, 1, 0, 3),
+(5, 0, 4, NULL, 1, 0, 9),
+(4, 0, 3, NULL, 1, 0, 10),
+(6, 0, 5, NULL, 1, 0, 11),
+(7, 0, 6, NULL, 1, 0, 13),
+(8, 0, 7, NULL, 1, 0, 14),
+(9, 0, 8, NULL, 1, 0, 15),
+(10, 0, 9, NULL, 1, 0, 16),
+(11, 0, 10, NULL, 1, 0, 17),
+(1, 0, 1, NULL, 1, 0, 18),
+(2, 0, 1, NULL, 2, 0, 19);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_media_gallery_value_to_entity`
 --
 
-CREATE TABLE `catalog_product_entity_media_gallery_value_to_entity` (
+DROP TABLE IF EXISTS `catalog_product_entity_media_gallery_value_to_entity`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_media_gallery_value_to_entity` (
   `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value media Entry ID',
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Product entity ID'
+  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Product entity ID',
+  UNIQUE KEY `CAT_PRD_ENTT_MDA_GLR_VAL_TO_ENTT_VAL_ID_ENTT_ID` (`value_id`,`entity_id`),
+  KEY `CAT_PRD_ENTT_MDA_GLR_VAL_TO_ENTT_ENTT_ID_CAT_PRD_ENTT_ENTT_ID` (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Link Media value to Product entity table';
 
 --
--- Truncate table before insert `catalog_product_entity_media_gallery_value_to_entity`
+-- Dumping data for table `catalog_product_entity_media_gallery_value_to_entity`
 --
 
-TRUNCATE TABLE `catalog_product_entity_media_gallery_value_to_entity`;
+INSERT INTO `catalog_product_entity_media_gallery_value_to_entity` (`value_id`, `entity_id`) VALUES
+(1, 1),
+(2, 1),
+(3, 2),
+(4, 3),
+(5, 4),
+(6, 5),
+(7, 6),
+(8, 7),
+(9, 8),
+(10, 9),
+(11, 10);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_media_gallery_value_video`
 --
 
-CREATE TABLE `catalog_product_entity_media_gallery_value_video` (
+DROP TABLE IF EXISTS `catalog_product_entity_media_gallery_value_video`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_media_gallery_value_video` (
   `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Media Entity ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `provider` varchar(32) DEFAULT NULL COMMENT 'Video provider ID',
   `url` text COMMENT 'Video URL',
   `title` varchar(255) DEFAULT NULL COMMENT 'Title',
   `description` text COMMENT 'Page Meta Description',
-  `metadata` text COMMENT 'Video meta data'
+  `metadata` text COMMENT 'Video meta data',
+  UNIQUE KEY `CAT_PRD_ENTT_MDA_GLR_VAL_VIDEO_VAL_ID_STORE_ID` (`value_id`,`store_id`),
+  KEY `CAT_PRD_ENTT_MDA_GLR_VAL_VIDEO_STORE_ID_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Video Table';
 
---
--- Truncate table before insert `catalog_product_entity_media_gallery_value_video`
---
-
-TRUNCATE TABLE `catalog_product_entity_media_gallery_value_video`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_text`
 --
 
-CREATE TABLE `catalog_product_entity_text` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_text`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_text` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` text COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Text Attribute Backend Table';
+  `value` text COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_TEXT_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Text Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_text`
+-- Dumping data for table `catalog_product_entity_text`
 --
 
-TRUNCATE TABLE `catalog_product_entity_text`;
+INSERT INTO `catalog_product_entity_text` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
+(1, 72, 0, 1, '<p>Ngon bổ rẻ</p>'),
+(2, 82, 0, 1, 'Cải bắp'),
+(3, 100, 0, 1, NULL),
+(4, 73, 0, 1, NULL),
+(5, 72, 0, 2, NULL),
+(6, 82, 0, 2, 'Cải tím'),
+(7, 100, 0, 2, NULL),
+(8, 73, 0, 2, NULL),
+(9, 72, 0, 3, '<p><span>Trong đời sống h&agrave;ng ng&agrave;y, chanh l&agrave; loại quả chua được sử dụng rỗng r&atilde;i hơn hết. Kh&ocirc;ng chỉ c&oacute; c&ocirc;ng dụng l&agrave;m nước giải kh&aacute;t, l&agrave;m chất phụ gia trong chế biến thực phẩm, l&agrave; th&agrave;nh phần chế tạo c&aacute;c loại thuốc trong y học, chanh c&ograve;n c&oacute; nhiều c&ocirc;ng dụng bất ngờ trong đời sống h&agrave;ng ng&agrave;y m&agrave; c&oacute; thế ch&uacute;ng ta chưa biết đến. Dưới đ&acirc;y l&agrave;&nbsp;</span><span>14 t&aacute;c dụng của chanh trong đời sống h&agrave;ng ng&agrave;y&nbsp;</span><span>m&agrave; mọi người n&ecirc;n biết.</span></p>'),
+(10, 82, 0, 3, 'Chanh Đà Lạt'),
+(11, 100, 0, 3, NULL),
+(12, 73, 0, 3, NULL),
+(13, 72, 0, 4, NULL),
+(14, 82, 0, 4, 'Bơ'),
+(15, 100, 0, 4, NULL),
+(16, 73, 0, 4, NULL),
+(22, 72, 0, 5, '<p>gdfgdfg</p>'),
+(23, 82, 0, 5, 'chuối'),
+(24, 100, 0, 5, NULL),
+(25, 73, 0, 5, NULL),
+(26, 72, 0, 6, '<p>iuhujiju</p>'),
+(27, 82, 0, 6, 'Táo'),
+(28, 100, 0, 6, NULL),
+(29, 73, 0, 6, NULL),
+(35, 72, 0, 7, NULL),
+(36, 82, 0, 7, 'cà chua'),
+(37, 100, 0, 7, NULL),
+(38, 73, 0, 7, NULL),
+(39, 72, 0, 8, NULL),
+(40, 82, 0, 8, 'Khoai tây'),
+(41, 100, 0, 8, NULL),
+(42, 73, 0, 8, NULL),
+(43, 72, 0, 9, NULL),
+(44, 82, 0, 9, 'Xà lách'),
+(45, 100, 0, 9, NULL),
+(46, 73, 0, 9, NULL),
+(47, 72, 0, 10, '<p>ghfhafj</p>'),
+(48, 82, 0, 10, 'Dâu tây'),
+(49, 100, 0, 10, NULL),
+(50, 73, 0, 10, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_tier_price`
 --
 
-CREATE TABLE `catalog_product_entity_tier_price` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_tier_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_tier_price` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
   `all_groups` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Is Applicable To All Customer Groups',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Group ID',
   `qty` decimal(12,4) NOT NULL DEFAULT '1.0000' COMMENT 'QTY',
   `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value',
-  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID'
+  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `UNQ_E8AB433B9ACB00343ABB312AD2FAB087` (`entity_id`,`all_groups`,`customer_group_id`,`qty`,`website_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_TIER_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_TIER_PRICE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Tier Price Attribute Backend Table';
 
---
--- Truncate table before insert `catalog_product_entity_tier_price`
---
-
-TRUNCATE TABLE `catalog_product_entity_tier_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_entity_varchar`
 --
 
-CREATE TABLE `catalog_product_entity_varchar` (
-  `value_id` int(11) NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_entity_varchar`;
+CREATE TABLE IF NOT EXISTS `catalog_product_entity_varchar` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity ID',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Varchar Attribute Backend Table';
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=191 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Varchar Attribute Backend Table';
 
 --
--- Truncate table before insert `catalog_product_entity_varchar`
+-- Dumping data for table `catalog_product_entity_varchar`
 --
 
-TRUNCATE TABLE `catalog_product_entity_varchar`;
+INSERT INTO `catalog_product_entity_varchar` (`value_id`, `attribute_id`, `store_id`, `entity_id`, `value`) VALUES
+(1, 70, 0, 1, 'Cải bắp'),
+(2, 128, 0, 1, '/1/3/137-bapcaixanh.jpg'),
+(3, 84, 0, 1, '/1/3/137-bapcaixanh.jpg'),
+(4, 85, 0, 1, '/1/3/137-bapcaixanh.jpg'),
+(5, 86, 0, 1, '/1/3/137-bapcaixanh.jpg'),
+(6, 115, 0, 1, 'cai-bap'),
+(7, 81, 0, 1, 'Cải bắp'),
+(8, 83, 0, 1, 'Cải bắp '),
+(9, 97, 0, 1, NULL),
+(10, 101, 0, 1, NULL),
+(11, 103, 0, 1, 'container2'),
+(12, 111, 0, 1, NULL),
+(13, 106, 0, 1, NULL),
+(14, 107, 0, 1, NULL),
+(15, 108, 0, 1, NULL),
+(16, 130, 0, 1, NULL),
+(17, 70, 0, 2, 'Cải tím'),
+(18, 128, 0, 2, '/1/3/136-sk4.jpg'),
+(19, 84, 0, 2, '/1/3/136-sk4.jpg'),
+(20, 85, 0, 2, '/1/3/136-sk4.jpg'),
+(21, 86, 0, 2, '/1/3/136-sk4.jpg'),
+(22, 115, 0, 2, 'ci-tim'),
+(23, 81, 0, 2, 'Cải tím'),
+(24, 83, 0, 2, 'Cải tím '),
+(25, 97, 0, 2, NULL),
+(26, 101, 0, 2, NULL),
+(27, 103, 0, 2, 'container2'),
+(28, 111, 0, 2, NULL),
+(29, 106, 0, 2, NULL),
+(30, 107, 0, 2, NULL),
+(31, 108, 0, 2, NULL),
+(32, 130, 0, 2, NULL),
+(33, 70, 0, 3, 'Chanh Đà Lạt'),
+(34, 128, 0, 3, '/6/_/6_1_8.jpg'),
+(35, 84, 0, 3, '/6/_/6_1_8.jpg'),
+(36, 85, 0, 3, '/6/_/6_1_8.jpg'),
+(37, 86, 0, 3, '/6/_/6_1_8.jpg'),
+(38, 115, 0, 3, 'chanh-da-lt'),
+(39, 81, 0, 3, 'Chanh Đà Lạt'),
+(40, 83, 0, 3, 'Chanh Đà Lạt <p><span>Trong đời sống h&agrave;ng ng&agrave;y, chanh l&agrave; loại quả chua được sử dụng rỗng r&atilde;i hơn hết. Kh&ocirc;ng chỉ c&oacute; c&ocirc;ng dụng l&agrave;m nước giải kh&aacute;t, l&agrave;m chất phụ gia trong chế biến thực phẩm,'),
+(41, 97, 0, 3, NULL),
+(42, 101, 0, 3, NULL),
+(43, 103, 0, 3, 'container2'),
+(44, 111, 0, 3, NULL),
+(45, 106, 0, 3, NULL),
+(46, 107, 0, 3, NULL),
+(47, 108, 0, 3, NULL),
+(48, 130, 0, 3, NULL),
+(49, 70, 0, 4, 'Bơ'),
+(50, 128, 0, 4, '/3/_/3_4_10.jpg'),
+(51, 84, 0, 4, '/3/_/3_4_10.jpg'),
+(52, 85, 0, 4, '/3/_/3_4_10.jpg'),
+(53, 86, 0, 4, '/3/_/3_4_10.jpg'),
+(54, 115, 0, 4, 'bo'),
+(55, 81, 0, 4, 'Bơ'),
+(56, 83, 0, 4, 'Bơ '),
+(57, 97, 0, 4, NULL),
+(58, 101, 0, 4, NULL),
+(59, 103, 0, 4, 'container2'),
+(60, 111, 0, 4, NULL),
+(61, 106, 0, 4, NULL),
+(62, 107, 0, 4, NULL),
+(63, 108, 0, 4, NULL),
+(64, 130, 0, 4, NULL),
+(79, 70, 0, 5, 'chuối'),
+(80, 128, 0, 5, '/8/_/8_2.jpg'),
+(81, 84, 0, 5, '/8/_/8_2.jpg'),
+(82, 85, 0, 5, '/8/_/8_2.jpg'),
+(83, 86, 0, 5, '/8/_/8_2.jpg'),
+(84, 115, 0, 5, 'chui'),
+(85, 81, 0, 5, 'chuối'),
+(86, 83, 0, 5, 'chuối <p>gdfgdfg</p>'),
+(87, 97, 0, 5, NULL),
+(88, 101, 0, 5, NULL),
+(89, 103, 0, 5, 'container2'),
+(90, 111, 0, 5, NULL),
+(91, 106, 0, 5, NULL),
+(92, 107, 0, 5, NULL),
+(93, 108, 0, 5, NULL),
+(94, 130, 0, 5, NULL),
+(95, 70, 0, 6, 'Na'),
+(96, 128, 0, 6, '/7/_/7_3.jpg'),
+(97, 84, 0, 6, '/7/_/7_3.jpg'),
+(98, 85, 0, 6, '/7/_/7_3.jpg'),
+(99, 86, 0, 6, '/7/_/7_3.jpg'),
+(100, 115, 0, 6, 'tao'),
+(101, 81, 0, 6, 'Táo'),
+(102, 83, 0, 6, 'Táo '),
+(103, 97, 0, 6, NULL),
+(104, 101, 0, 6, NULL),
+(105, 103, 0, 6, 'container2'),
+(106, 111, 0, 6, NULL),
+(107, 130, 0, 6, NULL),
+(108, 106, 0, 6, NULL),
+(109, 107, 0, 6, NULL),
+(110, 108, 0, 6, NULL),
+(127, 70, 0, 7, 'cà chua'),
+(128, 128, 0, 7, '/1/4/140-ca-chua.jpg'),
+(129, 84, 0, 7, '/1/4/140-ca-chua.jpg'),
+(130, 85, 0, 7, '/1/4/140-ca-chua.jpg'),
+(131, 86, 0, 7, '/1/4/140-ca-chua.jpg'),
+(132, 115, 0, 7, 'ca-chua'),
+(133, 81, 0, 7, 'cà chua'),
+(134, 83, 0, 7, 'cà chua '),
+(135, 97, 0, 7, NULL),
+(136, 101, 0, 7, NULL),
+(137, 103, 0, 7, 'container2'),
+(138, 111, 0, 7, NULL),
+(139, 106, 0, 7, NULL),
+(140, 107, 0, 7, NULL),
+(141, 108, 0, 7, NULL),
+(142, 130, 0, 7, NULL),
+(143, 70, 0, 8, 'Khoai tây'),
+(144, 128, 0, 8, '/1/0/10_2_7.jpg'),
+(145, 84, 0, 8, '/1/0/10_2_7.jpg'),
+(146, 85, 0, 8, '/1/0/10_2_7.jpg'),
+(147, 86, 0, 8, '/1/0/10_2_7.jpg'),
+(148, 115, 0, 8, 'khoai-tay'),
+(149, 81, 0, 8, 'Khoai tây'),
+(150, 83, 0, 8, 'Khoai tây '),
+(151, 97, 0, 8, NULL),
+(152, 101, 0, 8, NULL),
+(153, 103, 0, 8, 'container2'),
+(154, 111, 0, 8, NULL),
+(155, 106, 0, 8, NULL),
+(156, 107, 0, 8, NULL),
+(157, 108, 0, 8, NULL),
+(158, 130, 0, 8, NULL),
+(159, 70, 0, 9, 'Xà lách'),
+(160, 128, 0, 9, '/x/a/xalachxoan.jpg'),
+(161, 84, 0, 9, '/x/a/xalachxoan.jpg'),
+(162, 85, 0, 9, '/x/a/xalachxoan.jpg'),
+(163, 86, 0, 9, '/x/a/xalachxoan.jpg'),
+(164, 115, 0, 9, 'xa-lach'),
+(165, 81, 0, 9, 'Xà lách'),
+(166, 83, 0, 9, 'Xà lách '),
+(167, 97, 0, 9, NULL),
+(168, 101, 0, 9, NULL),
+(169, 103, 0, 9, 'container2'),
+(170, 111, 0, 9, NULL),
+(171, 106, 0, 9, NULL),
+(172, 107, 0, 9, NULL),
+(173, 108, 0, 9, NULL),
+(174, 130, 0, 9, NULL),
+(175, 70, 0, 10, 'Dâu tây'),
+(176, 128, 0, 10, '/1/_/1_3_5.jpg'),
+(177, 84, 0, 10, '/1/_/1_3_5.jpg'),
+(178, 85, 0, 10, '/1/_/1_3_5.jpg'),
+(179, 86, 0, 10, '/1/_/1_3_5.jpg'),
+(180, 115, 0, 10, 'dau-tay'),
+(181, 81, 0, 10, 'Dâu tây'),
+(182, 83, 0, 10, 'Dâu tây <p>ghfhafj</p>'),
+(183, 97, 0, 10, NULL),
+(184, 101, 0, 10, NULL),
+(185, 103, 0, 10, 'container2'),
+(186, 111, 0, 10, NULL),
+(187, 106, 0, 10, NULL),
+(188, 107, 0, 10, NULL),
+(189, 108, 0, 10, NULL),
+(190, 130, 0, 10, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav`
 --
 
-CREATE TABLE `catalog_product_index_eav` (
+DROP TABLE IF EXISTS `catalog_product_index_eav`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value'
+  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_VALUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Index Table';
 
---
--- Truncate table before insert `catalog_product_index_eav`
---
-
-TRUNCATE TABLE `catalog_product_index_eav`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav_decimal`
 --
 
-CREATE TABLE `catalog_product_index_eav_decimal` (
+DROP TABLE IF EXISTS `catalog_product_index_eav_decimal`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav_decimal` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` decimal(12,4) NOT NULL COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_VALUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Decimal Index Table';
 
---
--- Truncate table before insert `catalog_product_index_eav_decimal`
---
-
-TRUNCATE TABLE `catalog_product_index_eav_decimal`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav_decimal_idx`
 --
 
-CREATE TABLE `catalog_product_index_eav_decimal_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_eav_decimal_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav_decimal_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` decimal(12,4) NOT NULL COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_VALUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Decimal Indexer Index Table';
 
---
--- Truncate table before insert `catalog_product_index_eav_decimal_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_eav_decimal_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav_decimal_tmp`
 --
 
-CREATE TABLE `catalog_product_index_eav_decimal_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_eav_decimal_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav_decimal_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` decimal(12,4) NOT NULL COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_VALUE` (`value`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Decimal Indexer Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_eav_decimal_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_eav_decimal_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav_idx`
 --
 
-CREATE TABLE `catalog_product_index_eav_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_eav_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value'
+  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_VALUE` (`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Indexer Index Table';
 
---
--- Truncate table before insert `catalog_product_index_eav_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_eav_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_eav_tmp`
 --
 
-CREATE TABLE `catalog_product_index_eav_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_eav_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_eav_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
-  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value'
+  `value` int(10) UNSIGNED NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_STORE_ID` (`store_id`),
+  KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_VALUE` (`value`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product EAV Indexer Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_eav_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_eav_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price`
 --
 
-CREATE TABLE `catalog_product_index_price` (
+DROP TABLE IF EXISTS `catalog_product_index_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
@@ -1491,21 +2081,67 @@ CREATE TABLE `catalog_product_index_price` (
   `final_price` decimal(12,4) DEFAULT NULL COMMENT 'Final Price',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_MIN_PRICE` (`min_price`),
+  KEY `CAT_PRD_IDX_PRICE_WS_ID_CSTR_GROUP_ID_MIN_PRICE` (`website_id`,`customer_group_id`,`min_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Index Table';
 
 --
--- Truncate table before insert `catalog_product_index_price`
+-- Dumping data for table `catalog_product_index_price`
 --
 
-TRUNCATE TABLE `catalog_product_index_price`;
+INSERT INTO `catalog_product_index_price` (`entity_id`, `customer_group_id`, `website_id`, `tax_class_id`, `price`, `final_price`, `min_price`, `max_price`, `tier_price`) VALUES
+(1, 0, 1, 0, '24000.0000', '1000.0000', '1000.0000', '1000.0000', NULL),
+(1, 1, 1, 0, '24000.0000', '1000.0000', '1000.0000', '1000.0000', NULL),
+(1, 2, 1, 0, '24000.0000', '1000.0000', '1000.0000', '1000.0000', NULL),
+(1, 3, 1, 0, '24000.0000', '1000.0000', '1000.0000', '1000.0000', NULL),
+(2, 0, 1, 0, '35000.0000', '35000.0000', '35000.0000', '35000.0000', NULL),
+(2, 1, 1, 0, '35000.0000', '35000.0000', '35000.0000', '35000.0000', NULL),
+(2, 2, 1, 0, '35000.0000', '35000.0000', '35000.0000', '35000.0000', NULL),
+(2, 3, 1, 0, '35000.0000', '35000.0000', '35000.0000', '35000.0000', NULL),
+(3, 0, 1, 2, '34000.0000', '34000.0000', '34000.0000', '34000.0000', NULL),
+(3, 1, 1, 2, '34000.0000', '34000.0000', '34000.0000', '34000.0000', NULL),
+(3, 2, 1, 2, '34000.0000', '34000.0000', '34000.0000', '34000.0000', NULL),
+(3, 3, 1, 2, '34000.0000', '34000.0000', '34000.0000', '34000.0000', NULL),
+(4, 0, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(4, 1, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(4, 2, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(4, 3, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(5, 0, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(5, 1, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(5, 2, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(5, 3, 1, 2, '12000.0000', '12000.0000', '12000.0000', '12000.0000', NULL),
+(6, 0, 1, 2, '25.0000', '25.0000', '25.0000', '25.0000', NULL),
+(6, 1, 1, 2, '25.0000', '25.0000', '25.0000', '25.0000', NULL),
+(6, 2, 1, 2, '25.0000', '25.0000', '25.0000', '25.0000', NULL),
+(6, 3, 1, 2, '25.0000', '25.0000', '25.0000', '25.0000', NULL),
+(7, 0, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(7, 1, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(7, 2, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(7, 3, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(8, 0, 1, 2, '21000.0000', '21000.0000', '21000.0000', '21000.0000', NULL),
+(8, 1, 1, 2, '21000.0000', '21000.0000', '21000.0000', '21000.0000', NULL),
+(8, 2, 1, 2, '21000.0000', '21000.0000', '21000.0000', '21000.0000', NULL),
+(8, 3, 1, 2, '21000.0000', '21000.0000', '21000.0000', '21000.0000', NULL),
+(9, 0, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(9, 1, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(9, 2, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(9, 3, 1, 2, '20000.0000', '20000.0000', '20000.0000', '20000.0000', NULL),
+(10, 0, 1, 2, '90000.0000', '90000.0000', '90000.0000', '90000.0000', NULL),
+(10, 1, 1, 2, '90000.0000', '90000.0000', '90000.0000', '90000.0000', NULL),
+(10, 2, 1, 2, '90000.0000', '90000.0000', '90000.0000', '90000.0000', NULL),
+(10, 3, 1, 2, '90000.0000', '90000.0000', '90000.0000', '90000.0000', NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1518,21 +2154,18 @@ CREATE TABLE `catalog_product_index_price_bundle_idx` (
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier'
+  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Idx';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_opt_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_opt_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_opt_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_opt_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1541,21 +2174,18 @@ CREATE TABLE `catalog_product_index_price_bundle_opt_idx` (
   `alt_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `alt_tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Tier Price'
+  `alt_tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Opt Idx';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_opt_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_opt_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_opt_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_opt_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_opt_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_opt_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1564,21 +2194,18 @@ CREATE TABLE `catalog_product_index_price_bundle_opt_tmp` (
   `alt_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `alt_tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Tier Price'
+  `alt_tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Alt Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Opt Tmp';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_opt_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_opt_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_sel_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_sel_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_sel_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_sel_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1587,21 +2214,18 @@ CREATE TABLE `catalog_product_index_price_bundle_sel_idx` (
   `group_type` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Group Type',
   `is_required` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Is Required',
   `price` decimal(12,4) DEFAULT NULL COMMENT 'Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`,`selection_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Sel Idx';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_sel_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_sel_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_sel_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_sel_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_sel_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_sel_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1610,21 +2234,18 @@ CREATE TABLE `catalog_product_index_price_bundle_sel_tmp` (
   `group_type` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Group Type',
   `is_required` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Is Required',
   `price` decimal(12,4) DEFAULT NULL COMMENT 'Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`,`selection_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Sel Tmp';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_sel_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_sel_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_bundle_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_bundle_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_bundle_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_bundle_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
@@ -1637,139 +2258,118 @@ CREATE TABLE `catalog_product_index_price_bundle_tmp` (
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier'
+  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Index Price Bundle Tmp';
 
---
--- Truncate table before insert `catalog_product_index_price_bundle_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_bundle_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_cfg_opt_agr_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_cfg_opt_agr_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_cfg_opt_agr_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_cfg_opt_agr_idx` (
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent ID',
   `child_id` int(10) UNSIGNED NOT NULL COMMENT 'Child ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `price` decimal(12,4) DEFAULT NULL COMMENT 'Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`parent_id`,`child_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Config Option Aggregate Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_cfg_opt_agr_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_cfg_opt_agr_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_cfg_opt_agr_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_cfg_opt_agr_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_cfg_opt_agr_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_cfg_opt_agr_tmp` (
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent ID',
   `child_id` int(10) UNSIGNED NOT NULL COMMENT 'Child ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `price` decimal(12,4) DEFAULT NULL COMMENT 'Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`parent_id`,`child_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Config Option Aggregate Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_cfg_opt_agr_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_cfg_opt_agr_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_cfg_opt_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_cfg_opt_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_cfg_opt_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_cfg_opt_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Config Option Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_cfg_opt_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_cfg_opt_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_cfg_opt_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_cfg_opt_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_cfg_opt_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_cfg_opt_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Config Option Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_cfg_opt_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_cfg_opt_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_downlod_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_downlod_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_downlod_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_downlod_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Minimum price',
-  `max_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Maximum price'
+  `max_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Maximum price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Indexer Table for price of downloadable products';
 
---
--- Truncate table before insert `catalog_product_index_price_downlod_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_downlod_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_downlod_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_downlod_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_downlod_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_downlod_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Minimum price',
-  `max_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Maximum price'
+  `max_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Maximum price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Temporary Indexer Table for price of downloadable products';
 
---
--- Truncate table before insert `catalog_product_index_price_downlod_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_downlod_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_final_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_final_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_final_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_final_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
@@ -1779,21 +2379,18 @@ CREATE TABLE `catalog_product_index_price_final_idx` (
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier'
+  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Final Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_final_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_final_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_final_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_final_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_final_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_final_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
@@ -1803,21 +2400,18 @@ CREATE TABLE `catalog_product_index_price_final_tmp` (
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
   `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
-  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier'
+  `base_tier` decimal(12,4) DEFAULT NULL COMMENT 'Base Tier',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Final Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_final_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_final_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
@@ -1826,103 +2420,91 @@ CREATE TABLE `catalog_product_index_price_idx` (
   `final_price` decimal(12,4) DEFAULT NULL COMMENT 'Final Price',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_WEBSITE_ID` (`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_MIN_PRICE` (`min_price`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_opt_agr_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_opt_agr_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_opt_agr_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_opt_agr_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Option Aggregate Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_opt_agr_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_opt_agr_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_opt_agr_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_opt_agr_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_opt_agr_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_opt_agr_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Option Aggregate Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_opt_agr_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_opt_agr_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_opt_idx`
 --
 
-CREATE TABLE `catalog_product_index_price_opt_idx` (
+DROP TABLE IF EXISTS `catalog_product_index_price_opt_idx`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_opt_idx` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Option Index Table';
 
---
--- Truncate table before insert `catalog_product_index_price_opt_idx`
---
-
-TRUNCATE TABLE `catalog_product_index_price_opt_idx`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_opt_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_opt_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_opt_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_opt_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Option Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_opt_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_opt_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_price_tmp`
 --
 
-CREATE TABLE `catalog_product_index_price_tmp` (
+DROP TABLE IF EXISTS `catalog_product_index_price_tmp`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_price_tmp` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
@@ -1931,90 +2513,91 @@ CREATE TABLE `catalog_product_index_price_tmp` (
   `final_price` decimal(12,4) DEFAULT NULL COMMENT 'Final Price',
   `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
   `max_price` decimal(12,4) DEFAULT NULL COMMENT 'Max Price',
-  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price'
+  `tier_price` decimal(12,4) DEFAULT NULL COMMENT 'Tier Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_WEBSITE_ID` (`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_MIN_PRICE` (`min_price`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8 COMMENT='Catalog Product Price Indexer Temp Table';
 
---
--- Truncate table before insert `catalog_product_index_price_tmp`
---
-
-TRUNCATE TABLE `catalog_product_index_price_tmp`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_tier_price`
 --
 
-CREATE TABLE `catalog_product_index_tier_price` (
+DROP TABLE IF EXISTS `catalog_product_index_tier_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_tier_price` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group ID',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
-  `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price'
+  `min_price` decimal(12,4) DEFAULT NULL COMMENT 'Min Price',
+  PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_TIER_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `CATALOG_PRODUCT_INDEX_TIER_PRICE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Tier Price Index Table';
 
---
--- Truncate table before insert `catalog_product_index_tier_price`
---
-
-TRUNCATE TABLE `catalog_product_index_tier_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_index_website`
 --
 
-CREATE TABLE `catalog_product_index_website` (
+DROP TABLE IF EXISTS `catalog_product_index_website`;
+CREATE TABLE IF NOT EXISTS `catalog_product_index_website` (
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
   `website_date` date DEFAULT NULL COMMENT 'Website Date',
-  `rate` float DEFAULT '1' COMMENT 'Rate'
+  `rate` float DEFAULT '1' COMMENT 'Rate',
+  PRIMARY KEY (`website_id`),
+  KEY `CATALOG_PRODUCT_INDEX_WEBSITE_WEBSITE_DATE` (`website_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Website Index Table';
 
 --
--- Truncate table before insert `catalog_product_index_website`
+-- Dumping data for table `catalog_product_index_website`
 --
 
-TRUNCATE TABLE `catalog_product_index_website`;
+INSERT INTO `catalog_product_index_website` (`website_id`, `website_date`, `rate`) VALUES
+(1, '2017-04-23', 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_link`
 --
 
-CREATE TABLE `catalog_product_link` (
-  `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
+DROP TABLE IF EXISTS `catalog_product_link`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link` (
+  `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `linked_product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Linked Product ID',
-  `link_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Link Type ID'
+  `link_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Link Type ID',
+  PRIMARY KEY (`link_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_LINK_LINK_TYPE_ID_PRODUCT_ID_LINKED_PRODUCT_ID` (`link_type_id`,`product_id`,`linked_product_id`),
+  KEY `CATALOG_PRODUCT_LINK_PRODUCT_ID` (`product_id`),
+  KEY `CATALOG_PRODUCT_LINK_LINKED_PRODUCT_ID` (`linked_product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product To Product Linkage Table';
 
---
--- Truncate table before insert `catalog_product_link`
---
-
-TRUNCATE TABLE `catalog_product_link`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_link_attribute`
 --
 
-CREATE TABLE `catalog_product_link_attribute` (
-  `product_link_attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Product Link Attribute ID',
+DROP TABLE IF EXISTS `catalog_product_link_attribute`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link_attribute` (
+  `product_link_attribute_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product Link Attribute ID',
   `link_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Link Type ID',
   `product_link_attribute_code` varchar(32) DEFAULT NULL COMMENT 'Product Link Attribute Code',
-  `data_type` varchar(32) DEFAULT NULL COMMENT 'Data Type'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Attribute Table';
+  `data_type` varchar(32) DEFAULT NULL COMMENT 'Data Type',
+  PRIMARY KEY (`product_link_attribute_id`),
+  KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_LINK_TYPE_ID` (`link_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Attribute Table';
 
---
--- Truncate table before insert `catalog_product_link_attribute`
---
-
-TRUNCATE TABLE `catalog_product_link_attribute`;
 --
 -- Dumping data for table `catalog_product_link_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_product_link_attribute` VALUES
+INSERT INTO `catalog_product_link_attribute` (`product_link_attribute_id`, `link_type_id`, `product_link_attribute_code`, `data_type`) VALUES
 (1, 1, 'position', 'int'),
 (2, 4, 'position', 'int'),
 (3, 5, 'position', 'int'),
@@ -2027,75 +2610,69 @@ INSERT DELAYED IGNORE INTO `catalog_product_link_attribute` VALUES
 -- Table structure for table `catalog_product_link_attribute_decimal`
 --
 
-CREATE TABLE `catalog_product_link_attribute_decimal` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_link_attribute_decimal`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link_attribute_decimal` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `product_link_attribute_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Product Link Attribute ID',
   `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
-  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CAT_PRD_LNK_ATTR_DEC_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
+  KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_DECIMAL_LINK_ID` (`link_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Decimal Attribute Table';
 
---
--- Truncate table before insert `catalog_product_link_attribute_decimal`
---
-
-TRUNCATE TABLE `catalog_product_link_attribute_decimal`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_link_attribute_int`
 --
 
-CREATE TABLE `catalog_product_link_attribute_int` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_link_attribute_int`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link_attribute_int` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `product_link_attribute_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Product Link Attribute ID',
   `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
-  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value'
+  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CAT_PRD_LNK_ATTR_INT_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
+  KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_INT_LINK_ID` (`link_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Integer Attribute Table';
 
---
--- Truncate table before insert `catalog_product_link_attribute_int`
---
-
-TRUNCATE TABLE `catalog_product_link_attribute_int`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_link_attribute_varchar`
 --
 
-CREATE TABLE `catalog_product_link_attribute_varchar` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_link_attribute_varchar`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link_attribute_varchar` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `product_link_attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product Link Attribute ID',
   `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CAT_PRD_LNK_ATTR_VCHR_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
+  KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_VARCHAR_LINK_ID` (`link_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Varchar Attribute Table';
 
---
--- Truncate table before insert `catalog_product_link_attribute_varchar`
---
-
-TRUNCATE TABLE `catalog_product_link_attribute_varchar`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_link_type`
 --
 
-CREATE TABLE `catalog_product_link_type` (
-  `link_type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Link Type ID',
-  `code` varchar(32) DEFAULT NULL COMMENT 'Code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Type Table';
+DROP TABLE IF EXISTS `catalog_product_link_type`;
+CREATE TABLE IF NOT EXISTS `catalog_product_link_type` (
+  `link_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link Type ID',
+  `code` varchar(32) DEFAULT NULL COMMENT 'Code',
+  PRIMARY KEY (`link_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Catalog Product Link Type Table';
 
---
--- Truncate table before insert `catalog_product_link_type`
---
-
-TRUNCATE TABLE `catalog_product_link_type`;
 --
 -- Dumping data for table `catalog_product_link_type`
 --
 
-INSERT DELAYED IGNORE INTO `catalog_product_link_type` VALUES
+INSERT INTO `catalog_product_link_type` (`link_type_id`, `code`) VALUES
 (1, 'relation'),
 (3, 'super'),
 (4, 'up_sell'),
@@ -2107,8 +2684,9 @@ INSERT DELAYED IGNORE INTO `catalog_product_link_type` VALUES
 -- Table structure for table `catalog_product_option`
 --
 
-CREATE TABLE `catalog_product_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option ID',
+DROP TABLE IF EXISTS `catalog_product_option`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `type` varchar(50) DEFAULT NULL COMMENT 'Type',
   `is_require` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Is Required',
@@ -2117,311 +2695,316 @@ CREATE TABLE `catalog_product_option` (
   `file_extension` varchar(50) DEFAULT NULL COMMENT 'File Extension',
   `image_size_x` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Image Size X',
   `image_size_y` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Image Size Y',
-  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order'
+  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`option_id`),
+  KEY `CATALOG_PRODUCT_OPTION_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Table';
 
---
--- Truncate table before insert `catalog_product_option`
---
-
-TRUNCATE TABLE `catalog_product_option`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_option_price`
 --
 
-CREATE TABLE `catalog_product_option_price` (
-  `option_price_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Price ID',
+DROP TABLE IF EXISTS `catalog_product_option_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option_price` (
+  `option_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Price ID',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price',
-  `price_type` varchar(7) NOT NULL DEFAULT 'fixed' COMMENT 'Price Type'
+  `price_type` varchar(7) NOT NULL DEFAULT 'fixed' COMMENT 'Price Type',
+  PRIMARY KEY (`option_price_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_OPTION_PRICE_OPTION_ID_STORE_ID` (`option_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_OPTION_PRICE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Price Table';
 
---
--- Truncate table before insert `catalog_product_option_price`
---
-
-TRUNCATE TABLE `catalog_product_option_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_option_title`
 --
 
-CREATE TABLE `catalog_product_option_title` (
-  `option_title_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Title ID',
+DROP TABLE IF EXISTS `catalog_product_option_title`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option_title` (
+  `option_title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Title ID',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title'
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title',
+  PRIMARY KEY (`option_title_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_OPTION_TITLE_OPTION_ID_STORE_ID` (`option_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_OPTION_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Title Table';
 
---
--- Truncate table before insert `catalog_product_option_title`
---
-
-TRUNCATE TABLE `catalog_product_option_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_option_type_price`
 --
 
-CREATE TABLE `catalog_product_option_type_price` (
-  `option_type_price_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Type Price ID',
+DROP TABLE IF EXISTS `catalog_product_option_type_price`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option_type_price` (
+  `option_type_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type Price ID',
   `option_type_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option Type ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price',
-  `price_type` varchar(7) NOT NULL DEFAULT 'fixed' COMMENT 'Price Type'
+  `price_type` varchar(7) NOT NULL DEFAULT 'fixed' COMMENT 'Price Type',
+  PRIMARY KEY (`option_type_price_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_OPTION_TYPE_ID_STORE_ID` (`option_type_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Type Price Table';
 
---
--- Truncate table before insert `catalog_product_option_type_price`
---
-
-TRUNCATE TABLE `catalog_product_option_type_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_option_type_title`
 --
 
-CREATE TABLE `catalog_product_option_type_title` (
-  `option_type_title_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Type Title ID',
+DROP TABLE IF EXISTS `catalog_product_option_type_title`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option_type_title` (
+  `option_type_title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type Title ID',
   `option_type_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option Type ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title'
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title',
+  PRIMARY KEY (`option_type_title_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_OPTION_TYPE_TITLE_OPTION_TYPE_ID_STORE_ID` (`option_type_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_OPTION_TYPE_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Type Title Table';
 
---
--- Truncate table before insert `catalog_product_option_type_title`
---
-
-TRUNCATE TABLE `catalog_product_option_type_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_option_type_value`
 --
 
-CREATE TABLE `catalog_product_option_type_value` (
-  `option_type_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Type ID',
+DROP TABLE IF EXISTS `catalog_product_option_type_value`;
+CREATE TABLE IF NOT EXISTS `catalog_product_option_type_value` (
+  `option_type_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type ID',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option ID',
   `sku` varchar(64) DEFAULT NULL COMMENT 'SKU',
-  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order'
+  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`option_type_id`),
+  KEY `CATALOG_PRODUCT_OPTION_TYPE_VALUE_OPTION_ID` (`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Option Type Value Table';
 
---
--- Truncate table before insert `catalog_product_option_type_value`
---
-
-TRUNCATE TABLE `catalog_product_option_type_value`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_relation`
 --
 
-CREATE TABLE `catalog_product_relation` (
+DROP TABLE IF EXISTS `catalog_product_relation`;
+CREATE TABLE IF NOT EXISTS `catalog_product_relation` (
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent ID',
-  `child_id` int(10) UNSIGNED NOT NULL COMMENT 'Child ID'
+  `child_id` int(10) UNSIGNED NOT NULL COMMENT 'Child ID',
+  PRIMARY KEY (`parent_id`,`child_id`),
+  KEY `CATALOG_PRODUCT_RELATION_CHILD_ID` (`child_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Relation Table';
 
---
--- Truncate table before insert `catalog_product_relation`
---
-
-TRUNCATE TABLE `catalog_product_relation`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_super_attribute`
 --
 
-CREATE TABLE `catalog_product_super_attribute` (
-  `product_super_attribute_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Super Attribute ID',
+DROP TABLE IF EXISTS `catalog_product_super_attribute`;
+CREATE TABLE IF NOT EXISTS `catalog_product_super_attribute` (
+  `product_super_attribute_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product Super Attribute ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
-  `position` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Position'
+  `position` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Position',
+  PRIMARY KEY (`product_super_attribute_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_SUPER_ATTRIBUTE_PRODUCT_ID_ATTRIBUTE_ID` (`product_id`,`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Super Attribute Table';
 
---
--- Truncate table before insert `catalog_product_super_attribute`
---
-
-TRUNCATE TABLE `catalog_product_super_attribute`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_super_attribute_label`
 --
 
-CREATE TABLE `catalog_product_super_attribute_label` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value ID',
+DROP TABLE IF EXISTS `catalog_product_super_attribute_label`;
+CREATE TABLE IF NOT EXISTS `catalog_product_super_attribute_label` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `product_super_attribute_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product Super Attribute ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
   `use_default` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Use Default Value',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CAT_PRD_SPR_ATTR_LBL_PRD_SPR_ATTR_ID_STORE_ID` (`product_super_attribute_id`,`store_id`),
+  KEY `CATALOG_PRODUCT_SUPER_ATTRIBUTE_LABEL_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Super Attribute Label Table';
 
---
--- Truncate table before insert `catalog_product_super_attribute_label`
---
-
-TRUNCATE TABLE `catalog_product_super_attribute_label`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_super_link`
 --
 
-CREATE TABLE `catalog_product_super_link` (
-  `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
+DROP TABLE IF EXISTS `catalog_product_super_link`;
+CREATE TABLE IF NOT EXISTS `catalog_product_super_link` (
+  `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
-  `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Parent ID'
+  `parent_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Parent ID',
+  PRIMARY KEY (`link_id`),
+  UNIQUE KEY `CATALOG_PRODUCT_SUPER_LINK_PRODUCT_ID_PARENT_ID` (`product_id`,`parent_id`),
+  KEY `CATALOG_PRODUCT_SUPER_LINK_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Super Link Table';
 
---
--- Truncate table before insert `catalog_product_super_link`
---
-
-TRUNCATE TABLE `catalog_product_super_link`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_product_website`
 --
 
-CREATE TABLE `catalog_product_website` (
+DROP TABLE IF EXISTS `catalog_product_website`;
+CREATE TABLE IF NOT EXISTS `catalog_product_website` (
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product ID',
-  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID'
+  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website ID',
+  PRIMARY KEY (`product_id`,`website_id`),
+  KEY `CATALOG_PRODUCT_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product To Website Linkage Table';
 
 --
--- Truncate table before insert `catalog_product_website`
+-- Dumping data for table `catalog_product_website`
 --
 
-TRUNCATE TABLE `catalog_product_website`;
+INSERT INTO `catalog_product_website` (`product_id`, `website_id`) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(4, 1),
+(5, 1),
+(6, 1),
+(7, 1),
+(8, 1),
+(9, 1),
+(10, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `catalog_url_rewrite_product_category`
 --
 
-CREATE TABLE `catalog_url_rewrite_product_category` (
+DROP TABLE IF EXISTS `catalog_url_rewrite_product_category`;
+CREATE TABLE IF NOT EXISTS `catalog_url_rewrite_product_category` (
   `url_rewrite_id` int(10) UNSIGNED NOT NULL COMMENT 'url_rewrite_id',
   `category_id` int(10) UNSIGNED NOT NULL COMMENT 'category_id',
-  `product_id` int(10) UNSIGNED NOT NULL COMMENT 'product_id'
+  `product_id` int(10) UNSIGNED NOT NULL COMMENT 'product_id',
+  KEY `CATALOG_URL_REWRITE_PRODUCT_CATEGORY_CATEGORY_ID_PRODUCT_ID` (`category_id`,`product_id`),
+  KEY `CAT_URL_REWRITE_PRD_CTGR_PRD_ID_CAT_PRD_ENTT_ENTT_ID` (`product_id`),
+  KEY `FK_BB79E64705D7F17FE181F23144528FC8` (`url_rewrite_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='url_rewrite_relation';
 
 --
--- Truncate table before insert `catalog_url_rewrite_product_category`
+-- Dumping data for table `catalog_url_rewrite_product_category`
 --
 
-TRUNCATE TABLE `catalog_url_rewrite_product_category`;
+INSERT INTO `catalog_url_rewrite_product_category` (`url_rewrite_id`, `category_id`, `product_id`) VALUES
+(12, 7, 1),
+(14, 7, 2),
+(18, 7, 4),
+(20, 7, 3),
+(22, 7, 5),
+(25, 7, 6),
+(27, 7, 7),
+(29, 7, 8),
+(31, 7, 9),
+(33, 7, 10);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `checkout_agreement`
 --
 
-CREATE TABLE `checkout_agreement` (
-  `agreement_id` int(10) UNSIGNED NOT NULL COMMENT 'Agreement Id',
+DROP TABLE IF EXISTS `checkout_agreement`;
+CREATE TABLE IF NOT EXISTS `checkout_agreement` (
+  `agreement_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Agreement Id',
   `name` varchar(255) DEFAULT NULL COMMENT 'Name',
   `content` text COMMENT 'Content',
   `content_height` varchar(25) DEFAULT NULL COMMENT 'Content Height',
   `checkbox_text` text COMMENT 'Checkbox Text',
   `is_active` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Is Active',
   `is_html` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Is Html',
-  `mode` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Applied mode'
+  `mode` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Applied mode',
+  PRIMARY KEY (`agreement_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Checkout Agreement';
 
---
--- Truncate table before insert `checkout_agreement`
---
-
-TRUNCATE TABLE `checkout_agreement`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `checkout_agreement_store`
 --
 
-CREATE TABLE `checkout_agreement_store` (
+DROP TABLE IF EXISTS `checkout_agreement_store`;
+CREATE TABLE IF NOT EXISTS `checkout_agreement_store` (
   `agreement_id` int(10) UNSIGNED NOT NULL COMMENT 'Agreement Id',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id'
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
+  PRIMARY KEY (`agreement_id`,`store_id`),
+  KEY `CHECKOUT_AGREEMENT_STORE_STORE_ID_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Checkout Agreement Store';
 
---
--- Truncate table before insert `checkout_agreement_store`
---
-
-TRUNCATE TABLE `checkout_agreement_store`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `cms_block`
 --
 
-CREATE TABLE `cms_block` (
-  `block_id` smallint(6) NOT NULL COMMENT 'Block ID',
+DROP TABLE IF EXISTS `cms_block`;
+CREATE TABLE IF NOT EXISTS `cms_block` (
+  `block_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Block ID',
   `title` varchar(255) NOT NULL COMMENT 'Block Title',
   `identifier` varchar(255) NOT NULL COMMENT 'Block String Identifier',
   `content` mediumtext COMMENT 'Block Content',
   `creation_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Block Creation Time',
   `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Block Modification Time',
-  `is_active` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Is Block Active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CMS Block Table';
+  `is_active` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Is Block Active',
+  PRIMARY KEY (`block_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='CMS Block Table';
 
---
--- Truncate table before insert `cms_block`
---
-
-TRUNCATE TABLE `cms_block`;
 --
 -- Dumping data for table `cms_block`
 --
 
-INSERT DELAYED IGNORE INTO `cms_block` VALUES
-(1, 'Footer Links Block', 'footer_links_block', '<ul class=\"footer links\">\n    <li class=\"nav item\"><a href=\"{{store url=\"about-us\"}}\">About us</a></li>\n    <li class=\"nav item\"><a href=\"{{store url=\"customer-service\"}}\">Customer Service</a></li>\n</ul>\n', '2017-04-23 13:39:39', '2017-04-23 13:39:39', 1),
-(2, 'Contact us info', 'contact-us-info', '<div class=\"contact-info cms-content\">\n   <p class=\"cms-content-important\">We love hearing from you, our Luma customers. Please contact us about anything at all. Your latest passion, unique health experience or request for a specific product. We’ll do Necessary we can to make your Luma experience unforgettable every time. Reach us however you like</p>\n   <div class=\"block block-contact-info\">\n       <div class=\"block-title\">\n           <strong>Contact Us Info</strong>\n       </div>\n       <div class=\"block-content\">\n           <div class=\"box box-phone\">\n               <strong class=\"box-title\">\n                   <span>Phone</span>\n               </strong>\n               <div class=\"box-content\">\n                   <span class=\"contact-info-number\">1-800-403-8838</span>\n                   <p>Call the Luma Helpline for concerns, product questions, or anything else. We’re here for you 24 hours a day - 365 days a year.</p>\n               </div>\n           </div>\n           <div class=\"box box-design-inquiries\">\n               <strong class=\"box-title\">\n                   <span>Apparel Design Inquiries</span>\n               </strong>\n               <div class=\"box-content\">\n                   <p>Are you an independent clothing designer? Feature your products on the Luma website! Please direct all inquiries via email to: <a href=\"mailto:cs@luma.com\">cs@luma.com</a></p>\n               </div>\n           </div>\n           <div class=\"box box-press-inquiries\">\n               <strong class=\"box-title\">\n                   <span>Press Inquiries</span>\n               </strong>\n               <div class=\"box-content\">\n                   <p>Please direct all media inquiries via email to: <a href=\"mailto:pr@luma.com\">pr@luma.com</a></p>\n               </div>\n           </div>\n       </div>\n   </div>\n</div>\n', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(3, 'Sale Left Menu Block', 'sale-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Women\'s Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies and Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>Mens\'s Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies and Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>Gear Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/bags.html\">Bags</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/fitness-equipment.html\">Fitness Equipment</a></li>\n</ul>\n</div>', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(4, 'Gear Left Menu Block', 'gear-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span></span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/bags.html\">Bags</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/fitness-equipment.html\">Fitness Equipment</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/watches.html\">Watches</a></li>\n</ul>\n</div>', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(5, 'Men Left Menu Block', 'men-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Tops</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tanks-men.html\">Tanks</a></li>\n</ul>\n\n<strong class=\"title\"><span>Bottoms</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n</div>', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(6, 'Women Left Menu Block', 'women-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Tops</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n</ul>\n\n<strong class=\"title\"><span>Bottoms</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n</div>', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(7, 'New Left Menu Block', 'new-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>New in women\'s</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>New in men\'s</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tanks-men.html\">Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n</div>', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(8, 'Women Block', 'women-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}women.html\" class=\"block-promo womens-main\">\n        <img src=\"{{media url=\"wysiwyg/womens/womens-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">New Luma Yoga Collection</span>\n            <strong class=\"title\">Yoga is ancient<br />Clothing shouldn’t be</strong>\n            <span class=\"more button\">Shop New Yoga</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\" class=\"block-promo womens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">You can’t have too many tees</strong>\n                <img src=\"{{media url=\"wysiwyg/womens/womens-t-shirts.png\"}}\" alt=\"\" />\n                <span class=\"info\">4 tees for the price of 3. Right now</span>\n                <span class=\"more icon\">Women’s Tees</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\" class=\"block-promo womens-pants\">\n            <img src=\"{{media url=\"wysiwyg/womens/womens-pants.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Hot pants<br />Hot deals</strong>\n                <span class=\"info\"><span>20% OFF</span>Luma pants when you shop today*</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n        </a>\n    </div>\n    <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo womens-erin\">\n        <span class=\"content\">\n            <strong class=\"title\">What would Erin wear?</strong>\n            <span class=\"info\">It’s no secret: see Luma founder Erin Renny’s wardrobe go-to’s</span>\n            <span class=\"more icon\">Shop Erin Recommends</span>\n        </span>\n        <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-erin.jpg\"}}\" alt=\"\" /></span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\" class=\"block-promo womens-category-pants\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma pants</strong>\n                <span class=\"info\">Pants for yoga, gym and outdoors</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-pants.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\" class=\"block-promo womens-category-shorts\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma shorts</strong>\n                <span class=\"info\">Exercise comfort</span>\n                <span class=\"more icon\">Shop Shorts</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-shorts.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\" class=\"block-promo womens-category-tanks\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma Bras<br />Tanks</strong>\n                <span class=\"info\">Stock up for summer!</span>\n                <span class=\"more icon\">Shop Now</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-tanks.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:22:`WS12, WT09, WH05, WP12`;]]\"}}\n', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(9, 'Training Block', 'training-block', '<div class=\"blocks-promo\">\n\n    <a href=\"{{store url=\"\"}}training.html\" class=\"block-promo training-main\">\n        <img src=\"{{media url=\"wysiwyg/training/training-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">\n                <span>Motivate</span> yourself.<br />\n                <span>Reach</span> goals.<br />\n                <span>Boost</span> ambition.<br />\n                <span>Max</span> fitness.<br />\n                <span>Upgrade</span> lifestyle.\n            </strong>\n        </span>\n    </a>\n    <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo training-erin\">\n        <img src=\"{{media url=\"wysiwyg/training/training-erin.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Before creating Luma, pro trainer Erin Renny helped world-class athletes reach peak fitness</strong>\n            <span class=\"info\">Hand-selected by Erin, our training downloads reflect a commitment to yoga, health and wellness.</span>\n        </span>\n    </a>\n    <a href=\"{{store url=\"\"}}training/training-video.html\" class=\"block-promo training-on-demand\">\n        <span class=\"content\">\n            <span class=\"icon download\"><span>Download</span></span>\n            <strong class=\"title\">Training on demand</strong>\n            <span class=\"info\">Luma downloads to inspire and&nbsp;challenge.<br />Your space, your pace</span>\n            <span class=\"more icon\">Videos</span>\n        </span>\n    </a>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Top Videos</h2>\n    <p class=\"info\">Stream free with subscription</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:38:`241-MB08, 240-LV05, 240-LV09, 240-LV07`;]]\"}}\n', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(10, 'Men Block', 'men-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}men.html\" class=\"block-promo mens-main\">\n        <img src=\"{{media url=\"wysiwyg/mens/mens-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">Luma’s Performance Fabric collection</span>\n            <strong class=\"title\">Going the extra mile just got extra comfortable</strong>\n            <span class=\"more button\">Shop Performance</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\" class=\"block-promo mens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">Save up to $24!</strong>\n                <img src=\"{{media url=\"wysiwyg/mens/mens-t-shirts.png\"}}\" alt=\"\" />\n                <span class=\"info\">Buy 3 Luma tees, get 4 instead</span>\n                <span class=\"more icon\">Shop Tees</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\" class=\"block-promo mens-pants\">\n            <img src=\"{{media url=\"wysiwyg/mens/mens-pants.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Last chance<br />for pants</strong>\n                <span class=\"info\">Take <span>20% OFF</span>and save bigtime*</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\" class=\"block-promo mens-category-shorts\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma shorts</strong>\n                <span class=\"info\">Cool it now</span>\n                <span class=\"more icon\">Shop Shorts</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-shorts.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\" class=\"block-promo mens-category-tees\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma tees</strong>\n                <span class=\"info\">Grab a tee or two!</span>\n                <span class=\"more icon\">Shop Tees</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-tees.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\" class=\"block-promo mens-category-hoodies\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma hoodies</strong>\n                <span class=\"info\">Dress for fitness</span>\n                <span class=\"more icon\">Shop Hoodies</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-hoodies.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:23:`MT07, MH07, MSH03, MP03`;]]\"}}\n', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(11, 'Gear Block', 'gear-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}gear.html\" class=\"block-promo gear-main\">\n        <img src=\"{{media url=\"wysiwyg/gear/gear-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Sprite Yoga Companion Kit</strong>\n            <span class=\"info\">Save up to 20% on a&nbsp;bundle!</span>\n            <span class=\"more button\">Shop Yoga Kit</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-fitnes\">\n            <img src=\"{{media url=\"wysiwyg/gear/gear-fitnes.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Loosen Up</strong>\n                <span class=\"info\">Extend your training with yoga straps, tone bands,<br />and jump ropes</span>\n                <span class=\"more icon\">Shop Fitness</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-equipment\">\n            <img src=\"{{media url=\"wysiwyg/gear/gear-equipment.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Here’s to you!</strong>\n                <span class=\"info\">$4 Luma water bottle<br />(save&nbsp;70%)</span>\n                <span class=\"note\">Enter promo code H2O<br />at check out</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}gear/bags.html\" class=\"block-promo gear-category-bags\">\n            <span class=\"content\">\n                <strong class=\"title\">Tote, cart or carry</strong>\n                <span class=\"info\">Luma bags go the distance</span>\n                <span class=\"more icon\">Shop Bags</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-bags.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-category-equipment\">\n            <span class=\"content\">\n                <strong class=\"title\">Let’s get after it!</strong>\n                <span class=\"info\">Luma gym equipment fits your goals and&nbsp;style</span>\n                <span class=\"more icon\">Shop Equipment</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-equipment.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/watches.html\" class=\"block-promo gear-category-watches\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma watches</strong>\n                <span class=\"info\">Keeping pace has never been more stylish</span>\n                <span class=\"more icon\">Shop Watches</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-watches.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:35:`24-MB02, 24-WB04, 24-UG06, 24-WG080`;]]\"}}\n', '2017-04-23 13:39:40', '2017-04-23 13:39:40', 1),
-(12, 'Sale Block', 'sale-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}promotions/women-sale.html\" class=\"block-promo sale-main\">\n        <img src=\"{{media url=\"wysiwyg/sale/sale-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">Women’s Deals</span>\n            <strong class=\"title\">Pristine prices on pants, tanks and bras.</strong>\n            <span class=\"more button\">Shop Women’s Deals</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}promotions/men-sale.html\" class=\"block-promo sale-mens\">\n            <img src=\"{{media url=\"wysiwyg/sale/sale-mens.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Men’s Bargains</strong>\n                <span class=\"info\">Stretch your budget with active attire</span>\n                <span class=\"more icon\">Shop Men’s Deals</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear.html\" class=\"block-promo sale-women\">\n            <img src=\"{{media url=\"wysiwyg/sale/sale-gear.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Luma Gear Steals</strong>\n                <span class=\"info\">Your best efforts deserve a deal</span>\n                <span class=\"more icon\">Shop Luma Gear</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a class=\"block-promo sale-20-off\">\n            <span class=\"content\">\n                <strong class=\"title\">20% OFF</strong>\n                <span class=\"info\">Every $200-plus purchase!</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/sale/sale-20-off.png\"}}\" alt=\"\" /></span>\n        </a>\n        <a class=\"block-promo sale-free-shipping\">\n            <span class=\"content\">\n                <strong class=\"title\">Spend $50 or more&nbsp;&mdash; shipping is free!</strong>\n                <img src=\"{{media url=\"wysiwyg/sale/sale-free-shipping.png\"}}\" alt=\"\" />\n                <span class=\"info\">Buy more, save more</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\" class=\"block-promo sale-womens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">You can\'t have too many tees</strong>\n                <span class=\"info\">4 tees for the price of 3. Right now</span>\n                <span class=\"more icon\">Tees on sale</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-t-shirts.png\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(13, 'New Block', 'new-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}collections/yoga-new.html\" class=\"block-promo new-main\">\n        <img src=\"{{media url=\"wysiwyg/new/new-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">New Luma Yoga Collection</span>\n            <strong class=\"title\">The very latest yoga styles  plus twists on timeless classics</strong>\n            <span class=\"more button\">Shop New Yoga</span>\n        </span>\n    </a>\n\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}collections/performance-new.html\" class=\"block-promo new-performance\">\n            <img src=\"{{media url=\"wysiwyg/new/new-performance.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Whatever day brings</strong>\n                <span class=\"info\">Luma Cocona<sup>™</sup> for breathability, CoolTech<sup>™</sup> for wicking, or a blend of&nbsp;both.</span>\n                <span class=\"more icon\">Performance Fabrics</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}collections/eco-new.html\" class=\"block-promo new-eco\">\n            <img src=\"{{media url=\"wysiwyg/new/new-eco.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">A sense of renewal</strong>\n                <span class=\"info\">Enjoy comfort of body and mind with Luma eco-friendly choices</span>\n                <span class=\"more icon\">Shop Eco Friendly </span>\n            </span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Luma\'s Latest</h2>\n    <p class=\"info\">Just in time for the new season!</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}\n', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(14, 'Home Page Block', 'home-page-block', '<div class=\"blocks-promo\">\n   <a href=\"{{store url=\"\"}}collections/yoga-new.html\" class=\"block-promo home-main\">\n       <img src=\"{{media url=\"wysiwyg/home/home-main.jpg\"}}\" alt=\"\" />\n       <span class=\"content bg-white\">\n           <span class=\"info\">New Luma Yoga Collection</span>\n           <strong class=\"title\">Get fit and look fab in new seasonal styles</strong>\n           <span class=\"action more button\">Shop New Yoga</span>\n       </span>\n   </a>\n   <div class=\"block-promo-wrapper block-promo-hp\">\n       <a href=\"{{store url=\"\"}}promotions/pants-all.html\" class=\"block-promo home-pants\">\n           <img src=\"{{media url=\"wysiwyg/home/home-pants.jpg\"}}\" alt=\"\" />\n           <span class=\"content\">\n               <strong class=\"title\">20% OFF</strong>\n               <span class=\"info\">Luma pants when you shop today*</span>\n               <span class=\"action more icon\">Shop Pants</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}promotions/tees-all.html\" class=\"block-promo home-t-shirts\">\n           <span class=\"image\"><img src=\"{{media url=\"wysiwyg/home/home-t-shirts.png\"}}\" alt=\"\" /></span>\n           <span class=\"content\">\n               <strong class=\"title\">Even more ways to mix and match</strong>\n               <span class=\"info\">Buy 3 Luma tees get a 4th free</span>\n               <span class=\"action more icon\">Shop Tees</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo home-erin\">\n           <img src=\"{{media url=\"wysiwyg/home/home-erin.jpg\"}}\" alt=\"\" />\n           <span class=\"content\">\n               <strong class=\"title\">Take it from Erin</strong>\n               <span class=\"info\">Luma founder Erin Renny shares her favorites!</span>\n               <span class=\"action more icon\">Shop Erin Recommends</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/performance-fabrics.html\" class=\"block-promo home-performance\">\n           <img src=\"{{media url=\"wysiwyg/home/home-performance.jpg\"}}\" alt=\"\" />\n           <span class=\"content bg-white\">\n               <strong class=\"title\">Science meets performance</strong>\n               <span class=\"info\">Wicking to raingear, Luma covers&nbsp;you</span>\n               <span class=\"action more icon\">Shop Performance</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/eco-friendly.html\" class=\"block-promo home-eco\">\n           <img src=\"{{media url=\"wysiwyg/home/home-eco.jpg\"}}\" alt=\"\" />\n           <span class=\"content bg-white\">\n               <strong class=\"title\">Twice around, twice as nice</strong>\n               <span class=\"info\">Find conscientious, comfy clothing in our <nobr>eco-friendly</nobr> collection</span>\n               <span class=\"action more icon\">Shop Eco-Friendly</span>\n           </span>\n       </a>\n   </div>\n</div>\n<div class=\"content-heading\">\n   <h2 class=\"title\">Hot Sellers</h2>\n   <p class=\"info\">Here is what`s trending on Luma right now</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"8\" products_count=\"8\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:60:`WS12, WT09, MT07, MH07, 24-MB02, 24-WB04, 241-MB08, 240-LV05`;]]\"}}\n', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(15, 'Performance Fabrics Block', 'performance-fabrics-block', '<div class=\"blocks-promo\">\n   <div class=\"block-promo collection-performance\">\n       <img src=\"{{media url=\"wysiwyg/collection/collection-performance.jpg\"}}\" alt=\"\" />\n       <span class=\"content\">\n           <strong class=\"title\">You\'re the best</strong>\n           <span class=\"info\">Make a strong statement with Luma Performance sportswear</span>\n       </span>\n   </div>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"5\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:3:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:18:`performance_fabric`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]s:4:`1--2`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(16, 'Eco Friendly Block', 'eco-friendly-block', '<div class=\"blocks-promo\">\n    <div class=\"block-promo collection-eco\">\n        <img src=\"{{media url=\"wysiwyg/collection/collection-eco.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Eco-friendly, ego-friendly</strong>\n            <span class=\"info\">Recycled polyester, hemp and organic cotton apperel</span>\n        </span>\n    </div>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"5\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:3:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:14:`eco_collection`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]s:4:`1--2`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}\n', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(17, 'Giftcard Block', 'giftcard-block', '<div class=\"blocks-promo\">\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}\" class=\"block-promo giftcard-mailed\">\n            <span class=\"content\">\n                <strong class=\"title\">Give it away now</strong>\n                <span class=\"info\">A gift card always beats a blind guess</span>\n                <span class=\"more icon\">Mailed Gift Cards</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/giftcards/giftcard-mailed.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}\" class=\"block-promo giftcard-virtual\">\n            <img src=\"{{media url=\"wysiwyg/giftcards/giftcard-virtual.png\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Can\'t decide?</strong>\n                <span class=\"info\">Just remember it\'s the card that counts</span>\n                <span class=\"more icon\">Virtual Gift Cards</span>\n            </span>\n        </a>\n    </div>\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(18, 'Login Info Block', 'login-data', '<div class=\"message info\" style=\"margin-top: 50px;\">\n    <p><strong>Try Demo Customer Access</strong></p>\n    <p><span style=\"display:inline-block; width: 80px; padding-right: 10px;\">Email:</span>roni_cost@example.com</p>\n    <p><span style=\"display:inline-block; width: 80px; padding-right: 10px;\">Password:</span>roni_cost@example.com</p>\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(19, 'EM0146 Necessary - Fashion Store - Home - Ads Text', 'em0146-fashion-home-ads-text', '<div class=\"row em-wrapper-ads-13 hidden-xs\">\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"Tech Support 247\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"Tech Support 247\" href=\"#\">RETURN &amp; EXCHANGE</a></h5>\r\n<p>Vintage pastel tucked t-shirt leather cami</p>\r\n</div>\r\n</div>\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"Free shipping all order\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"Free shipping all order\" href=\"#\">Free shipping</a></h5>\r\n<p>Get Free Shipping on all orders</p>\r\n</div>\r\n</div>\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"30 days return\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"30 days return\" href=\"#\">MEMBER DISCOUNT</a></h5>\r\n<p>The total billed is discount for member</p>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(20, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Banner 01', 'em0146-fashion-sidebar-left-home-banner-01', '<div class=\"em-wrapper-banners hidden-xs space-small-block\">\r\n<div class=\"effect\"><a class=\"banner-img\" href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/em_ads_01.jpg\"}}\" alt=\"em_ads_01.jpg\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(21, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Ads 02', 'em0146-fashion-sidebar-left-home-ads-02', '<div class=\"row\">\r\n<div class=\"col-sm-24\">\r\n<div class=\"em-wrapper-ads-15\">\r\n<div class=\"em-slider em-slider-category\" data-mage-init=\"{&quot;emslider&quot;:{&quot;items&quot;:1}}\">\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(22, 'EM0146 Necessary - Fashion Store - Sidebar Left 03 - Home - Recent Blog', 'em0146-fashion-sidebar-left03-home-recent-blog', '<div class=\"row\">\r\n<div class=\"col-sm-24\">\r\n<div class=\"em-wrapper-ads-10 em-line-01\">\r\n<div class=\"em-block-title\">\r\n<h2><span>Blog</span></h2>\r\n</div>\r\n<div class=\"em-from-our-blog\">\r\n<div class=\"em-blog-item em-effect-13\">\r\n<div class=\"em-blog-content bkg-top\"><a href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_03.jpg\'}}\" alt=\"em_ads_03.jpg\" /></a>\r\n<div class=\"em-blog-time\">\r\n<p class=\"em-blog-date\">28</p>\r\n<p class=\"em-blog-month\">aug</p>\r\n</div>\r\n<div class=\"hov\">&nbsp;</div>\r\n</div>\r\n<div class=\"em-box bkg-bottom\">\r\n<h4 class=\"em-blog-title\"><a href=\"#\">Unlimited Colors</a></h4>\r\n<p class=\"em-blog-des\">You can change the visual appearance of almost every element of the theme. You can change colors using color pickers, apply patterns/textures (predefined or custom) for header...</p>\r\n<p><a class=\"link-more\" href=\"#\">Read more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"em-blog-item em-effect-13\">\r\n<div class=\"em-blog-content bkg-top\"><a href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_04.jpg\'}}\" alt=\"em_ads_04.jpg\" /></a>\r\n<div class=\"em-blog-time\">\r\n<p class=\"em-blog-date\">28</p>\r\n<p class=\"em-blog-month\">aug</p>\r\n</div>\r\n<div class=\"hov\">&nbsp;</div>\r\n</div>\r\n<div class=\"em-box bkg-bottom\">\r\n<h4 class=\"em-blog-title\"><a href=\"#\">Unlimited Colors</a></h4>\r\n<p class=\"em-blog-des\">You can change the visual appearance of almost every element of the theme. You can change colors using color pickers, apply patterns/textures (predefined or custom) for header...</p>\r\n<p><a class=\"link-more\" href=\"#\">Read more</a></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(23, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Banner 04', 'em0146-fashion-sidebar-left-home-banner-04', '<div class=\"img-banner hidden-xs\">\r\n<div class=\"effect-hover-text2\"><a class=\"banner-img\" title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_05.jpg\'}}\" alt=\"em-sample-alt\" /> </a> <a class=\"banner-text\" title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_text_05.png\'}}\" alt=\"em-sample-alt\" /> </a></div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(24, 'EM0146 Necessary - Fashion Store - Area Main 01 - Home - Banners', 'em0146-fashion-area-main01-home-banners', '<div class=\"row hidden-xs space-block\">\r\n<div class=\"em-wrapper-banners\">\r\n<div class=\"col-sm-8 col-xs-8  text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_06.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-8 col-xs-8  img-banner text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_07.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-8 col-xs-8 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_08.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:41', '2017-04-23 13:39:41', 1),
-(25, 'EM0146 Necessary - Fashion Store - Area Main 02 - Home - Tabs', 'em0146-fashion-area-main02-home-tabs', '<div class=\"emtabs-ajaxblock-loaded space-small-block\">\r\n<div class=\"em-tabs-widget tabs-widget\">\r\n<div class=\"widget-title em-widget-title\">\r\n<h3><span>New Arrivals</span></h3>\r\n</div>\r\n<div class=\"em-tabs-right\">\r\n<div class=\"em-tabs emtabs product data items\" data-mage-init=\"{&quot;tabs&quot;:{&quot;openedState&quot;:&quot;active&quot;}}\">\r\n<div id=\"tab-label-shirt-tab\" class=\"data item title\" data-role=\"collapsible\"><a id=\"tab-label-shirt-tab-title\" class=\"data switch\" tabindex=\"-1\" href=\"#shirt-tab\" data-toggle=\"switch\">Shirt</a></div>\r\n<div id=\"shirt-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:1:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]]\"}}</div>\r\n<div id=\"tab-label-skirt-tab\" class=\"data item title\" data-role=\"collapsible\"><a id=\"tab-label-skirt-tab-title\" class=\"data switch\" tabindex=\"-1\" href=\"#skirt-tab\" data-toggle=\"switch\">Skirt</a></div>\r\n<div id=\"skirt-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:10:`22, 27, 28`;]]\"}}</div>\r\n<div id=\"tab-label-dress-tab\" class=\"data item title\" data-role=\"collapsible\"><a id=\"tab-label-dress-tab-title\" class=\"data switch\" tabindex=\"-1\" href=\"#dress-tab\" data-toggle=\"switch\">Dress</a></div>\r\n<div id=\"dress-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:18:`12, 14, 15, 16, 17`;]]\"}}</div>\r\n<div id=\"tab-label-outerwear-tab\" class=\"data item title\" data-role=\"collapsible\"><a id=\"tab-label-outerwear-tab-title\" class=\"data switch\" tabindex=\"-1\" href=\"#outerwear-tab\" data-toggle=\"switch\">Outerwear</a></div>\r\n<div id=\"outerwear-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:10:`13, 18, 19`;]]\"}}</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(26, 'EM0146 Necessary - Fashion Store - Area Main 03 - Home - Banner', 'em0146-fashion-area-main03-home-banner', '<div class=\"em-wrapper-banners hidden-xs space-block\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_10.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(27, 'EM0146 Necessary - Fashion Store - Main Bottom - Banners', 'em0146-fashion-main-bottom-banners', '<div class=\"row hidden-xs space-block\">\r\n<div class=\"em-wrapper-banners\">\r\n<div class=\"col-sm-12 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_11.jpg\'}}\" alt=\"em-sample-alt\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-12 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_12.jpg\'}}\" alt=\"em-sample-alt\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1);
-INSERT DELAYED IGNORE INTO `cms_block` VALUES
-(28, 'EM0146 Necessary - Fashion Store - Main Bottom 02 - Ads', 'em0146-fashion-main-bottom02-ads', '<div class=\"em-wrapper-ads-09 space-block\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-6 text-center em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">SUPER ONLINE STORES</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center em-wrapper-ads-item  line-left line-right\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">RESPONSIVaE DESIGN</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center  em-wrapper-ads-item  line-left line-right\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">FREE UPDATES</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center  em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">24/7 SUPPORT ONLINE</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(29, 'EM0146 Necessary - Fashion Store - Main Bottom 03 - Banner Slider', 'em0146-fashion-main-bottom03-banners-slider', '<div class=\"em-wrapper-brands space-block\">\r\n<div class=\" slider-style02\">\r\n<div class=\"em-slider em-slider-banners em-slider-navigation-icon\" data-mage-init=\"{&quot;emslider&quot;:{&quot;loop&quot;:true,&quot;lazyLoad&quot;:true,&quot;items&quot;:6,&quot;dots&quot;:false,&quot;nav&quot;:true,&quot;responsive&quot;:{&quot;0&quot;:{&quot;items&quot;:1},&quot;320&quot;:{&quot;items&quot;:2},&quot;640&quot;:{&quot;items&quot;:3},&quot;768&quot;:{&quot;items&quot;:4},&quot;1024&quot;:{&quot;items&quot;:5}}}}\">\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_01.png\'}}\" alt=\"em_brand_01.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_06.png\'}}\" alt=\"em_brand_02.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_03.png\'}}\" alt=\"em_brand_03.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_04.png\'}}\" alt=\"em_brand_04.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_05.png\'}}\" alt=\"em_brand_05.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_02.png\'}}\" alt=\"em_brand_06.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_01.png\'}}\" alt=\"em_brand_01.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_02.png\'}}\" alt=\"em_brand_02.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/em_brand_03.png\'}}\" alt=\"em_brand_03.jpg\" /></a></div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(30, 'EM0146 Necessary - Fashion Store - Before Footer 01 - Links', 'em0146-fashion-before-footer01-links', '<div class=\"em-footer-info\">\r\n<div class=\"em-footer-info-bottom\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-16 col-sm-push-4\">\r\n<div class=\"em-wrapper-newsletter text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse07&quot;}}\">\r\n<p class=\"h3 em-text-upercase\"><span>Sign Up For Newsletter</span></p>\r\n</div>\r\n<div id=\"collapse07\" class=\"em-block-content em-newsletter\">{{block class=\"Magento\\Newsletter\\Block\\Subscribe\" name=\"em.newsletter.style05\" template=\"subscribe.phtml\"}}</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-24 text-center\">\r\n<div class=\"em-wrapper-social\">\r\n<div class=\"em-block-title  visible-xs\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse08&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Follow Us</span></p>\r\n</div>\r\n<div id=\"collapse08\" class=\"em-block-content\">\r\n<p class=\"em-social\"><a class=\"em-social-icon em-facebook f-left\" title=\"em-sample-title\" href=\"#\"><span class=\"fa fa-facebook\">&nbsp;</span></a> <a class=\"em-social-icon em-twitter f-left\" title=\"em-sample-title\" href=\"#\"><span class=\"fa fa-twitter\">&nbsp;</span></a> <a class=\"em-social-icon em-pinterest  f-left\" title=\"em-sample-title\" href=\"#\"><span class=\"fa fa-pinterest\">&nbsp;</span></a> <a class=\"em-social-icon em-google f-left\" title=\"em-sample-title\" href=\"#\"><span class=\"fa fa-google\">&nbsp;</span></a> <a class=\"em-social-icon em-rss  f-left\" title=\"em-sample-title\" href=\"#\"><span class=\"fa fa-rss\">&nbsp;</span></a></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"row\">\r\n<div class=\"col-sm-4 first text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse01&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>What\'s hot</span></p>\r\n</div>\r\n<ul id=\"collapse01\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Discount Voucher</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Spring Collection</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Trending</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Best Sellers</span></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-sm-4 text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse02&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Brands</span></p>\r\n</div>\r\n<ul id=\"collapse02\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Jack &amp; Jones</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Calvin Klein</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Ray Ban</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>River Island</span></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-sm-4 text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse03&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Men shop</span></p>\r\n</div>\r\n<ul id=\"collapse03\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Top</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Bottoms</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Accessories</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Shoes</span></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-sm-4 text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse04&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Women shop</span></p>\r\n</div>\r\n<ul id=\"collapse04\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Jeans</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Dresses</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Other</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Shoes</span></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-sm-4 text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse05&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Help</span></p>\r\n</div>\r\n<ul id=\"collapse05\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>F.A.Q.</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Shipping</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"{{store direct_url=\'contacts\'}}\"><span>Contact Us</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Privacy Policy</span></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-sm-4 last text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse06&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Nation Apps</span></p>\r\n</div>\r\n<ul id=\"collapse06\" class=\"em-links em-block-content block-info\">\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>iPhone</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>iPad</span></a></li>\r\n<li class=\"em-links-item\"><a title=\"em-sample-title\" href=\"#\"><span>Android</span></a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(31, 'EM0146 Necessary - Fashion Store - Footer Inner - Payment', 'em0146-fashion-area-footer-inner-payment', '<div class=\"em-payment f-right\"><a class=\"em-payment-icon em-visa\" title=\"em-sample-title\" href=\"#\">visa</a> <a class=\"em-payment-icon em-master\" title=\"em-sample-title\" href=\"#\">master</a> <a class=\"em-payment-icon em-express \" title=\"em-sample-title\" href=\"#\">express</a><a class=\"em-payment-icon em-paypal\" title=\"em-sample-title\" href=\"#\">paypal</a> <a class=\"em-payment-icon em-other \" title=\"em-sample-title\" href=\"#\">other</a></div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(32, 'EM0146 Necessary - Fashion Store - Area Main 04 - Home - Best Sale', 'em0146-fashion-area-main02-home-best-sale', '<div class=\"em-wrapper-area05-06-07 em-wrapper-product-18 space-small-block\">\r\n<div class=\"col-sm-6 em-clear-padding\">\r\n<div class=\"em-wrapper-products em-best-products button-show01 button-hide-text\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" title=\"Best Sales\" display_type=\"bestseller_products\" products_count=\"1\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"300\" thumb_height=\"300\" filter_template=\"custom\" custom_template=\"em_grid_05.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:34:`20, 21, 23, 24, 25, 26, 22, 27, 28`;]]\"}}</div>\r\n</div>\r\n<div class=\"col-sm-12 em-clear-padding em-line\">\r\n<div class=\"em-featured-products\">\r\n<div class=\"em-featured-top\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" title=\"Featured Products\" display_type=\"all_products\" products_count=\"4\" order_by=\"name ASC\" show=\"thumb,name,review,price\" thumb_width=\"110\" thumb_height=\"110\" filter_template=\"custom\" custom_template=\"em_grid_15.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:12:`category_ids`;s:8:`operator`;s:2:`==`;s:5:`value`;s:34:`11, 12, 14, 15, 16, 17, 13, 18, 19`;]]\"}}</div>\r\n<div class=\"row em-featured-bottom hidden-xs\">\r\n<div class=\"col-sm-24 first text-center\">\r\n<div class=\"effect-hover-text\"><a class=\"banner-img\" title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img em-clear-radius\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_13.jpg\'}}\" alt=\"em-sample-alt\" /> </a></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 em-clear-padding\">\r\n<div class=\"em-sale-off\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" title=\"Sale Off\" display_type=\"all_products\" products_count=\"4\" order_by=\"name ASC\" show=\"thumb,name,price\" thumb_width=\"80\" thumb_height=\"80\" filter_template=\"custom\" custom_template=\"em_list.phtml\" conditions_encoded=\"a:1:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]]\"}}</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(33, 'EM0146 Necessary - Fashion Store - Area Main - Slideshow', 'em0146-fashion-main-area-main-slideshow', '<div class=\"row\">\r\n<div class=\"col-sm-6\">\r\n<div class=\"em-left-menu\">{{block class=\"Magento\\Theme\\Block\\Html\\Topmenu\" name=\"home.leftnav\" template=\"Magento_Theme::html/left_menu.phtml\" ttl=\"3600\"}}</div>\r\n</div>\r\n<div class=\"col-sm-18\">\r\n<div class=\"em-slideshow space-small-block\">\r\n<div class=\"em-slider em-slider-banners em-slider-navigation-icon\" data-mage-init=\"{&quot;emslider&quot;:{&quot;loop&quot;:true,&quot;lazyLoad&quot;:true,&quot;items&quot;:1,&quot;dots&quot;:false,&quot;nav&quot;:true}}\">\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/sup_slide1.jpg\"}}\" alt=\"sup_slide1.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/sup_slide2.jpg\"}}\" alt=\"sup_slide2.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/sup_slide3.jpg\"}}\" alt=\"sup_slide3.jpg\" /></a></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(34, 'EM0146 Necessary - Main Megamenu', 'em0146-main-megamenu', '<div class=\"em-menu\">\r\n<ul class=\"em-menu-content\">\r\n<li class=\"level0 submenu\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'women.html\'}}\"><span>Home Store</span></a>\r\n</li>\r\n<li class=\"level0 submenu\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\"><span>Features</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-1\">\r\n<div class=\"em-row\">\r\n<div class=\"col-12\">\r\n<ul class=\"ls-link\">\r\n<li><a href=\"#\">Deals product <span class=\"menu-label coming-soon\">&nbsp;</span></a></li>\r\n<li><a href=\"#\">Product Label <span class=\"menu-label coming-soon\">&nbsp;</span></a></li>\r\n<li><a href=\"#\">ColorSwatch</a></li>\r\n<li><a href=\"#\">Blog</a></li>\r\n<li><a href=\"#\">Mega Menu</a></li>\r\n<li><a href=\"#\">Quickshop</a></li>\r\n<li><a href=\"#\">Emthemes Setting</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'women/tops-women.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Categorys</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6 dropmenu-full-content\">\r\n<div class=\"em-row\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>1 Column</span></div>\r\n<div class=\"nav-text\">\r\n<p>Key features for an online market, such as Featured products, Promotions, Deals with Timing, are absolutely ready. It&rsquo;s no doubt that Titanshop will get traffic for your site, and also help boosting sales.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu01.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>2 Columns</span></div>\r\n<div class=\"nav-text\">\r\n<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu02.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>3 Columns</span></div>\r\n<div class=\"nav-text\">\r\n<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'gear/bags.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu03.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>Products</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-5\">\r\n<div class=\"em-row\">\r\n<div class=\"col-3\">\r\n<div class=\"nav-title-link\"><span>Product Types</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'compete-track-tote.html\'}}\">Simple product</a></li>\r\n<li><a href=\"{{store direct_url=\'beginner-s-yoga.html\'}}\">Downloadable Product</a></li>\r\n<li><a href=\"{{store direct_url=\'chaz-kangeroo-hoodie.html\'}}\">Configurable Product</a></li>\r\n<li><a href=\"{{store direct_url=\'set-of-sprite-yoga-straps.html\'}}\">Grouped Product</a></li>\r\n<li><a href=\"{{store direct_url=\'sprite-yoga-companion-kit.html\'}}\">Bundle Product</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-3\">\r\n<div class=\"nav-title-link\"><span>Product Columns</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'aeon-capri.html\'}}\">1 Column</a></li>\r\n<li><a href=\"{{store direct_url=\'atlas-fitness-tank.html\'}}\">2 Columns Left</a></li>\r\n<li><a href=\"{{store direct_url=\'cronus-yoga-pant.html\'}}\">2 Columns Right</a></li>\r\n<li><a href=\"{{store direct_url=\'bardot-capri.html\'}}\">Upsell</a></li>\r\n<li><a href=\"{{store direct_url=\'breathe-easy-tank.html\'}}\">Related Product</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-6\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu10.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'man.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Fashion</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6\" style=\"padding-bottom: 200px;\">\r\n<div class=\"bg-dropmenu\"><img src=\"{{media url=\'wysiwyg/em0146/menu/bkg-menu.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n<div class=\"em-row\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Women</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Men</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Gear</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Women</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Men</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Gear</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'men/tops-men.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Sport</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6\">\r\n<div class=\"em-row nav-flex\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Tenis</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu08.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Golf</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu04.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Basketball</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu05.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Trainning</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu07.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Football</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu06.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2 line-col-left\">\r\n<div class=\"nav-title-link\"><span>other sports</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Outdoor</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Tennis</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Golf</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu\"><a class=\"em-menu-link\" href=\"{{store direct_url=\'blog\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Blog</span></a></li>\r\n</ul>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(35, 'EM0146 Necessary - Area Staic Block - Details Page - Ads', 'em0146-area-staticblock-detailspage-ads', '<div class=\"em-wrapper-ads-09 space-small-block\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-12 text-center em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-banner-right em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">free shipping</h4>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-12 text-center em-wrapper-ads-item  line-left\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-banner-right em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">same day dispatch</h4>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(36, 'EM0146 Necessary - Area Size Chart - Details - Size Chart', 'em0146-area-size-chart-details', '<p><a class=\"em-info-size\" data-role=\"action\"><em class=\"fa fa-fw\"></em>Size Chart</a></p>\r\n<div class=\"size-chart-wrapper\" data-mage-init=\"{&quot;modal&quot;:{&quot;trigger&quot;:&quot;.em-info-size&quot;,&quot;wrapperClass&quot;: &quot;modals-wrapper size-chart&quot;}}\">\r\n<div id=\"sizechartModal\" data-role=\"content\">\r\n<div class=\"modal-dialog\">\r\n<div class=\"modal-content\">\r\n<h3 id=\"sizechartModalLabel\" class=\"modal-title\">Size Chart</h3>\r\n<div class=\"box\">\r\n<p><a class=\"em-eff06-04\" href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/details/em_ads_01.jpg\'}}\" alt=\"em_ads_01.jpg\" /></a></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1),
-(37, 'EM0146 Necessary - Fashion Store - Popup Advertising Block', 'em0146-fashion-popup-adsvertising-block', '<div class=\"em-block-ads\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/em_ads_popup.jpg\"}}\" alt=\"em_ads_popup.jpg\" /></div>', '2017-04-23 13:39:42', '2017-04-23 13:39:42', 1);
+INSERT INTO `cms_block` (`block_id`, `title`, `identifier`, `content`, `creation_time`, `update_time`, `is_active`) VALUES
+(1, 'Footer Links Block', 'footer_links_block', '<ul class=\"footer links\">\r\n<li class=\"nav item\"><a href=\"{{store url=\"about-us\"}}\">About us</a></li>\r\n<li class=\"nav item\"><a href=\"{{store url=\"customer-service\"}}\">Customer Service</a></li>\r\n</ul>', '2017-03-15 22:24:45', '2017-04-21 14:07:05', 1),
+(2, 'Contact us info', 'contact-us-info', '<div class=\"contact-info cms-content\">\n   <p class=\"cms-content-important\">We love hearing from you, our Luma customers. Please contact us about anything at all. Your latest passion, unique health experience or request for a specific product. We’ll do Necessary we can to make your Luma experience unforgettable every time. Reach us however you like</p>\n   <div class=\"block block-contact-info\">\n       <div class=\"block-title\">\n           <strong>Contact Us Info</strong>\n       </div>\n       <div class=\"block-content\">\n           <div class=\"box box-phone\">\n               <strong class=\"box-title\">\n                   <span>Phone</span>\n               </strong>\n               <div class=\"box-content\">\n                   <span class=\"contact-info-number\">1-800-403-8838</span>\n                   <p>Call the Luma Helpline for concerns, product questions, or anything else. We’re here for you 24 hours a day - 365 days a year.</p>\n               </div>\n           </div>\n           <div class=\"box box-design-inquiries\">\n               <strong class=\"box-title\">\n                   <span>Apparel Design Inquiries</span>\n               </strong>\n               <div class=\"box-content\">\n                   <p>Are you an independent clothing designer? Feature your products on the Luma website! Please direct all inquiries via email to: <a href=\"mailto:cs@luma.com\">cs@luma.com</a></p>\n               </div>\n           </div>\n           <div class=\"box box-press-inquiries\">\n               <strong class=\"box-title\">\n                   <span>Press Inquiries</span>\n               </strong>\n               <div class=\"box-content\">\n                   <p>Please direct all media inquiries via email to: <a href=\"mailto:pr@luma.com\">pr@luma.com</a></p>\n               </div>\n           </div>\n       </div>\n   </div>\n</div>\n', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1),
+(3, 'Sale Left Menu Block', 'sale-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Women\'s Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies and Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>Mens\'s Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies and Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>Gear Deals</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/bags.html\">Bags</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/fitness-equipment.html\">Fitness Equipment</a></li>\n</ul>\n</div>', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1),
+(4, 'Gear Left Menu Block', 'gear-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span></span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/bags.html\">Bags</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/fitness-equipment.html\">Fitness Equipment</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}gear/watches.html\">Watches</a></li>\n</ul>\n</div>', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1),
+(5, 'Men Left Menu Block', 'men-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Tops</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tanks-men.html\">Tanks</a></li>\n</ul>\n\n<strong class=\"title\"><span>Bottoms</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n</div>', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1),
+(6, 'Women Left Menu Block', 'women-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>Tops</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n</ul>\n\n<strong class=\"title\"><span>Bottoms</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n</div>', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(7, 'New Left Menu Block', 'new-left-menu-block', '<div class=\"categories-menu\"><strong class=\"title\"><span>New in women\'s</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/hoodies-and-sweatshirts-women.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/jackets-women.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\">Bras & Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\">Shorts</a></li>\n</ul>\n\n<strong class=\"title\"><span>New in men\'s</span></strong>\n<ul class=\"items\">\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\">Hoodies & Sweatshirts</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/jackets-men.html\">Jackets</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\">Tees</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/tops-men/tanks-men.html\">Tanks</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\">Pants</a></li>\n    <li class=\"item\"><a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\">Shorts</a></li>\n</ul>\n</div>', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(8, 'Women Block', 'women-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}women.html\" class=\"block-promo womens-main\">\n        <img src=\"{{media url=\"wysiwyg/womens/womens-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">New Luma Yoga Collection</span>\n            <strong class=\"title\">Yoga is ancient<br />Clothing shouldn’t be</strong>\n            <span class=\"more button\">Shop New Yoga</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\" class=\"block-promo womens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">You can’t have too many tees</strong>\n                <img src=\"{{media url=\"wysiwyg/womens/womens-t-shirts.png\"}}\" alt=\"\" />\n                <span class=\"info\">4 tees for the price of 3. Right now</span>\n                <span class=\"more icon\">Women’s Tees</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\" class=\"block-promo womens-pants\">\n            <img src=\"{{media url=\"wysiwyg/womens/womens-pants.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Hot pants<br />Hot deals</strong>\n                <span class=\"info\"><span>20% OFF</span>Luma pants when you shop today*</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n        </a>\n    </div>\n    <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo womens-erin\">\n        <span class=\"content\">\n            <strong class=\"title\">What would Erin wear?</strong>\n            <span class=\"info\">It’s no secret: see Luma founder Erin Renny’s wardrobe go-to’s</span>\n            <span class=\"more icon\">Shop Erin Recommends</span>\n        </span>\n        <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-erin.jpg\"}}\" alt=\"\" /></span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}women/bottoms-women/pants-women.html\" class=\"block-promo womens-category-pants\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma pants</strong>\n                <span class=\"info\">Pants for yoga, gym and outdoors</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-pants.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/bottoms-women/shorts-women.html\" class=\"block-promo womens-category-shorts\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma shorts</strong>\n                <span class=\"info\">Exercise comfort</span>\n                <span class=\"more icon\">Shop Shorts</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-shorts.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/tops-women/tanks-women.html\" class=\"block-promo womens-category-tanks\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma Bras<br />Tanks</strong>\n                <span class=\"info\">Stock up for summer!</span>\n                <span class=\"more icon\">Shop Now</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-category-tanks.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:22:`WS12, WT09, WH05, WP12`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(9, 'Training Block', 'training-block', '<div class=\"blocks-promo\">\n\n    <a href=\"{{store url=\"\"}}training.html\" class=\"block-promo training-main\">\n        <img src=\"{{media url=\"wysiwyg/training/training-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">\n                <span>Motivate</span> yourself.<br />\n                <span>Reach</span> goals.<br />\n                <span>Boost</span> ambition.<br />\n                <span>Max</span> fitness.<br />\n                <span>Upgrade</span> lifestyle.\n            </strong>\n        </span>\n    </a>\n    <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo training-erin\">\n        <img src=\"{{media url=\"wysiwyg/training/training-erin.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Before creating Luma, pro trainer Erin Renny helped world-class athletes reach peak fitness</strong>\n            <span class=\"info\">Hand-selected by Erin, our training downloads reflect a commitment to yoga, health and wellness.</span>\n        </span>\n    </a>\n    <a href=\"{{store url=\"\"}}training/training-video.html\" class=\"block-promo training-on-demand\">\n        <span class=\"content\">\n            <span class=\"icon download\"><span>Download</span></span>\n            <strong class=\"title\">Training on demand</strong>\n            <span class=\"info\">Luma downloads to inspire and&nbsp;challenge.<br />Your space, your pace</span>\n            <span class=\"more icon\">Videos</span>\n        </span>\n    </a>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Top Videos</h2>\n    <p class=\"info\">Stream free with subscription</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:38:`241-MB08, 240-LV05, 240-LV09, 240-LV07`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(10, 'Men Block', 'men-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}men.html\" class=\"block-promo mens-main\">\n        <img src=\"{{media url=\"wysiwyg/mens/mens-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">Luma’s Performance Fabric collection</span>\n            <strong class=\"title\">Going the extra mile just got extra comfortable</strong>\n            <span class=\"more button\">Shop Performance</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\" class=\"block-promo mens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">Save up to $24!</strong>\n                <img src=\"{{media url=\"wysiwyg/mens/mens-t-shirts.png\"}}\" alt=\"\" />\n                <span class=\"info\">Buy 3 Luma tees, get 4 instead</span>\n                <span class=\"more icon\">Shop Tees</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/bottoms-men/pants-men.html\" class=\"block-promo mens-pants\">\n            <img src=\"{{media url=\"wysiwyg/mens/mens-pants.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Last chance<br />for pants</strong>\n                <span class=\"info\">Take <span>20% OFF</span>and save bigtime*</span>\n                <span class=\"more icon\">Shop Pants</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}men/bottoms-men/shorts-men.html\" class=\"block-promo mens-category-shorts\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma shorts</strong>\n                <span class=\"info\">Cool it now</span>\n                <span class=\"more icon\">Shop Shorts</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-shorts.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/tops-men/tees-men.html\" class=\"block-promo mens-category-tees\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma tees</strong>\n                <span class=\"info\">Grab a tee or two!</span>\n                <span class=\"more icon\">Shop Tees</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-tees.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}men/tops-men/hoodies-and-sweatshirts-men.html\" class=\"block-promo mens-category-hoodies\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma hoodies</strong>\n                <span class=\"info\">Dress for fitness</span>\n                <span class=\"more icon\">Shop Hoodies</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/mens/mens-category-hoodies.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:23:`MT07, MH07, MSH03, MP03`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(11, 'Gear Block', 'gear-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}gear.html\" class=\"block-promo gear-main\">\n        <img src=\"{{media url=\"wysiwyg/gear/gear-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Sprite Yoga Companion Kit</strong>\n            <span class=\"info\">Save up to 20% on a&nbsp;bundle!</span>\n            <span class=\"more button\">Shop Yoga Kit</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-fitnes\">\n            <img src=\"{{media url=\"wysiwyg/gear/gear-fitnes.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Loosen Up</strong>\n                <span class=\"info\">Extend your training with yoga straps, tone bands,<br />and jump ropes</span>\n                <span class=\"more icon\">Shop Fitness</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-equipment\">\n            <img src=\"{{media url=\"wysiwyg/gear/gear-equipment.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Here’s to you!</strong>\n                <span class=\"info\">$4 Luma water bottle<br />(save&nbsp;70%)</span>\n                <span class=\"note\">Enter promo code H2O<br />at check out</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a href=\"{{store url=\"\"}}gear/bags.html\" class=\"block-promo gear-category-bags\">\n            <span class=\"content\">\n                <strong class=\"title\">Tote, cart or carry</strong>\n                <span class=\"info\">Luma bags go the distance</span>\n                <span class=\"more icon\">Shop Bags</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-bags.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/fitness-equipment.html\" class=\"block-promo gear-category-equipment\">\n            <span class=\"content\">\n                <strong class=\"title\">Let’s get after it!</strong>\n                <span class=\"info\">Luma gym equipment fits your goals and&nbsp;style</span>\n                <span class=\"more icon\">Shop Equipment</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-equipment.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear/watches.html\" class=\"block-promo gear-category-watches\">\n            <span class=\"content\">\n                <strong class=\"title\">Luma watches</strong>\n                <span class=\"info\">Keeping pace has never been more stylish</span>\n                <span class=\"more icon\">Shop Watches</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/gear/gear-category-watches.jpg\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Hot Sellers</h2>\n    <p class=\"info\">Favorites from Luma shoppers</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:35:`24-MB02, 24-WB04, 24-UG06, 24-WG080`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(12, 'Sale Block', 'sale-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}promotions/women-sale.html\" class=\"block-promo sale-main\">\n        <img src=\"{{media url=\"wysiwyg/sale/sale-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">Women’s Deals</span>\n            <strong class=\"title\">Pristine prices on pants, tanks and bras.</strong>\n            <span class=\"more button\">Shop Women’s Deals</span>\n        </span>\n    </a>\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}promotions/men-sale.html\" class=\"block-promo sale-mens\">\n            <img src=\"{{media url=\"wysiwyg/sale/sale-mens.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Men’s Bargains</strong>\n                <span class=\"info\">Stretch your budget with active attire</span>\n                <span class=\"more icon\">Shop Men’s Deals</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}gear.html\" class=\"block-promo sale-women\">\n            <img src=\"{{media url=\"wysiwyg/sale/sale-gear.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Luma Gear Steals</strong>\n                <span class=\"info\">Your best efforts deserve a deal</span>\n                <span class=\"more icon\">Shop Luma Gear</span>\n            </span>\n        </a>\n    </div>\n    <div class=\"block-promo-wrapper block-promo-3columns\">\n        <a class=\"block-promo sale-20-off\">\n            <span class=\"content\">\n                <strong class=\"title\">20% OFF</strong>\n                <span class=\"info\">Every $200-plus purchase!</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/sale/sale-20-off.png\"}}\" alt=\"\" /></span>\n        </a>\n        <a class=\"block-promo sale-free-shipping\">\n            <span class=\"content\">\n                <strong class=\"title\">Spend $50 or more&nbsp;&mdash; shipping is free!</strong>\n                <img src=\"{{media url=\"wysiwyg/sale/sale-free-shipping.png\"}}\" alt=\"\" />\n                <span class=\"info\">Buy more, save more</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}women/tops-women/tees-women.html\" class=\"block-promo sale-womens-t-shirts\">\n            <span class=\"content\">\n                <strong class=\"title\">You can\'t have too many tees</strong>\n                <span class=\"info\">4 tees for the price of 3. Right now</span>\n                <span class=\"more icon\">Tees on sale</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/womens/womens-t-shirts.png\"}}\" alt=\"\" /></span>\n        </a>\n    </div>\n</div>', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(13, 'New Block', 'new-block', '<div class=\"blocks-promo\">\n    <a href=\"{{store url=\"\"}}collections/yoga-new.html\" class=\"block-promo new-main\">\n        <img src=\"{{media url=\"wysiwyg/new/new-main.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <span class=\"info\">New Luma Yoga Collection</span>\n            <strong class=\"title\">The very latest yoga styles  plus twists on timeless classics</strong>\n            <span class=\"more button\">Shop New Yoga</span>\n        </span>\n    </a>\n\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}collections/performance-new.html\" class=\"block-promo new-performance\">\n            <img src=\"{{media url=\"wysiwyg/new/new-performance.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Whatever day brings</strong>\n                <span class=\"info\">Luma Cocona<sup>™</sup> for breathability, CoolTech<sup>™</sup> for wicking, or a blend of&nbsp;both.</span>\n                <span class=\"more icon\">Performance Fabrics</span>\n            </span>\n        </a>\n        <a href=\"{{store url=\"\"}}collections/eco-new.html\" class=\"block-promo new-eco\">\n            <img src=\"{{media url=\"wysiwyg/new/new-eco.jpg\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">A sense of renewal</strong>\n                <span class=\"info\">Enjoy comfort of body and mind with Luma eco-friendly choices</span>\n                <span class=\"more icon\">Shop Eco Friendly </span>\n            </span>\n        </a>\n    </div>\n</div>\n<div class=\"content-heading\">\n    <h2 class=\"title\">Luma\'s Latest</h2>\n    <p class=\"info\">Just in time for the new season!</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"4\" products_count=\"4\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(14, 'Home Page Block', 'home-page-block', '<div class=\"blocks-promo\">\n   <a href=\"{{store url=\"\"}}collections/yoga-new.html\" class=\"block-promo home-main\">\n       <img src=\"{{media url=\"wysiwyg/home/home-main.jpg\"}}\" alt=\"\" />\n       <span class=\"content bg-white\">\n           <span class=\"info\">New Luma Yoga Collection</span>\n           <strong class=\"title\">Get fit and look fab in new seasonal styles</strong>\n           <span class=\"action more button\">Shop New Yoga</span>\n       </span>\n   </a>\n   <div class=\"block-promo-wrapper block-promo-hp\">\n       <a href=\"{{store url=\"\"}}promotions/pants-all.html\" class=\"block-promo home-pants\">\n           <img src=\"{{media url=\"wysiwyg/home/home-pants.jpg\"}}\" alt=\"\" />\n           <span class=\"content\">\n               <strong class=\"title\">20% OFF</strong>\n               <span class=\"info\">Luma pants when you shop today*</span>\n               <span class=\"action more icon\">Shop Pants</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}promotions/tees-all.html\" class=\"block-promo home-t-shirts\">\n           <span class=\"image\"><img src=\"{{media url=\"wysiwyg/home/home-t-shirts.png\"}}\" alt=\"\" /></span>\n           <span class=\"content\">\n               <strong class=\"title\">Even more ways to mix and match</strong>\n               <span class=\"info\">Buy 3 Luma tees get a 4th free</span>\n               <span class=\"action more icon\">Shop Tees</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/erin-recommends.html\" class=\"block-promo home-erin\">\n           <img src=\"{{media url=\"wysiwyg/home/home-erin.jpg\"}}\" alt=\"\" />\n           <span class=\"content\">\n               <strong class=\"title\">Take it from Erin</strong>\n               <span class=\"info\">Luma founder Erin Renny shares her favorites!</span>\n               <span class=\"action more icon\">Shop Erin Recommends</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/performance-fabrics.html\" class=\"block-promo home-performance\">\n           <img src=\"{{media url=\"wysiwyg/home/home-performance.jpg\"}}\" alt=\"\" />\n           <span class=\"content bg-white\">\n               <strong class=\"title\">Science meets performance</strong>\n               <span class=\"info\">Wicking to raingear, Luma covers&nbsp;you</span>\n               <span class=\"action more icon\">Shop Performance</span>\n           </span>\n       </a>\n       <a href=\"{{store url=\"\"}}collections/eco-friendly.html\" class=\"block-promo home-eco\">\n           <img src=\"{{media url=\"wysiwyg/home/home-eco.jpg\"}}\" alt=\"\" />\n           <span class=\"content bg-white\">\n               <strong class=\"title\">Twice around, twice as nice</strong>\n               <span class=\"info\">Find conscientious, comfy clothing in our <nobr>eco-friendly</nobr> collection</span>\n               <span class=\"action more icon\">Shop Eco-Friendly</span>\n           </span>\n       </a>\n   </div>\n</div>\n<div class=\"content-heading\">\n   <h2 class=\"title\">Hot Sellers</h2>\n   <p class=\"info\">Here is what`s trending on Luma right now</p>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_per_page=\"8\" products_count=\"8\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:2:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`sku`;s:8:`operator`;s:2:`()`;s:5:`value`;s:60:`WS12, WT09, MT07, MH07, 24-MB02, 24-WB04, 241-MB08, 240-LV05`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(15, 'Performance Fabrics Block', 'performance-fabrics-block', '<div class=\"blocks-promo\">\n   <div class=\"block-promo collection-performance\">\n       <img src=\"{{media url=\"wysiwyg/collection/collection-performance.jpg\"}}\" alt=\"\" />\n       <span class=\"content\">\n           <strong class=\"title\">You\'re the best</strong>\n           <span class=\"info\">Make a strong statement with Luma Performance sportswear</span>\n       </span>\n   </div>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"5\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:3:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:18:`performance_fabric`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]s:4:`1--2`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(16, 'Eco Friendly Block', 'eco-friendly-block', '<div class=\"blocks-promo\">\n    <div class=\"block-promo collection-eco\">\n        <img src=\"{{media url=\"wysiwyg/collection/collection-eco.jpg\"}}\" alt=\"\" />\n        <span class=\"content\">\n            <strong class=\"title\">Eco-friendly, ego-friendly</strong>\n            <span class=\"info\">Recycled polyester, hemp and organic cotton apperel</span>\n        </span>\n    </div>\n</div>\n{{widget type=\"Magento\\\\CatalogWidget\\\\Block\\\\Product\\\\ProductsList\" products_count=\"5\" template=\"product/widget/content/grid.phtml\" conditions_encoded=\"a:3:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]s:4:`1--1`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:14:`eco_collection`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]s:4:`1--2`;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Product`;s:9:`attribute`;s:3:`new`;s:8:`operator`;s:2:`==`;s:5:`value`;s:1:`1`;]]\"}}\n', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(17, 'Giftcard Block', 'giftcard-block', '<div class=\"blocks-promo\">\n    <div class=\"block-promo-wrapper block-promo-2columns\">\n        <a href=\"{{store url=\"\"}}\" class=\"block-promo giftcard-mailed\">\n            <span class=\"content\">\n                <strong class=\"title\">Give it away now</strong>\n                <span class=\"info\">A gift card always beats a blind guess</span>\n                <span class=\"more icon\">Mailed Gift Cards</span>\n            </span>\n            <span class=\"image\"><img src=\"{{media url=\"wysiwyg/giftcards/giftcard-mailed.jpg\"}}\" alt=\"\" /></span>\n        </a>\n        <a href=\"{{store url=\"\"}}\" class=\"block-promo giftcard-virtual\">\n            <img src=\"{{media url=\"wysiwyg/giftcards/giftcard-virtual.png\"}}\" alt=\"\" />\n            <span class=\"content\">\n                <strong class=\"title\">Can\'t decide?</strong>\n                <span class=\"info\">Just remember it\'s the card that counts</span>\n                <span class=\"more icon\">Virtual Gift Cards</span>\n            </span>\n        </a>\n    </div>\n</div>', '2017-03-15 22:24:46', '2017-03-15 22:24:46', 1),
+(18, 'Login Info Block', 'login-data', '<div class=\"message info\" style=\"margin-top: 50px;\">\n    <p><strong>Try Demo Customer Access</strong></p>\n    <p><span style=\"display:inline-block; width: 80px; padding-right: 10px;\">Email:</span>roni_cost@example.com</p>\n    <p><span style=\"display:inline-block; width: 80px; padding-right: 10px;\">Password:</span>roni_cost@example.com</p>\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(19, 'EM0146 Necessary - Fashion Store - Home - Ads Text', 'em0146-fashion-home-ads-text', '<div class=\"row em-wrapper-ads-13 hidden-xs\">\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"Tech Support 247\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"Tech Support 247\" href=\"#\">RETURN &amp; EXCHANGE</a></h5>\r\n<p>Vintage pastel tucked t-shirt leather cami</p>\r\n</div>\r\n</div>\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"Free shipping all order\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"Free shipping all order\" href=\"#\">Free shipping</a></h5>\r\n<p>Get Free Shipping on all orders</p>\r\n</div>\r\n</div>\r\n<div class=\"text-box col-sm-8 col-xs-8\"><a class=\"icon-banner-left pull-left\" title=\"30 days return\" href=\"#\"><em class=\"fa fa-fw\"></em></a>\r\n<div class=\"em-banner-right\">\r\n<h5><a title=\"30 days return\" href=\"#\">MEMBER DISCOUNT</a></h5>\r\n<p>The total billed is discount for member</p>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(20, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Banner 01', 'em0146-fashion-sidebar-left-home-banner-01', '<div class=\"em-wrapper-banners hidden-xs space-small-block\">\r\n<div class=\"effect\"><a class=\"banner-img\" href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/em_ads_01.jpg\"}}\" alt=\"em_ads_01.jpg\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(21, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Ads 02', 'em0146-fashion-sidebar-left-home-ads-02', '<div class=\"row\">\r\n<div class=\"col-sm-24\">\r\n<div class=\"em-wrapper-ads-15\">\r\n<div class=\"em-slider em-slider-category\" data-mage-init=\"{&quot;emslider&quot;:{&quot;items&quot;:1}}\">\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n<div class=\"em-ads-item\">\r\n<div class=\"em-ads-img\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_02.png\'}}\" alt=\"em_ads_02.png\" /></a></div>\r\n<div class=\"em-ads-content\">\r\n<p class=\"em-ads-des\"><em class=\"fa fa-fw\"></em>You can change the visual appearance of almost every element of the theme.</p>\r\n<p class=\"em-ads-author\"><span class=\"em-text-upercase\">elena gilbert </span><span>- Web designer</span></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(22, 'EM0146 Necessary - Fashion Store - Sidebar Left 03 - Home - Recent Blog', 'em0146-fashion-sidebar-left03-home-recent-blog', '<div class=\"row\">\r\n<div class=\"col-sm-24\">\r\n<div class=\"em-wrapper-ads-10 em-line-01\">\r\n<div class=\"em-block-title\">\r\n<h2><span>Blog</span></h2>\r\n</div>\r\n<div class=\"em-from-our-blog\">\r\n<div class=\"em-blog-item em-effect-13\">\r\n<div class=\"em-blog-content bkg-top\"><a href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_03.jpg\'}}\" alt=\"em_ads_03.jpg\" /></a>\r\n<div class=\"em-blog-time\">\r\n<p class=\"em-blog-date\">28</p>\r\n<p class=\"em-blog-month\">aug</p>\r\n</div>\r\n<div class=\"hov\">&nbsp;</div>\r\n</div>\r\n<div class=\"em-box bkg-bottom\">\r\n<h4 class=\"em-blog-title\"><a href=\"#\">Unlimited Colors</a></h4>\r\n<p class=\"em-blog-des\">You can change the visual appearance of almost every element of the theme. You can change colors using color pickers, apply patterns/textures (predefined or custom) for header...</p>\r\n<p><a class=\"link-more\" href=\"#\">Read more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"em-blog-item em-effect-13\">\r\n<div class=\"em-blog-content bkg-top\"><a href=\"#\"><img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_04.jpg\'}}\" alt=\"em_ads_04.jpg\" /></a>\r\n<div class=\"em-blog-time\">\r\n<p class=\"em-blog-date\">28</p>\r\n<p class=\"em-blog-month\">aug</p>\r\n</div>\r\n<div class=\"hov\">&nbsp;</div>\r\n</div>\r\n<div class=\"em-box bkg-bottom\">\r\n<h4 class=\"em-blog-title\"><a href=\"#\">Unlimited Colors</a></h4>\r\n<p class=\"em-blog-des\">You can change the visual appearance of almost every element of the theme. You can change colors using color pickers, apply patterns/textures (predefined or custom) for header...</p>\r\n<p><a class=\"link-more\" href=\"#\">Read more</a></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(23, 'EM0146 Necessary - Fashion Store - Sidebar Left - Home - Banner 04', 'em0146-fashion-sidebar-left-home-banner-04', '<div class=\"img-banner hidden-xs\">\r\n<div class=\"effect-hover-text2\"><a class=\"banner-img\" title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_05.jpg\'}}\" alt=\"em-sample-alt\" /> </a> <a class=\"banner-text\" title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/em_ads_text_05.png\'}}\" alt=\"em-sample-alt\" /> </a></div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(24, 'EM0146 Necessary - Fashion Store - Area Main 01 - Home - Banners', 'em0146-fashion-area-main01-home-banners', '<div class=\"row hidden-xs space-block\">\r\n<div class=\"em-wrapper-banners\">\r\n<div class=\"col-sm-8 col-xs-8  text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/banner1.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-8 col-xs-8  img-banner text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/banner2.png\"}}\" alt=\"em-sample-alt\" width=\"390\" height=\"240\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-8 col-xs-8 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/banner3.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-16 15:04:08', 1),
+(25, 'EM0146 Necessary - Fashion Store - Area Main 02 - Home - Tabs', 'em0146-fashion-area-main02-home-tabs', '<div class=\"emtabs-ajaxblock-loaded space-small-block\">\r\n<div class=\"em-tabs-widget tabs-widget\">\r\n<div class=\"widget-title em-widget-title\">\r\n<h3>Sản phẩm mới</h3>\r\n</div>\r\n<div class=\"em-tabs-right\">\r\n<div class=\"em-tabs emtabs product data items\" data-mage-init=\"{&quot;tabs&quot;:{&quot;openedState&quot;:&quot;active&quot;}}\">\r\n<div id=\"shirt-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"entity_id DESC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:1:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]]\"}}</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-04-22 23:26:37', 1),
+(26, 'EM0146 Necessary - Fashion Store - Area Main 03 - Home - Banner', 'em0146-fashion-area-main03-home-banner', '<div class=\"em-wrapper-banners hidden-xs space-block\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/banner6.jpg\'}}\" alt=\"em-sample-alt\" /> </a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-16 22:59:21', 1),
+(27, 'EM0146 Necessary - Fashion Store - Main Bottom - Banners', 'em0146-fashion-main-bottom-banners', '<div class=\"row hidden-xs space-block\">\r\n<div class=\"em-wrapper-banners\">\r\n<div class=\"col-sm-12 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img class=\"img-responsive retina-img\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/banner5.jpg\'}}\" alt=\"em-sample-alt\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n<div class=\"col-sm-12 text-center\">\r\n<div class=\"effect\"><a title=\"em-sample-title\" href=\"#\"> <img src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/banner4.jpg\"}}\" alt=\"em-sample-alt\" width=\"580\" height=\"194\" /></a><span class=\"effect-line\">&nbsp;</span></div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-16 22:31:27', 1),
+(28, 'EM0146 Necessary - Fashion Store - Main Bottom 02 - Ads', 'em0146-fashion-main-bottom02-ads', '<div class=\"em-wrapper-ads-09 space-block\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-6 text-center em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">SUPER ONLINE STORES</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center em-wrapper-ads-item  line-left line-right\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">RESPONSIVaE DESIGN</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center  em-wrapper-ads-item  line-left line-right\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">FREE UPDATES</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-6 text-center  em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">24/7 SUPPORT ONLINE</h4>\r\n<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames</p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:47', '2017-03-15 22:24:47', 1),
+(29, 'EM0146 Necessary - Fashion Store - Main Bottom 03 - Banner Slider', 'em0146-fashion-main-bottom03-banners-slider', '<div class=\"em-wrapper-brands space-block\">\r\n<div class=\" slider-style02\">\r\n<div class=\"em-slider em-slider-banners em-slider-navigation-icon\" data-mage-init=\"{&quot;emslider&quot;:{&quot;loop&quot;:true,&quot;lazyLoad&quot;:true,&quot;items&quot;:6,&quot;dots&quot;:false,&quot;nav&quot;:true,&quot;responsive&quot;:{&quot;0&quot;:{&quot;items&quot;:1},&quot;320&quot;:{&quot;items&quot;:2},&quot;640&quot;:{&quot;items&quot;:3},&quot;768&quot;:{&quot;items&quot;:4},&quot;1024&quot;:{&quot;items&quot;:5}}}}\">\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand1.png\'}}\" alt=\"em_brand_01.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand2.png\'}}\" alt=\"em_brand_02.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand3.png\'}}\" alt=\"em_brand_03.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand4.png\'}}\" alt=\"em_brand_04.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand5.png\'}}\" alt=\"em_brand_05.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand6.png\'}}\" alt=\"em_brand_06.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand4.png\'}}\" alt=\"em_brand_01.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand7.jpg\'}}\" alt=\"em_brand_02.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/layout_fashion/home/brand/brand2.png\'}}\" alt=\"em_brand_03.jpg\" /></a></div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-03-16 22:53:02', 1),
+(30, 'EM0146 Necessary - Fashion Store - Before Footer 01 - Links', 'em0146-fashion-before-footer01-links', '<div class=\"em-footer-info\">\r\n<div class=\"em-footer-info-bottom\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-16 col-sm-push-4\">\r\n<div class=\"em-wrapper-newsletter text-center\">\r\n<div class=\"em-block-title\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse07&quot;}}\">\r\n<p class=\"h3 em-text-upercase\">Đăng k&yacute; nhận email</p>\r\n<p class=\"h3 em-text-upercase\">{{block class=\"Magento\\Newsletter\\Block\\Subscribe\" name=\"em.newsletter.style05\" template=\"subscribe.phtml\"}}</p>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-24 text-center\">\r\n<div class=\"em-wrapper-social\">\r\n<div class=\"em-block-title  visible-xs\" data-mage-init=\"{&quot;emCollapsible&quot;:{&quot;collapseTarget&quot;:&quot;#collapse08&quot;}}\">\r\n<p class=\"h5 em-text-upercase\"><span>Follow Us</span></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-04-21 14:23:37', 1),
+(31, 'EM0146 Necessary - Fashion Store - Footer Inner - Payment', 'em0146-fashion-area-footer-inner-payment', '<div class=\"em-payment f-right\"><a class=\"em-payment-icon em-visa\" title=\"em-sample-title\" href=\"#\">visa</a> <a class=\"em-payment-icon em-master\" title=\"em-sample-title\" href=\"#\">master</a> <a class=\"em-payment-icon em-express \" title=\"em-sample-title\" href=\"#\">express</a><a class=\"em-payment-icon em-paypal\" title=\"em-sample-title\" href=\"#\">paypal</a> <a class=\"em-payment-icon em-other \" title=\"em-sample-title\" href=\"#\">other</a></div>', '2017-03-15 22:24:48', '2017-04-20 07:56:49', 0),
+(32, 'EM0146 Necessary - Fashion Store - Area Main 04 - Home - Best Sale', 'em0146-fashion-area-main02-home-best-sale', '<div class=\"em-wrapper-products em-best-products button-show01 button-hide-text\">\r\n<div class=\"widget-title em-widget-title\">\r\n<h3>Sản phẩm b&aacute;n chạy</h3>\r\n</div>\r\n<div class=\"em-tabs-right\">\r\n<div class=\"em-tabs emtabs product data items\" data-mage-init=\"{&quot;tabs&quot;:{&quot;openedState&quot;:&quot;active&quot;}}\">\r\n<div id=\"shirt-tab\" class=\"data item content\" data-role=\"content\">{{widget type=\"Emthemes\\FilterProduct\\Block\\Product\\ProductsList\" display_type=\"all_products\" products_count=\"8\" order_by=\"name ASC\" show=\"thumb,name,review,price,addtocart,addto\" thumb_width=\"250\" thumb_height=\"250\" filter_template=\"custom\" custom_template=\"grid_noslider.phtml\" conditions_encoded=\"a:1:[i:1;a:4:[s:4:`type`;s:50:`Magento|CatalogWidget|Model|Rule|Condition|Combine`;s:10:`aggregator`;s:3:`all`;s:5:`value`;s:1:`1`;s:9:`new_child`;s:0:``;]]\"}}</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-04-22 23:30:54', 1),
+(33, 'EM0146 Necessary - Fashion Store - Area Main - Slideshow', 'em0146-fashion-main-area-main-slideshow', '<div class=\"row\">\r\n<div class=\"col-sm-6\">\r\n<div class=\"em-left-menu\">{{block class=\"Magento\\Theme\\Block\\Html\\Topmenu\" name=\"home.leftnav\" template=\"Magento_Theme::html/left_menu.phtml\" ttl=\"3600\"}}</div>\r\n</div>\r\n<div class=\"col-sm-18\">\r\n<div class=\"em-slideshow space-small-block\">\r\n<div class=\"em-slider em-slider-banners em-slider-navigation-icon\" data-mage-init=\"{&quot;emslider&quot;:{&quot;loop&quot;:true,&quot;lazyLoad&quot;:true,&quot;items&quot;:1,&quot;dots&quot;:false,&quot;nav&quot;:true}}\">\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/slider1.jpg\"}}\" alt=\"slide1.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/slider2.jpg\"}}\" alt=\"slide2.jpg\" /></a></div>\r\n<div class=\"em-banners-item\"><a href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/slideshow/slider3.jpg\"}}\" alt=\"slide3.jpg\" /></a></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-03-16 12:05:44', 1),
+(34, 'EM0146 Necessary - Main Megamenu', 'em0146-main-megamenu', '<div class=\"em-menu\">\r\n<ul class=\"em-menu-content\">\r\n<li class=\"level0 submenu\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'women.html\'}}\"><span>Trang chủ</span></a>\r\n</li>\r\n<li class=\"level0 submenu\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\"><span>Features</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-1\">\r\n<div class=\"em-row\">\r\n<div class=\"col-12\">\r\n<ul class=\"ls-link\">\r\n<li><a href=\"#\">Deals product <span class=\"menu-label coming-soon\">&nbsp;</span></a></li>\r\n<li><a href=\"#\">Product Label <span class=\"menu-label coming-soon\">&nbsp;</span></a></li>\r\n<li><a href=\"#\">ColorSwatch</a></li>\r\n<li><a href=\"#\">Blog</a></li>\r\n<li><a href=\"#\">Mega Menu</a></li>\r\n<li><a href=\"#\">Quickshop</a></li>\r\n<li><a href=\"#\">Emthemes Setting</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'women/tops-women.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Categorys</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6 dropmenu-full-content\">\r\n<div class=\"em-row\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>1 Column</span></div>\r\n<div class=\"nav-text\">\r\n<p>Key features for an online market, such as Featured products, Promotions, Deals with Timing, are absolutely ready. It&rsquo;s no doubt that Titanshop will get traffic for your site, and also help boosting sales.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu01.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>2 Columns</span></div>\r\n<div class=\"nav-text\">\r\n<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu02.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>3 Columns</span></div>\r\n<div class=\"nav-text\">\r\n<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end.</p>\r\n<p class=\"view-more\"><a href=\"{{store direct_url=\'gear/bags.html\'}}\">View more</a></p>\r\n</div>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu03.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>Products</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-5\">\r\n<div class=\"em-row\">\r\n<div class=\"col-3\">\r\n<div class=\"nav-title-link\"><span>Product Types</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'compete-track-tote.html\'}}\">Simple product</a></li>\r\n<li><a href=\"{{store direct_url=\'beginner-s-yoga.html\'}}\">Downloadable Product</a></li>\r\n<li><a href=\"{{store direct_url=\'chaz-kangeroo-hoodie.html\'}}\">Configurable Product</a></li>\r\n<li><a href=\"{{store direct_url=\'set-of-sprite-yoga-straps.html\'}}\">Grouped Product</a></li>\r\n<li><a href=\"{{store direct_url=\'sprite-yoga-companion-kit.html\'}}\">Bundle Product</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-3\">\r\n<div class=\"nav-title-link\"><span>Product Columns</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'aeon-capri.html\'}}\">1 Column</a></li>\r\n<li><a href=\"{{store direct_url=\'atlas-fitness-tank.html\'}}\">2 Columns Left</a></li>\r\n<li><a href=\"{{store direct_url=\'cronus-yoga-pant.html\'}}\">2 Columns Right</a></li>\r\n<li><a href=\"{{store direct_url=\'bardot-capri.html\'}}\">Upsell</a></li>\r\n<li><a href=\"{{store direct_url=\'breathe-easy-tank.html\'}}\">Related Product</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-6\">\r\n<div class=\"nav-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu10.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'man.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Fashion</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6\" style=\"padding-bottom: 200px;\">\r\n<div class=\"bg-dropmenu\"><img src=\"{{media url=\'wysiwyg/em0146/menu/bkg-menu.jpg\'}}\" alt=\"em-sample-alt\" /></div>\r\n<div class=\"em-row\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Women</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Men</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Gear</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Women</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Men</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Gear</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu parent\"><a class=\"arrow\" href=\"javascript:void(0)\"><span>&gt;</span></a> <a class=\"em-menu-link\" href=\"{{store direct_url=\'men/tops-men.html\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Sport</span></a>\r\n<div class=\"dropmenu-template\">\r\n<div class=\"dropmenu-content dropmenu-6\">\r\n<div class=\"em-row nav-flex\">\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Tenis</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu08.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Golf</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu04.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Basketball</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu05.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Trainning</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu07.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'women/tops-women.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/jackets-women.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/hoodies-and-sweatshirts-women.html\'}}\">Hoodies &amp; Sweatshirts</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tees-women.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'women/tops-women/tanks-women.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/pants-women.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'women/bottoms-women/shorts-women.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2\">\r\n<div class=\"nav-title-link\"><span>Football</span></div>\r\n<div class=\"nav-title-banner\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/menu/img-menu06.jpg\'}}\" alt=\"running\" /></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'gear.html\'}}\">Gear</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/bags.html\'}}\">Bags</a></li>\r\n<li><a href=\"{{store direct_url=\'gear/fitness-equipment.html\'}}\">Fitness Equipment</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">watches</a></li>\r\n<li><a href=\"{{store direct_url=\'training.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'training/training-video.html\'}}\">Video Download</a></li>\r\n<li><a href=\"{{store direct_url=\'men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li class=\"view-all\"><a href=\"#\"><strong>View all</strong></a></li>\r\n</ul>\r\n</div>\r\n<div class=\"col-2 line-col-left\">\r\n<div class=\"nav-title-link\"><span>other sports</span></div>\r\n<ul class=\"ls-link\">\r\n<li><a href=\"{{store direct_url=\'men/tops-men.html\'}}\">Tops</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/jackets-men.html\'}}\">Jackets</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/hoodies-and-sweatshirts-men.html\'}}\">Hoodies </a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tees-men.html\'}}\">Tees</a></li>\r\n<li><a href=\"{{store direct_url=\'men/tops-men/tanks-men.html\'}}\">Bras &amp; Tanks</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men.html\'}}\">Bottoms</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/pants-men.html\'}}\">Pants</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Shorts</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Training</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Outdoor</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Tennis</a></li>\r\n<li><a href=\"{{store direct_url=\'men/bottoms-men/shorts-men.html\'}}\">Golf</a></li>\r\n</ul>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</li>\r\n<li class=\"level0 submenu\"><a class=\"em-menu-link\" href=\"{{store direct_url=\'blog\'}}\"><span class=\"icon-menu\">&nbsp;</span><span>Liên hệ</span></a></li>\r\n</ul>\r\n</div>', '2017-03-15 22:24:48', '2017-03-16 12:13:42', 1),
+(35, 'EM0146 Necessary - Area Staic Block - Details Page - Ads', 'em0146-area-staticblock-detailspage-ads', '<div class=\"em-wrapper-ads-09 space-small-block\">\r\n<div class=\"row\">\r\n<div class=\"col-sm-12 text-center em-wrapper-ads-item\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-banner-right em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">free shipping</h4>\r\n</div>\r\n</div>\r\n</div>\r\n<div class=\"col-sm-12 text-center em-wrapper-ads-item  line-left\">\r\n<div class=\"em-ads-item\">\r\n<p><em class=\"fa fa-fw\"></em></p>\r\n<div class=\"em-banner-right em-ads-content\">\r\n<h4 class=\"primary em-text-upercase\">same day dispatch</h4>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-03-15 22:24:48', 1),
+(36, 'EM0146 Necessary - Area Size Chart - Details - Size Chart', 'em0146-area-size-chart-details', '<p><a class=\"em-info-size\" data-role=\"action\"><em class=\"fa fa-fw\"></em>Size Chart</a></p>\r\n<div class=\"size-chart-wrapper\" data-mage-init=\"{&quot;modal&quot;:{&quot;trigger&quot;:&quot;.em-info-size&quot;,&quot;wrapperClass&quot;: &quot;modals-wrapper size-chart&quot;}}\">\r\n<div id=\"sizechartModal\" data-role=\"content\">\r\n<div class=\"modal-dialog\">\r\n<div class=\"modal-content\">\r\n<h3 id=\"sizechartModalLabel\" class=\"modal-title\">Size Chart</h3>\r\n<div class=\"box\">\r\n<p><a class=\"em-eff06-04\" href=\"#\"><img class=\"img-responsive\" src=\"{{media url=\'wysiwyg/em0146/details/em_ads_01.jpg\'}}\" alt=\"em_ads_01.jpg\" /></a></p>\r\n</div>\r\n</div>\r\n</div>\r\n</div>\r\n</div>', '2017-03-15 22:24:48', '2017-04-20 08:02:56', 0),
+(37, 'EM0146 Necessary - Fashion Store - Popup Advertising Block', 'em0146-fashion-popup-adsvertising-block', '<div class=\"em-block-ads\"><img class=\"img-responsive\" src=\"{{media url=\"wysiwyg/em0146/layout_fashion/home/em_ads_popup.jpg\"}}\" alt=\"em_ads_popup.jpg\" /></div>', '2017-03-15 22:24:48', '2017-03-15 22:24:48', 1);
 
 -- --------------------------------------------------------
 
@@ -2429,21 +3012,19 @@ INSERT DELAYED IGNORE INTO `cms_block` VALUES
 -- Table structure for table `cms_block_store`
 --
 
-CREATE TABLE `cms_block_store` (
+DROP TABLE IF EXISTS `cms_block_store`;
+CREATE TABLE IF NOT EXISTS `cms_block_store` (
   `block_id` smallint(6) NOT NULL COMMENT 'Block ID',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID'
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
+  PRIMARY KEY (`block_id`,`store_id`),
+  KEY `CMS_BLOCK_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CMS Block To Store Linkage Table';
 
---
--- Truncate table before insert `cms_block_store`
---
-
-TRUNCATE TABLE `cms_block_store`;
 --
 -- Dumping data for table `cms_block_store`
 --
 
-INSERT DELAYED IGNORE INTO `cms_block_store` VALUES
+INSERT INTO `cms_block_store` (`block_id`, `store_id`) VALUES
 (1, 0),
 (2, 0),
 (3, 0),
@@ -2488,8 +3069,9 @@ INSERT DELAYED IGNORE INTO `cms_block_store` VALUES
 -- Table structure for table `cms_page`
 --
 
-CREATE TABLE `cms_page` (
-  `page_id` smallint(6) NOT NULL COMMENT 'Page ID',
+DROP TABLE IF EXISTS `cms_page`;
+CREATE TABLE IF NOT EXISTS `cms_page` (
+  `page_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Page ID',
   `title` varchar(255) DEFAULT NULL COMMENT 'Page Title',
   `page_layout` varchar(255) DEFAULT NULL COMMENT 'Page Layout',
   `meta_keywords` text COMMENT 'Page Meta Keywords',
@@ -2506,26 +3088,23 @@ CREATE TABLE `cms_page` (
   `custom_root_template` varchar(255) DEFAULT NULL COMMENT 'Page Custom Template',
   `custom_layout_update_xml` text COMMENT 'Page Custom Layout Update Content',
   `custom_theme_from` date DEFAULT NULL COMMENT 'Page Custom Theme Active From Date',
-  `custom_theme_to` date DEFAULT NULL COMMENT 'Page Custom Theme Active To Date'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CMS Page Table';
+  `custom_theme_to` date DEFAULT NULL COMMENT 'Page Custom Theme Active To Date',
+  PRIMARY KEY (`page_id`),
+  KEY `CMS_PAGE_IDENTIFIER` (`identifier`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='CMS Page Table';
 
---
--- Truncate table before insert `cms_page`
---
-
-TRUNCATE TABLE `cms_page`;
 --
 -- Dumping data for table `cms_page`
 --
 
-INSERT DELAYED IGNORE INTO `cms_page` VALUES
-(1, '404 Not Found', '2columns-right', 'Page keywords', 'Page description', 'no-route', 'Whoops, our bad...', '<dl>\r\n<dt>The page you requested was not found, and we have a fine guess why.</dt>\r\n<dd>\r\n<ul class=\"disc\">\r\n<li>If you typed the URL directly, please make sure the spelling is correct.</li>\r\n<li>If you clicked on a link to get here, the link is outdated.</li>\r\n</ul></dd>\r\n</dl>\r\n<dl>\r\n<dt>What can you do?</dt>\r\n<dd>Have no fear, help is near! There are many ways you can get back on track with Magento Store.</dd>\r\n<dd>\r\n<ul class=\"disc\">\r\n<li><a href=\"#\" onclick=\"history.go(-1); return false;\">Go back</a> to the previous page.</li>\r\n<li>Use the search bar at the top of the page to search for your products.</li>\r\n<li>Follow these links to get you back on track!<br /><a href=\"{{store url=\"\"}}\">Store Home</a> <span class=\"separator\">|</span> <a href=\"{{store url=\"customer/account\"}}\">My Account</a></li></ul></dd></dl>\r\n', '2017-04-23 11:47:12', '2017-04-23 11:47:12', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(2, 'Home Page', '1column', NULL, NULL, 'home', 'Home Page', NULL, '2017-04-23 11:47:13', '2017-04-23 13:39:39', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(3, 'Enable Cookies', '1column', NULL, NULL, 'enable-cookies', 'What are Cookies?', '<div class=\"enable-cookies cms-content\">\r\n<p>\"Cookies\" are little pieces of data we send when you visit our store. Cookies help us get to know you better and personalize your experience. Plus they help protect you and other shoppers from fraud.</p>\r\n<p style=\"margin-bottom: 20px;\">Set your browser to accept cookies so you can buy items, save items, and receive customized recommendations. Here’s how:</p>\r\n<ul>\r\n<li><a href=\"https://support.google.com/accounts/answer/61416?hl=en\" target=\"_blank\">Google Chrome</a></li>\r\n<li><a href=\"http://windows.microsoft.com/en-us/internet-explorer/delete-manage-cookies\" target=\"_blank\">Internet Explorer</a></li>\r\n<li><a href=\"http://support.apple.com/kb/PH19214\" target=\"_blank\">Safari</a></li>\r\n<li><a href=\"https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences\" target=\"_blank\">Mozilla/Firefox</a></li>\r\n</ul>\r\n</div>', '2017-04-23 11:47:13', '2017-04-23 11:47:13', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(4, 'Privacy Policy', '1column', NULL, NULL, 'privacy-policy-cookie-restriction-mode', 'Privacy Policy', '<div class=\"privacy-policy cms-content\">\n    <div class=\"privacy-policy-content\">\n        <p>This website (\"website\") is operated by Luma Inc., which includes Luma stores, and Luma Private Sales. This privacy policy only covers information collected at this website, and does not cover any information collected offline by Luma. All Luma websites are covered by this privacy policy.</p>\n\n        <h2 id=\"privacy-policy-title-1\">Luma Security</h2>\n        <p>Personal information provided on the website and online credit card transactions are transmitted through a secure server. We are committed to handling your personal information with high standards of information security. We take appropriate physical, electronic, and administrative steps to maintain the security and accuracy of personally identifiable information we collect, including limiting the number of people who have physical access to our database servers, as well as employing electronic security systems and password protections that guard against unauthorized access.</p>\n\n        <p>Our website uses encryption technology, like Secure Sockets Layer (SSL), to protect your personal information during data transport. SSL encrypts ordering information such as your name, address, and credit card number. Our Customer Care center and stores also operate over a private, secure network. Please note that email is not encrypted and is not considered to be a secure means of transmitting credit card information.</p>\n\n        <h2 id=\"privacy-policy-title-2\">Luma Privacy Policy</h2>\n        <p>To help us achieve our goal of providing the highest quality products and services, we use information from our interactions with you and other customers, as well as from other parties. Because we respect your privacy, we have implemented procedures to ensure that your personal information is handled in a safe, secure, and responsible manner. We have posted this privacy policy in order to explain our information collection practices and the choices you have about the way information is collected and used.</p>\n\n        <p>As we continue to develop the Luma website and take advantage of advances in technology to improve the services we offer, this privacy policy likely will change. We therefore encourage you to refer to this policy on an ongoing basis so that you understand our current privacy policy.</p>\n\n        <h2 id=\"privacy-policy-title-3\">The Information We Collect</h2>\n        <p>Generally, you may browse the Luma website without providing any personally identifiable information. However, we may ask you to provide personally identifiable information at various times and places on this website. In some cases, if you choose not to provide us with the requested information, you may not be able to access all parts of this website or participate in all of its features, pricing, and product selection.</p>\n\n        <p>We may collect the following information:</p>\n        <ul>\n            <li>name</li>\n            <li>contact information including email address</li>\n            <li>demographic information such as postcode, preferences and interests</li>\n            <li>other information relevant to customer surveys and/or offers</li>\n        </ul>\n        <p>For the exhaustive list of cookies we collect see the <a href=\"#privacy-policy-title-10\">List of cookies we collect</a> section. From your purchases and other interactions with us, we obtain information concerning the specific products or services you purchase or use. When you visit this website, our web server automatically collects anonymous information such as log data and IP addresses, and may collect general information concerning your location. We may use the automatically collected information for a number of purposes, such as improving our site design, product assortments, customer service, and special promotions.</p>\n        <h2 id=\"privacy-policy-title-4\">How We Use The Information We Collect</h2>\n        <p>We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:</p>\n        <ul>\n            <li>Internal record keeping.</li>\n            <li>We may use the information to improve our products and services.</li>\n            <li>We may periodically send promotional emails about new products, special offers or other information which we think you may find interesting using the email address which you have provided.</li>\n            <li>From time to time, we may also use your information to contact you for market research purposes. We may contact you by email, phone, fax or mail. We may use the information to customize the website according to your interests.</li>\n        </ul>\n\n        <h2 id=\"privacy-policy-title-5\">Security</h2>\n        <p>We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure, we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.</p>\n\n        <h2 id=\"privacy-policy-title-6\">Others With Whom We Share Your Information.</h2>\n        <p><b>The Luma Group:</b> All of the above information that we collect, as described  above, may be shared among all Luma entities, including Luma Venia and Luma  Terra stores, website and Private Sales.</p>\n\n        <p><b>Service Providers:</b> We also may disclose information to outside companies that  help us bring you the products and services we offer. For example, we may work  with an outside company to: (a) manage a database of customer information; (b)  assist us in distributing emails; (c) assist us with direct marketing and data  collection; (d) provide us storage and analysis; (d) provide fraud prevention; and  (e) provide other services designed to assist us in maximizing our business potential. We require that these outside companies agree to keep confidential all information we share with them and to use the information only to perform their obligations in our agreements with them.</p>\n\n        <p><b>Other Companies:</b> We may provide information to carefully selected outside companies when we believe their products or services may be of interest to you.</p>\n\n        <p><b>Business Transitions:</b> We may transfer or share a copy of personal information about you in the event that Luma or one of its properties, affiliates, or subsidiaries goes through a business transition, such as a merger, being acquired by another company, or selling a portion of its assets. You will be notified via email or prominent notice on our website prior to a change of ownership or control of your personal information, if your personal information will be used contrary to this policy. However, nothing in this Privacy Policy is intended to interfere with the ability of Luma to transfer all or part of its business and/or assets to an affiliate or independent third party at any time, for any purpose, without any limitation whatsoever.</p>\n\n        <p>Luma specifically reserves the right to transfer or share a copy of personally identifiable information collected from its websites to the buyer of that portion of its business relating to that information.</p>\n\n        <p><b>Compliance with Law:</b> We may provide access to information when legally required to do so, to cooperate with police investigations or other legal proceedings, to protect against misuse or unauthorized use of our website, to limit our legal liability, and to protect our rights or to protect the rights, property, or safety of visitors of this website or the public.</p>\n\n        <p>Luma partners with advertising companies to place our advertising on publisher websites on the Internet. These advertising companies collect anonymous information about your visits to our web site. This technology involves the use of third party cookies that allow them to develop personalized advertising so that it directly relates to offers that may be of interest to you. You may choose to opt-out of this service we have with our third-party advertising partner. We may also use Luma cookies to provide similar enhanced online marketing to you based on your interests and preferences. You may also choose to opt out of these enhanced online marketing ads.</p>\n\n        <h2 id=\"privacy-policy-title-7\">Your Choices Regarding Use Of The Information We Collect</h2>\n\n        <p>You have several choices regarding our handling of your nonpublic personally identifiable information.</p>\n\n        <p>\n            <b>Direct Mail or Telephone Marketing:</b> If you shop at the Luma or Private Sales stores and wish to be removed from the list of customers that receive direct mail or telemarketing calls, please either write to Luma Customer Care at 112 West  34th Street, 18th Flr. New York, NY 10120 or call +1 800-403-8838. If you choose to write to us, please include your name, address, and credit card account number (if you have one), and state one of the following:\n            <ul>\n                <li>\"NO MAIL OFFERS\" (if you don\'t want to receive offers by mail);</li>\n                <li>\"NO PHONE OFFERS\" (if you don\'t want to receive offers by phone);</li>\n                <li>\"NO PHONE OR MAIL OFFERS\" (if you don\'t want to receive either).</li>\n            </ul>\n        </p>\n\n        <p>Because customer lists often are prepared well in advance of an offering  (sometimes a few months before the offer is made), you may continue to receive  some offers after you send us a request not to use your information for specified  marketing purposes. We appreciate your patience and understanding in giving us  time to carry out your request.</p>\n\n        <h2 id=\"privacy-policy-title-8\">Your California Privacy Rights</h2>\n        <p>Under California Civil Code sections 1798.83-1798.84, California residents are  entitled to ask us for a notice describing what categories of personal customer  information we share with third parties or corporate affiliates for those third  parties or corporate affiliates\' direct marketing purposes. That notice will identify  the categories of information shared and will include a list of the third parties and  affiliates with which it was shared, along with their names and addresses. If you  are a California resident and would like a copy of this notice, please submit a  written request to the following address: Luma Customer Care, 112 West 34th  Street, 18th Floor, New York, NY 10120. Please allow 30 days for a response.</p>\n\n        <h2 id=\"privacy-policy-title-9\">Cookies, Web Beacons, and How We Use Them</h2>\n        <p>A cookie is a small file which asks permission to be placed on your computer\'s hard drive. Once you agree, the file is added and the cookie helps analyze web traffic or lets you know when you visit a particular site. Cookies allow web applications to respond to you as an individual. The web application can tailor its operations to your needs, likes and dislikes by gathering and remembering information about your preferences.</p>\n\n        <p>We use traffic log cookies to identify which pages are being used. This helps us analyze data about web page traffic and improve our website in order to tailor it to customer needs. We only use this information for statistical analysis purposes and then the data is removed from the system.</p>\n\n        <p>Overall, cookies help us provide you with a better website, by enabling us to monitor which pages you find useful and which you do not. A cookie in no way gives us access to your computer or any information about you, other than the data you choose to share with us. You can choose to accept or decline cookies. Most web browsers automatically accept cookies, but you can usually modify your browser setting to decline cookies if you prefer. This may prevent you from taking full advantage of the website.</p>\n\n        <p>A \"web beacon\" or \"pixel tag\" or \"clear gif\" is typically a one-pixel image, used to pass information from your computer or mobile device to a website.</p>\n\n        <p>We use cookies and web beacons to keep track of what you have in your shopping cart and to remember you when you return to the website as well as to identify the pages you click on during your visit to our site and the name of the website you visited immediately before clicking to the Luma website. We use this information to improve our site design, product assortments, customer service, and special promotions. You can, of course, disable cookies and web beacons on your computer by indicating this in the preferences or options menus in your browser. However, it is possible that some parts of our website will not operate correctly if you disable cookies. We may also use web beacons, and other technologies, to help track whether our communications are reaching you, to measure their effectiveness, or to collect certain non-personal information about your computer, device, or browser in order to allow us to better design future communications to you.</p>\n\n        <p>We may contract with third parties who may use cookies and web beacons and collect information on our behalf or provide services such as credit card processing, shipping, promotional services, or data management. We call them our Customer Care Partners. These third parties are prohibited by our contract with them from sharing that information with anyone other than us or our other Customer Care Partners.</p>\n\n        <h2 id=\"privacy-policy-title-10\">List of cookies we collect</h2>\n        <p>The table below lists the cookies we collect and the information they store.</p>\n        <table class=\"data-table\">\n            <thead>\n                <tr>\n                    <th>COOKIE name</th>\n                    <th>COOKIE Description</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr>\n                    <th>CART</th>\n                    <td>The association with your shopping cart.</td>\n                </tr>\n                <tr>\n                    <th>CATEGORY_INFO</th>\n                    <td>Allows pages to be displayed more quickly.</td>\n                </tr>\n                <tr>\n                    <th>COMPARE</th>\n                    <td>The items that you have in the Compare Products list.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER</th>\n                    <td>An encrypted version of your customer id.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_AUTH</th>\n                    <td>An indicator if you are signed into the store.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_INFO</th>\n                    <td>An encrypted version of the customer group you belong to.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_SEGMENT_IDS</th>\n                    <td>Stores your Customer Segment ID</td>\n                </tr>\n                <tr>\n                    <th>EXTERNAL_NO_CACHE</th>\n                    <td>A flag that, indicates whether caching is on or off.</td>\n                </tr>\n                <tr>\n                    <th>FRONTEND</th>\n                    <td>Your session ID on the server.</td>\n                </tr>\n                <tr>\n                    <th>GUEST-VIEW</th>\n                    <td>Allows guests to edit their orders.</td>\n                </tr>\n                <tr>\n                    <th>LAST_CATEGORY</th>\n                    <td>The last category you visited.</td>\n                </tr>\n                <tr>\n                    <th>LAST_PRODUCT</th>\n                    <td>The last product you looked at.</td>\n                </tr>\n                <tr>\n                    <th>NEWMESSAGE</th>\n                    <td>Indicates whether a new message has been received.</td>\n                </tr>\n                <tr>\n                    <th>NO_CACHE</th>\n                    <td>Indicates whether it is allowed to use cache.</td>\n                </tr>\n                <tr>\n                    <th>PERSISTENT_SHOPPING_CART</th>\n                    <td>A link to information about your cart and viewing history if you have asked the site.</td>\n                </tr>\n                <tr>\n                    <th>RECENTLYCOMPARED</th>\n                    <td>The items you recently compared.</td>\n                </tr>\n                <tr>\n                    <th>STF</th>\n                    <td>Information on products you emailed to friends.</td>\n                </tr>\n                <tr>\n                    <th>STORE</th>\n                    <td>The store view or language you have selected.</td>\n                </tr>\n                <tr>\n                    <th>USER_ALLOWED_SAVE_COOKIE</th>\n                    <td>Indicates whether a customer authorized cookies.</td>\n                </tr>\n                <tr>\n                    <th>VIEWED_PRODUCT_IDS</th>\n                    <td>The products that you recently looked at.</td>\n                </tr>\n                <tr>\n                    <th>WISHLIST</th>\n                    <td>An encrypted list of products added to your wish list.</td>\n                </tr>\n                <tr>\n                    <th>WISHLIST_CNT</th>\n                    <td>The number of items in your wish list.</td>\n                </tr>\n            </tbody>\n        </table>\n\n        <h2 id=\"privacy-policy-title-11\">Online Account Registration</h2>\n        <p>To make online shopping faster and easier, you may register on the Luma website. As a registered customer, you only have to enter your shipping addresses and billing information once; they will be securely stored with us for your future use. Using your name and a password of your choice, you may access your account online at any time to add, delete, or change information. If you are using a public computer, we strongly encourage you to Sign Out when you finish shopping. Your information will still be stored with us but it will not be accessible to anyone else from that computer.</p>\n\n        <h2 id=\"privacy-policy-title-12\">Emails</h2>\n        <p>You will receive promotional emails from us only if you have asked to receive them. If you do not want to receive email from Luma or its affiliates you can click on the \"Unsubscribe\" link at the bottom of any email communication sent by us. Please allow us 3 business days from when the request was received to complete the removal, as some of our promotions may already have been in process before you submitted your request.</p>\n\n        <h2 id=\"privacy-policy-title-13\">Acceptance</h2>\n        <p>By using this website, you accept the policies set forth in this Privacy Policy.</p>\n\n        <h2 id=\"privacy-policy-title-14\">Questions for Luma?</h2>\n        <p><a href=\"{{store url=\"contact\"}}\">Contact Us</a></p>\n    </div>\n    <div class=\"block block-collapsible-nav\">\n        <div class=\"title block-collapsible-nav-title\" data-mage-init=\"{&quot;toggleAdvanced&quot;: {&quot;toggleContainers&quot;: &quot;#privacy-policy-nav-content&quot;, &quot;selectorsToggleClass&quot;: &quot;active&quot;}}\">Privacy Menu</div>\n        <div class=\"block-collapsible-content content\" id=\"privacy-policy-nav-content\">\n            <ul class=\"items\">\n                <li class=\"item current\"><a href=\"#privacy-policy-title-1\">Luma Security</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-2\">Luma Privacy Policy</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-3\">The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-4\">How We Use The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-5\">Security</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-6\">Others With Whom We Share Your Information.</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-7\">Your Choices Regarding Use Of The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-8\">Your California Privacy Rights</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-9\">Cookies, Web Beacons, and How We Use Them</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-10\">List of cookies we collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-11\">Online Account Registration</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-12\">Emails</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-13\">Acceptance</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-14\">Questions for Luma?</a></li>\n            </ul>\n        </div>\n    </div>\n</div>\n', '2017-04-23 11:47:13', '2017-04-23 13:39:39', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(5, 'About us', '1column', NULL, NULL, 'about-us', 'About us', '<div class=\"about-info cms-content\">\r\n<p class=\"cms-content-important\">With more than 230 stores spanning 43 states and growing, Luma is a nationally recognized active wear manufacturer and retailer. We&rsquo;re passionate about active lifestyles &ndash; and it goes way beyond apparel.</p>\r\n<p>At Luma, wellness is a way of life. We don&rsquo;t believe age, gender or past actions define you, only your ambition and desire for wholeness... today.</p>\r\n<p>We differentiate ourselves through a combination of unique designs and styles merged with unequaled standards of quality and authenticity. Our founders have deep roots in yoga and health communities and our selections serve amateur practitioners and professional athletes alike.</p>\r\n<ul style=\"list-style: none; margin-top: 20px; padding: 0;\">\r\n<li><a href=\"{{store url=\"contact\"}}\">Contact Luma</a></li>\r\n<li><a href=\"{{store url=\"customer-service\"}}\">Customer Service</a></li>\r\n<li><a href=\"{{store url=\"privacy-policy\"}}\">Luma Privacy Policy</a></li>\r\n<li><a href=\"{{store url=\"\"}}\">Shop Luma</a></li>\r\n</ul>\r\n</div>\r\n\r\n<div class=\"em-menu\">\r\n	<ul class=\"em-menu-hoz\">\r\n		<li class=\"level0 submenu\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>1 Column</span></a></li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>2 Columns</span></a>\r\n		<div class=\"dropmenu-template\">\r\n		<div class=\"dropmenu-content dropmenu-3\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-4\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-8\">\r\n		<div class=\"nav-text\">\r\n		<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end. Key features for an online market, such as Featured products, Promotions, Deals with Timing, are absolutely ready. It&rsquo;s no doubt that Titanshop will get traffic for your site, and also help boosting sales.</p>\r\n		<p>You can change visual appearance of almost every element of this Magento theme. You can set your favorite colors and generate css file from the admin.</p>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>3 Columns</span></a>\r\n		<div class=\"dropmenu-template\">\r\n		<div class=\"dropmenu-content dropmenu-5\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-3\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-9\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-6\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-6\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>6 Columns</span></a>\r\n			<div class=\"dropmenu-template\">\r\n				<div class=\"dropmenu-content dropmenu-6\">\r\n					<div class=\"em-row\">\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					</div>\r\n				</div>\r\n			</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>Sport layout</span></a>\r\n			<div class=\"dropmenu-template\">\r\n				<div class=\"dropmenu-content dropmenu-6\">\r\n					<div class=\"em-row\">\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n						<div class=\"nav-title-link\"><span>shoes</span></div>\r\n						<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n						<ul class=\"ls-link\">\r\n						<li><a href=\"#\">Originals</a></li>\r\n						<li><a href=\"#\">Running</a></li>\r\n						<li><a href=\"#\">Training</a></li>\r\n						<li><a href=\"#\">Outdoor</a></li>\r\n						<li><a href=\"#\">Tennis</a></li>\r\n						<li><a href=\"#\">Golf</a></li>\r\n						<li><a href=\"#\">Golf</a></li>\r\n						<li><a href=\"#\">clothing</a></li>\r\n						</ul>\r\n					</div>\r\n					</div>\r\n				</div>\r\n			</div>\r\n		</li>\r\n	</ul>\r\n</div>', '2017-04-23 13:39:39', '2017-04-23 13:39:39', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(6, 'Customer Service', '1column', NULL, NULL, 'customer-service', 'Customer Service', '<div class=\"customer-service cms-content\">\n  <div class=\"cms-content-important\">\n      <h2>Luma Delivery and Returns</h2>\n      <p>We hope you love shopping with Luma. Here are our delivery and returns policies to help make sure we meet your expectations. <a href=\"{{store url=\"contact\"}}\">Contact Us.</a></p>\n  </div>\n\n  <h2>Shipping and Delivery</h2>\n  <p>Shipping and Delivery is the charge for internet order processing, item selection, packaging, transport and handling. We don’t guarantee delivery times, but we do our best to provide accurate estimates.</p>\n\n  <p>Deliveries occur only on weekdays. Shipping and Delivery charges are subject to change and are determined when you order. Estimated delivery time assumes orders are placed before 12:00 noon (PST). Orders you place with Luma late on Friday or on Saturday will not be processed until Monday. Charges may be added to orders with Priority, Overnight and International shipping if we try unsuccessfully to deliver your order more than once.</p>\n\n  <p>Delivery addresses in Alaska, Hawaii, Puerto Rico, and Guam should add an additional $5.00 charge for standard Shipping & Delivery. Orders arrive in 7 to 9 business days when ordered before 12:00 noon (PST).</p>\n\n  <div class=\"table-wrapper\">\n      <table>\n          <caption>Shipping and Delivery</caption>\n          <thead>\n              <tr>\n                  <th><strong>Merchandise total *</strong></th>\n                  <th><strong>STANDARD</strong><br />5&mdash;7 day shipping **</th>\n                  <th><strong>PRIORITY</strong><br />2&mdash;3 day shipping **</th>\n                  <th><strong>OVERNIGHT</strong><br />Next business day **</th>\n              </tr>\n          </thead>\n          <tbody>\n              <tr>\n                  <th>Up to $200</th>\n                  <td>$16</td>\n                  <td>$26</td>\n                  <td>$33</td>\n              </tr>\n              <tr>\n                  <th>$200.01&mdash;500.00</th>\n                  <td>$21</td>\n                  <td>$31</td>\n                  <td>$38</td>\n              </tr>\n              <tr>\n                  <th>$500.01&mdash;1000.00</th>\n                  <td>$29</td>\n                  <td>$39</td>\n                  <td>$46</td>\n              </tr>\n              <tr>\n                  <th>Over $1000.00</th>\n                  <td>$34</td>\n                  <td>$44</td>\n                  <td>$51</td>\n              </tr>\n          </tbody>\n      </table>\n  </div>\n\n  <p>\n      <small>*before tax and additional charges</small><br />\n      <small>**after processing if ordered by 12:00 noon PST</small>\n  </p>\n\n  <h2 style=\"margin-top: 40px;\">Returns and Replacements</h2>\n  <p>We want you to be completely happy with your Luma order. If for any reason you are not satisfied, we will gladly accept your timely return of unworn, unwashed, or defective merchandise. Used merchandise cannot be returned unless defective. Returned merchandise should include the vendor packaging and tags and be in the same condition as when it was received. A pickup and/or restock fee may apply. Merchandise must be returned within 30 days of receipt of merchandise.</p>\n\n  <h3>Returning Gifts</h3>\n  <p>When returning a gift, a Luma Gift Card will be issued to the gift recipient for the amount of the returned merchandise. The card can be used for purchases from any Luma store, and online. In compliance with Federal law, for gifts valued at more than $2,000.00, the recipient will receive a check rather than an Luma Gift Card.</p>\n\n  <h3>Returning Merchandise by Mail</h3>\n  <p>On the back of the packing slip enclosed with your Luma order, please note the reason(s) for return and whether you wish to  exchange the item(s) or receive a credit/refund (depending on the original form of  payment).</p>\n  <p>Enclose the return section of the packing slip with your item(s). Please use one  of the return labels provided on the front of your packing slip to ensure proper  return address and credit information. Restricted items must be returned using  ground transportation.</p>\n  <p>Please allow 10 to 14 days for Luma to process your return.</p>\n</div>\n', '2017-04-23 13:39:39', '2017-04-23 13:39:39', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
-(7, 'EM Neccessary Homepage Two Columns', '2columns-left', NULL, NULL, 'neccessary-home', NULL, NULL, '2017-04-23 13:39:39', '2017-04-23 13:39:39', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `cms_page` (`page_id`, `title`, `page_layout`, `meta_keywords`, `meta_description`, `identifier`, `content_heading`, `content`, `creation_time`, `update_time`, `is_active`, `sort_order`, `layout_update_xml`, `custom_theme`, `custom_root_template`, `custom_layout_update_xml`, `custom_theme_from`, `custom_theme_to`) VALUES
+(1, '404 Not Found', '2columns-right', 'Page keywords', 'Page description', 'no-route', 'Whoops, our bad...', '<dl>\r\n<dt>The page you requested was not found, and we have a fine guess why.</dt>\r\n<dd>\r\n<ul class=\"disc\">\r\n<li>If you typed the URL directly, please make sure the spelling is correct.</li>\r\n<li>If you clicked on a link to get here, the link is outdated.</li>\r\n</ul></dd>\r\n</dl>\r\n<dl>\r\n<dt>What can you do?</dt>\r\n<dd>Have no fear, help is near! There are many ways you can get back on track with Magento Store.</dd>\r\n<dd>\r\n<ul class=\"disc\">\r\n<li><a href=\"#\" onclick=\"history.go(-1); return false;\">Go back</a> to the previous page.</li>\r\n<li>Use the search bar at the top of the page to search for your products.</li>\r\n<li>Follow these links to get you back on track!<br /><a href=\"{{store url=\"\"}}\">Store Home</a> <span class=\"separator\">|</span> <a href=\"{{store url=\"customer/account\"}}\">My Account</a></li></ul></dd></dl>\r\n', '2017-03-15 22:06:16', '2017-03-15 22:06:16', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 'Home Page', '1column', NULL, NULL, 'home', 'Home Page', NULL, '2017-03-15 22:06:17', '2017-03-15 22:24:44', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 'Enable Cookies', '1column', NULL, NULL, 'enable-cookies', 'What are Cookies?', '<div class=\"enable-cookies cms-content\">\r\n<p>\"Cookies\" are little pieces of data we send when you visit our store. Cookies help us get to know you better and personalize your experience. Plus they help protect you and other shoppers from fraud.</p>\r\n<p style=\"margin-bottom: 20px;\">Set your browser to accept cookies so you can buy items, save items, and receive customized recommendations. Here’s how:</p>\r\n<ul>\r\n<li><a href=\"https://support.google.com/accounts/answer/61416?hl=en\" target=\"_blank\">Google Chrome</a></li>\r\n<li><a href=\"http://windows.microsoft.com/en-us/internet-explorer/delete-manage-cookies\" target=\"_blank\">Internet Explorer</a></li>\r\n<li><a href=\"http://support.apple.com/kb/PH19214\" target=\"_blank\">Safari</a></li>\r\n<li><a href=\"https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences\" target=\"_blank\">Mozilla/Firefox</a></li>\r\n</ul>\r\n</div>', '2017-03-15 22:06:17', '2017-03-15 22:06:17', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 'Privacy Policy', '1column', NULL, NULL, 'privacy-policy-cookie-restriction-mode', 'Privacy Policy', '<div class=\"privacy-policy cms-content\">\n    <div class=\"privacy-policy-content\">\n        <p>This website (\"website\") is operated by Luma Inc., which includes Luma stores, and Luma Private Sales. This privacy policy only covers information collected at this website, and does not cover any information collected offline by Luma. All Luma websites are covered by this privacy policy.</p>\n\n        <h2 id=\"privacy-policy-title-1\">Luma Security</h2>\n        <p>Personal information provided on the website and online credit card transactions are transmitted through a secure server. We are committed to handling your personal information with high standards of information security. We take appropriate physical, electronic, and administrative steps to maintain the security and accuracy of personally identifiable information we collect, including limiting the number of people who have physical access to our database servers, as well as employing electronic security systems and password protections that guard against unauthorized access.</p>\n\n        <p>Our website uses encryption technology, like Secure Sockets Layer (SSL), to protect your personal information during data transport. SSL encrypts ordering information such as your name, address, and credit card number. Our Customer Care center and stores also operate over a private, secure network. Please note that email is not encrypted and is not considered to be a secure means of transmitting credit card information.</p>\n\n        <h2 id=\"privacy-policy-title-2\">Luma Privacy Policy</h2>\n        <p>To help us achieve our goal of providing the highest quality products and services, we use information from our interactions with you and other customers, as well as from other parties. Because we respect your privacy, we have implemented procedures to ensure that your personal information is handled in a safe, secure, and responsible manner. We have posted this privacy policy in order to explain our information collection practices and the choices you have about the way information is collected and used.</p>\n\n        <p>As we continue to develop the Luma website and take advantage of advances in technology to improve the services we offer, this privacy policy likely will change. We therefore encourage you to refer to this policy on an ongoing basis so that you understand our current privacy policy.</p>\n\n        <h2 id=\"privacy-policy-title-3\">The Information We Collect</h2>\n        <p>Generally, you may browse the Luma website without providing any personally identifiable information. However, we may ask you to provide personally identifiable information at various times and places on this website. In some cases, if you choose not to provide us with the requested information, you may not be able to access all parts of this website or participate in all of its features, pricing, and product selection.</p>\n\n        <p>We may collect the following information:</p>\n        <ul>\n            <li>name</li>\n            <li>contact information including email address</li>\n            <li>demographic information such as postcode, preferences and interests</li>\n            <li>other information relevant to customer surveys and/or offers</li>\n        </ul>\n        <p>For the exhaustive list of cookies we collect see the <a href=\"#privacy-policy-title-10\">List of cookies we collect</a> section. From your purchases and other interactions with us, we obtain information concerning the specific products or services you purchase or use. When you visit this website, our web server automatically collects anonymous information such as log data and IP addresses, and may collect general information concerning your location. We may use the automatically collected information for a number of purposes, such as improving our site design, product assortments, customer service, and special promotions.</p>\n        <h2 id=\"privacy-policy-title-4\">How We Use The Information We Collect</h2>\n        <p>We require this information to understand your needs and provide you with a better service, and in particular for the following reasons:</p>\n        <ul>\n            <li>Internal record keeping.</li>\n            <li>We may use the information to improve our products and services.</li>\n            <li>We may periodically send promotional emails about new products, special offers or other information which we think you may find interesting using the email address which you have provided.</li>\n            <li>From time to time, we may also use your information to contact you for market research purposes. We may contact you by email, phone, fax or mail. We may use the information to customize the website according to your interests.</li>\n        </ul>\n\n        <h2 id=\"privacy-policy-title-5\">Security</h2>\n        <p>We are committed to ensuring that your information is secure. In order to prevent unauthorized access or disclosure, we have put in place suitable physical, electronic and managerial procedures to safeguard and secure the information we collect online.</p>\n\n        <h2 id=\"privacy-policy-title-6\">Others With Whom We Share Your Information.</h2>\n        <p><b>The Luma Group:</b> All of the above information that we collect, as described  above, may be shared among all Luma entities, including Luma Venia and Luma  Terra stores, website and Private Sales.</p>\n\n        <p><b>Service Providers:</b> We also may disclose information to outside companies that  help us bring you the products and services we offer. For example, we may work  with an outside company to: (a) manage a database of customer information; (b)  assist us in distributing emails; (c) assist us with direct marketing and data  collection; (d) provide us storage and analysis; (d) provide fraud prevention; and  (e) provide other services designed to assist us in maximizing our business potential. We require that these outside companies agree to keep confidential all information we share with them and to use the information only to perform their obligations in our agreements with them.</p>\n\n        <p><b>Other Companies:</b> We may provide information to carefully selected outside companies when we believe their products or services may be of interest to you.</p>\n\n        <p><b>Business Transitions:</b> We may transfer or share a copy of personal information about you in the event that Luma or one of its properties, affiliates, or subsidiaries goes through a business transition, such as a merger, being acquired by another company, or selling a portion of its assets. You will be notified via email or prominent notice on our website prior to a change of ownership or control of your personal information, if your personal information will be used contrary to this policy. However, nothing in this Privacy Policy is intended to interfere with the ability of Luma to transfer all or part of its business and/or assets to an affiliate or independent third party at any time, for any purpose, without any limitation whatsoever.</p>\n\n        <p>Luma specifically reserves the right to transfer or share a copy of personally identifiable information collected from its websites to the buyer of that portion of its business relating to that information.</p>\n\n        <p><b>Compliance with Law:</b> We may provide access to information when legally required to do so, to cooperate with police investigations or other legal proceedings, to protect against misuse or unauthorized use of our website, to limit our legal liability, and to protect our rights or to protect the rights, property, or safety of visitors of this website or the public.</p>\n\n        <p>Luma partners with advertising companies to place our advertising on publisher websites on the Internet. These advertising companies collect anonymous information about your visits to our web site. This technology involves the use of third party cookies that allow them to develop personalized advertising so that it directly relates to offers that may be of interest to you. You may choose to opt-out of this service we have with our third-party advertising partner. We may also use Luma cookies to provide similar enhanced online marketing to you based on your interests and preferences. You may also choose to opt out of these enhanced online marketing ads.</p>\n\n        <h2 id=\"privacy-policy-title-7\">Your Choices Regarding Use Of The Information We Collect</h2>\n\n        <p>You have several choices regarding our handling of your nonpublic personally identifiable information.</p>\n\n        <p>\n            <b>Direct Mail or Telephone Marketing:</b> If you shop at the Luma or Private Sales stores and wish to be removed from the list of customers that receive direct mail or telemarketing calls, please either write to Luma Customer Care at 112 West  34th Street, 18th Flr. New York, NY 10120 or call +1 800-403-8838. If you choose to write to us, please include your name, address, and credit card account number (if you have one), and state one of the following:\n            <ul>\n                <li>\"NO MAIL OFFERS\" (if you don\'t want to receive offers by mail);</li>\n                <li>\"NO PHONE OFFERS\" (if you don\'t want to receive offers by phone);</li>\n                <li>\"NO PHONE OR MAIL OFFERS\" (if you don\'t want to receive either).</li>\n            </ul>\n        </p>\n\n        <p>Because customer lists often are prepared well in advance of an offering  (sometimes a few months before the offer is made), you may continue to receive  some offers after you send us a request not to use your information for specified  marketing purposes. We appreciate your patience and understanding in giving us  time to carry out your request.</p>\n\n        <h2 id=\"privacy-policy-title-8\">Your California Privacy Rights</h2>\n        <p>Under California Civil Code sections 1798.83-1798.84, California residents are  entitled to ask us for a notice describing what categories of personal customer  information we share with third parties or corporate affiliates for those third  parties or corporate affiliates\' direct marketing purposes. That notice will identify  the categories of information shared and will include a list of the third parties and  affiliates with which it was shared, along with their names and addresses. If you  are a California resident and would like a copy of this notice, please submit a  written request to the following address: Luma Customer Care, 112 West 34th  Street, 18th Floor, New York, NY 10120. Please allow 30 days for a response.</p>\n\n        <h2 id=\"privacy-policy-title-9\">Cookies, Web Beacons, and How We Use Them</h2>\n        <p>A cookie is a small file which asks permission to be placed on your computer\'s hard drive. Once you agree, the file is added and the cookie helps analyze web traffic or lets you know when you visit a particular site. Cookies allow web applications to respond to you as an individual. The web application can tailor its operations to your needs, likes and dislikes by gathering and remembering information about your preferences.</p>\n\n        <p>We use traffic log cookies to identify which pages are being used. This helps us analyze data about web page traffic and improve our website in order to tailor it to customer needs. We only use this information for statistical analysis purposes and then the data is removed from the system.</p>\n\n        <p>Overall, cookies help us provide you with a better website, by enabling us to monitor which pages you find useful and which you do not. A cookie in no way gives us access to your computer or any information about you, other than the data you choose to share with us. You can choose to accept or decline cookies. Most web browsers automatically accept cookies, but you can usually modify your browser setting to decline cookies if you prefer. This may prevent you from taking full advantage of the website.</p>\n\n        <p>A \"web beacon\" or \"pixel tag\" or \"clear gif\" is typically a one-pixel image, used to pass information from your computer or mobile device to a website.</p>\n\n        <p>We use cookies and web beacons to keep track of what you have in your shopping cart and to remember you when you return to the website as well as to identify the pages you click on during your visit to our site and the name of the website you visited immediately before clicking to the Luma website. We use this information to improve our site design, product assortments, customer service, and special promotions. You can, of course, disable cookies and web beacons on your computer by indicating this in the preferences or options menus in your browser. However, it is possible that some parts of our website will not operate correctly if you disable cookies. We may also use web beacons, and other technologies, to help track whether our communications are reaching you, to measure their effectiveness, or to collect certain non-personal information about your computer, device, or browser in order to allow us to better design future communications to you.</p>\n\n        <p>We may contract with third parties who may use cookies and web beacons and collect information on our behalf or provide services such as credit card processing, shipping, promotional services, or data management. We call them our Customer Care Partners. These third parties are prohibited by our contract with them from sharing that information with anyone other than us or our other Customer Care Partners.</p>\n\n        <h2 id=\"privacy-policy-title-10\">List of cookies we collect</h2>\n        <p>The table below lists the cookies we collect and the information they store.</p>\n        <table class=\"data-table\">\n            <thead>\n                <tr>\n                    <th>COOKIE name</th>\n                    <th>COOKIE Description</th>\n                </tr>\n            </thead>\n            <tbody>\n                <tr>\n                    <th>CART</th>\n                    <td>The association with your shopping cart.</td>\n                </tr>\n                <tr>\n                    <th>CATEGORY_INFO</th>\n                    <td>Allows pages to be displayed more quickly.</td>\n                </tr>\n                <tr>\n                    <th>COMPARE</th>\n                    <td>The items that you have in the Compare Products list.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER</th>\n                    <td>An encrypted version of your customer id.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_AUTH</th>\n                    <td>An indicator if you are signed into the store.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_INFO</th>\n                    <td>An encrypted version of the customer group you belong to.</td>\n                </tr>\n                <tr>\n                    <th>CUSTOMER_SEGMENT_IDS</th>\n                    <td>Stores your Customer Segment ID</td>\n                </tr>\n                <tr>\n                    <th>EXTERNAL_NO_CACHE</th>\n                    <td>A flag that, indicates whether caching is on or off.</td>\n                </tr>\n                <tr>\n                    <th>FRONTEND</th>\n                    <td>Your session ID on the server.</td>\n                </tr>\n                <tr>\n                    <th>GUEST-VIEW</th>\n                    <td>Allows guests to edit their orders.</td>\n                </tr>\n                <tr>\n                    <th>LAST_CATEGORY</th>\n                    <td>The last category you visited.</td>\n                </tr>\n                <tr>\n                    <th>LAST_PRODUCT</th>\n                    <td>The last product you looked at.</td>\n                </tr>\n                <tr>\n                    <th>NEWMESSAGE</th>\n                    <td>Indicates whether a new message has been received.</td>\n                </tr>\n                <tr>\n                    <th>NO_CACHE</th>\n                    <td>Indicates whether it is allowed to use cache.</td>\n                </tr>\n                <tr>\n                    <th>PERSISTENT_SHOPPING_CART</th>\n                    <td>A link to information about your cart and viewing history if you have asked the site.</td>\n                </tr>\n                <tr>\n                    <th>RECENTLYCOMPARED</th>\n                    <td>The items you recently compared.</td>\n                </tr>\n                <tr>\n                    <th>STF</th>\n                    <td>Information on products you emailed to friends.</td>\n                </tr>\n                <tr>\n                    <th>STORE</th>\n                    <td>The store view or language you have selected.</td>\n                </tr>\n                <tr>\n                    <th>USER_ALLOWED_SAVE_COOKIE</th>\n                    <td>Indicates whether a customer authorized cookies.</td>\n                </tr>\n                <tr>\n                    <th>VIEWED_PRODUCT_IDS</th>\n                    <td>The products that you recently looked at.</td>\n                </tr>\n                <tr>\n                    <th>WISHLIST</th>\n                    <td>An encrypted list of products added to your wish list.</td>\n                </tr>\n                <tr>\n                    <th>WISHLIST_CNT</th>\n                    <td>The number of items in your wish list.</td>\n                </tr>\n            </tbody>\n        </table>\n\n        <h2 id=\"privacy-policy-title-11\">Online Account Registration</h2>\n        <p>To make online shopping faster and easier, you may register on the Luma website. As a registered customer, you only have to enter your shipping addresses and billing information once; they will be securely stored with us for your future use. Using your name and a password of your choice, you may access your account online at any time to add, delete, or change information. If you are using a public computer, we strongly encourage you to Sign Out when you finish shopping. Your information will still be stored with us but it will not be accessible to anyone else from that computer.</p>\n\n        <h2 id=\"privacy-policy-title-12\">Emails</h2>\n        <p>You will receive promotional emails from us only if you have asked to receive them. If you do not want to receive email from Luma or its affiliates you can click on the \"Unsubscribe\" link at the bottom of any email communication sent by us. Please allow us 3 business days from when the request was received to complete the removal, as some of our promotions may already have been in process before you submitted your request.</p>\n\n        <h2 id=\"privacy-policy-title-13\">Acceptance</h2>\n        <p>By using this website, you accept the policies set forth in this Privacy Policy.</p>\n\n        <h2 id=\"privacy-policy-title-14\">Questions for Luma?</h2>\n        <p><a href=\"{{store url=\"contact\"}}\">Contact Us</a></p>\n    </div>\n    <div class=\"block block-collapsible-nav\">\n        <div class=\"title block-collapsible-nav-title\" data-mage-init=\"{&quot;toggleAdvanced&quot;: {&quot;toggleContainers&quot;: &quot;#privacy-policy-nav-content&quot;, &quot;selectorsToggleClass&quot;: &quot;active&quot;}}\">Privacy Menu</div>\n        <div class=\"block-collapsible-content content\" id=\"privacy-policy-nav-content\">\n            <ul class=\"items\">\n                <li class=\"item current\"><a href=\"#privacy-policy-title-1\">Luma Security</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-2\">Luma Privacy Policy</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-3\">The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-4\">How We Use The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-5\">Security</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-6\">Others With Whom We Share Your Information.</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-7\">Your Choices Regarding Use Of The Information We Collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-8\">Your California Privacy Rights</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-9\">Cookies, Web Beacons, and How We Use Them</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-10\">List of cookies we collect</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-11\">Online Account Registration</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-12\">Emails</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-13\">Acceptance</a></li>\n                <li class=\"item\"><a href=\"#privacy-policy-title-14\">Questions for Luma?</a></li>\n            </ul>\n        </div>\n    </div>\n</div>\n', '2017-03-15 22:06:17', '2017-03-15 22:24:44', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'About us', '1column', NULL, NULL, 'about-us', 'About us', '<div class=\"about-info cms-content\">\r\n<p class=\"cms-content-important\">With more than 230 stores spanning 43 states and growing, Luma is a nationally recognized active wear manufacturer and retailer. We&rsquo;re passionate about active lifestyles &ndash; and it goes way beyond apparel.</p>\r\n<p>At Luma, wellness is a way of life. We don&rsquo;t believe age, gender or past actions define you, only your ambition and desire for wholeness... today.</p>\r\n<p>We differentiate ourselves through a combination of unique designs and styles merged with unequaled standards of quality and authenticity. Our founders have deep roots in yoga and health communities and our selections serve amateur practitioners and professional athletes alike.</p>\r\n<ul style=\"list-style: none; margin-top: 20px; padding: 0;\">\r\n<li><a href=\"{{store url=\"contact\"}}\">Contact Luma</a></li>\r\n<li><a href=\"{{store url=\"customer-service\"}}\">Customer Service</a></li>\r\n<li><a href=\"{{store url=\"privacy-policy\"}}\">Luma Privacy Policy</a></li>\r\n<li><a href=\"{{store url=\"\"}}\">Shop Luma</a></li>\r\n</ul>\r\n</div>\r\n\r\n<div class=\"em-menu\">\r\n	<ul class=\"em-menu-hoz\">\r\n		<li class=\"level0 submenu\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>1 Column</span></a></li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>2 Columns</span></a>\r\n		<div class=\"dropmenu-template\">\r\n		<div class=\"dropmenu-content dropmenu-3\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-4\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-8\">\r\n		<div class=\"nav-text\">\r\n		<p>A friendly responsive design, adaptive screen with the new Bootstrap 3 is already very impressive. Besides that, Visual Content Editor allows you to edit content directly on front-end. Key features for an online market, such as Featured products, Promotions, Deals with Timing, are absolutely ready. It&rsquo;s no doubt that Titanshop will get traffic for your site, and also help boosting sales.</p>\r\n		<p>You can change visual appearance of almost every element of this Magento theme. You can set your favorite colors and generate css file from the admin.</p>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>3 Columns</span></a>\r\n		<div class=\"dropmenu-template\">\r\n		<div class=\"dropmenu-content dropmenu-5\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-3\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-9\">\r\n		<div class=\"em-row\">\r\n		<div class=\"col-6\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		<div class=\"col-6\">\r\n		<div class=\"nav-title-link\"><span>shoes</span></div>\r\n		<ul class=\"ls-link\">\r\n		<li><a href=\"#\">Originals</a></li>\r\n		<li><a href=\"#\">Running</a></li>\r\n		<li><a href=\"#\">Training</a></li>\r\n		<li><a href=\"#\">Outdoor</a></li>\r\n		<li><a href=\"#\">Tennis</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">Golf</a></li>\r\n		<li><a href=\"#\">clothing</a></li>\r\n		</ul>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>6 Columns</span></a>\r\n			<div class=\"dropmenu-template\">\r\n				<div class=\"dropmenu-content dropmenu-6\">\r\n					<div class=\"em-row\">\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					</div>\r\n				</div>\r\n			</div>\r\n		</li>\r\n		<li class=\"level0 submenu parent\"><a class=\"em-menu-link\"><span class=\"icon-menu\">&nbsp;</span><span>Sport layout</span></a>\r\n			<div class=\"dropmenu-template\">\r\n				<div class=\"dropmenu-content dropmenu-6\">\r\n					<div class=\"em-row\">\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n					<div class=\"nav-title-link\"><span>shoes</span></div>\r\n					<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n					<ul class=\"ls-link\">\r\n					<li><a href=\"#\">Originals</a></li>\r\n					<li><a href=\"#\">Running</a></li>\r\n					<li><a href=\"#\">Training</a></li>\r\n					<li><a href=\"#\">Outdoor</a></li>\r\n					<li><a href=\"#\">Tennis</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">Golf</a></li>\r\n					<li><a href=\"#\">clothing</a></li>\r\n					</ul>\r\n					</div>\r\n					<div class=\"col-2\">\r\n						<div class=\"nav-title-link\"><span>shoes</span></div>\r\n						<div class=\"nav-title-banner\">\r\n						<img style=\"width: 172px; height: 80px;\" src=\"http://demandware.edgesuite.net/aagl_prd/on/demandware.static/-/Sites-adidas-AU-Library/default/dwbce30de0/header-redesign/Header_images_running.jpg\" alt=\"running\">\r\n					</div>\r\n						<ul class=\"ls-link\">\r\n						<li><a href=\"#\">Originals</a></li>\r\n						<li><a href=\"#\">Running</a></li>\r\n						<li><a href=\"#\">Training</a></li>\r\n						<li><a href=\"#\">Outdoor</a></li>\r\n						<li><a href=\"#\">Tennis</a></li>\r\n						<li><a href=\"#\">Golf</a></li>\r\n						<li><a href=\"#\">Golf</a></li>\r\n						<li><a href=\"#\">clothing</a></li>\r\n						</ul>\r\n					</div>\r\n					</div>\r\n				</div>\r\n			</div>\r\n		</li>\r\n	</ul>\r\n</div>', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 'Customer Service', '1column', NULL, NULL, 'customer-service', 'Customer Service', '<div class=\"customer-service cms-content\">\n  <div class=\"cms-content-important\">\n      <h2>Luma Delivery and Returns</h2>\n      <p>We hope you love shopping with Luma. Here are our delivery and returns policies to help make sure we meet your expectations. <a href=\"{{store url=\"contact\"}}\">Contact Us.</a></p>\n  </div>\n\n  <h2>Shipping and Delivery</h2>\n  <p>Shipping and Delivery is the charge for internet order processing, item selection, packaging, transport and handling. We don’t guarantee delivery times, but we do our best to provide accurate estimates.</p>\n\n  <p>Deliveries occur only on weekdays. Shipping and Delivery charges are subject to change and are determined when you order. Estimated delivery time assumes orders are placed before 12:00 noon (PST). Orders you place with Luma late on Friday or on Saturday will not be processed until Monday. Charges may be added to orders with Priority, Overnight and International shipping if we try unsuccessfully to deliver your order more than once.</p>\n\n  <p>Delivery addresses in Alaska, Hawaii, Puerto Rico, and Guam should add an additional $5.00 charge for standard Shipping & Delivery. Orders arrive in 7 to 9 business days when ordered before 12:00 noon (PST).</p>\n\n  <div class=\"table-wrapper\">\n      <table>\n          <caption>Shipping and Delivery</caption>\n          <thead>\n              <tr>\n                  <th><strong>Merchandise total *</strong></th>\n                  <th><strong>STANDARD</strong><br />5&mdash;7 day shipping **</th>\n                  <th><strong>PRIORITY</strong><br />2&mdash;3 day shipping **</th>\n                  <th><strong>OVERNIGHT</strong><br />Next business day **</th>\n              </tr>\n          </thead>\n          <tbody>\n              <tr>\n                  <th>Up to $200</th>\n                  <td>$16</td>\n                  <td>$26</td>\n                  <td>$33</td>\n              </tr>\n              <tr>\n                  <th>$200.01&mdash;500.00</th>\n                  <td>$21</td>\n                  <td>$31</td>\n                  <td>$38</td>\n              </tr>\n              <tr>\n                  <th>$500.01&mdash;1000.00</th>\n                  <td>$29</td>\n                  <td>$39</td>\n                  <td>$46</td>\n              </tr>\n              <tr>\n                  <th>Over $1000.00</th>\n                  <td>$34</td>\n                  <td>$44</td>\n                  <td>$51</td>\n              </tr>\n          </tbody>\n      </table>\n  </div>\n\n  <p>\n      <small>*before tax and additional charges</small><br />\n      <small>**after processing if ordered by 12:00 noon PST</small>\n  </p>\n\n  <h2 style=\"margin-top: 40px;\">Returns and Replacements</h2>\n  <p>We want you to be completely happy with your Luma order. If for any reason you are not satisfied, we will gladly accept your timely return of unworn, unwashed, or defective merchandise. Used merchandise cannot be returned unless defective. Returned merchandise should include the vendor packaging and tags and be in the same condition as when it was received. A pickup and/or restock fee may apply. Merchandise must be returned within 30 days of receipt of merchandise.</p>\n\n  <h3>Returning Gifts</h3>\n  <p>When returning a gift, a Luma Gift Card will be issued to the gift recipient for the amount of the returned merchandise. The card can be used for purchases from any Luma store, and online. In compliance with Federal law, for gifts valued at more than $2,000.00, the recipient will receive a check rather than an Luma Gift Card.</p>\n\n  <h3>Returning Merchandise by Mail</h3>\n  <p>On the back of the packing slip enclosed with your Luma order, please note the reason(s) for return and whether you wish to  exchange the item(s) or receive a credit/refund (depending on the original form of  payment).</p>\n  <p>Enclose the return section of the packing slip with your item(s). Please use one  of the return labels provided on the front of your packing slip to ensure proper  return address and credit information. Restricted items must be returned using  ground transportation.</p>\n  <p>Please allow 10 to 14 days for Luma to process your return.</p>\n</div>\n', '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, 'EM Neccessary Homepage Two Columns', '2columns-left', NULL, NULL, 'neccessary-home', NULL, NULL, '2017-03-15 22:24:45', '2017-03-15 22:24:45', 1, 0, NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -2533,21 +3112,19 @@ INSERT DELAYED IGNORE INTO `cms_page` VALUES
 -- Table structure for table `cms_page_store`
 --
 
-CREATE TABLE `cms_page_store` (
+DROP TABLE IF EXISTS `cms_page_store`;
+CREATE TABLE IF NOT EXISTS `cms_page_store` (
   `page_id` smallint(6) NOT NULL COMMENT 'Page ID',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID'
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
+  PRIMARY KEY (`page_id`,`store_id`),
+  KEY `CMS_PAGE_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='CMS Page To Store Linkage Table';
 
---
--- Truncate table before insert `cms_page_store`
---
-
-TRUNCATE TABLE `cms_page_store`;
 --
 -- Dumping data for table `cms_page_store`
 --
 
-INSERT DELAYED IGNORE INTO `cms_page_store` VALUES
+INSERT INTO `cms_page_store` (`page_id`, `store_id`) VALUES
 (1, 0),
 (2, 0),
 (3, 0),
@@ -2562,27 +3139,25 @@ INSERT DELAYED IGNORE INTO `cms_page_store` VALUES
 -- Table structure for table `core_config_data`
 --
 
-CREATE TABLE `core_config_data` (
-  `config_id` int(10) UNSIGNED NOT NULL COMMENT 'Config Id',
+DROP TABLE IF EXISTS `core_config_data`;
+CREATE TABLE IF NOT EXISTS `core_config_data` (
+  `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Config Id',
   `scope` varchar(8) NOT NULL DEFAULT 'default' COMMENT 'Config Scope',
   `scope_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Config Scope Id',
   `path` varchar(255) NOT NULL DEFAULT 'general' COMMENT 'Config Path',
-  `value` text COMMENT 'Config Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Config Data';
+  `value` text COMMENT 'Config Value',
+  PRIMARY KEY (`config_id`),
+  UNIQUE KEY `CORE_CONFIG_DATA_SCOPE_SCOPE_ID_PATH` (`scope`,`scope_id`,`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8 COMMENT='Config Data';
 
---
--- Truncate table before insert `core_config_data`
---
-
-TRUNCATE TABLE `core_config_data`;
 --
 -- Dumping data for table `core_config_data`
 --
 
-INSERT DELAYED IGNORE INTO `core_config_data` VALUES
+INSERT INTO `core_config_data` (`config_id`, `scope`, `scope_id`, `path`, `value`) VALUES
 (1, 'default', 0, 'web/seo/use_rewrites', '1'),
-(2, 'default', 0, 'web/unsecure/base_url', 'http://localhost/magento204/'),
-(3, 'default', 0, 'web/secure/base_url', 'https://localhost/magento204/'),
+(2, 'default', 0, 'web/unsecure/base_url', 'http://localhost/magento20/'),
+(3, 'default', 0, 'web/secure/base_url', 'https://localhost/magento20/'),
 (4, 'default', 0, 'general/locale/code', 'vi_VN'),
 (5, 'default', 0, 'web/secure/use_in_frontend', '0'),
 (6, 'default', 0, 'web/secure/use_in_adminhtml', '0'),
@@ -2591,10 +3166,10 @@ INSERT DELAYED IGNORE INTO `core_config_data` VALUES
 (9, 'default', 0, 'currency/options/default', 'VND'),
 (10, 'default', 0, 'currency/options/allow', 'VND'),
 (11, 'default', 0, 'general/region/display_all', '1'),
-(12, 'default', 0, 'general/region/state_required', 'AT,BR,CA,CH,DE,EE,ES,FI,FR,LT,LV,RO,US'),
+(12, 'default', 0, 'general/region/state_required', 'VN'),
 (13, 'default', 0, 'catalog/category/root_id', NULL),
 (14, 'default', 0, 'design/theme/theme_id', '4'),
-(15, 'default', 0, 'web/default/cms_home_page', 'neccessary-home'),
+(15, 'default', 0, 'web/default/cms_home_page', 'home'),
 (16, 'default', 0, 'web/url/use_store', '0'),
 (17, 'default', 0, 'web/url/redirect_to_base', '1'),
 (18, 'default', 0, 'web/unsecure/base_link_url', '{{unsecure_base_url}}'),
@@ -2606,7 +3181,7 @@ INSERT DELAYED IGNORE INTO `core_config_data` VALUES
 (24, 'default', 0, 'web/secure/offloader_header', 'SSL_OFFLOADED'),
 (25, 'default', 0, 'web/default/front', 'cms'),
 (26, 'default', 0, 'web/default/no_route', 'cms/noroute/index'),
-(27, 'default', 0, 'web/default/cms_no_route', 'neccessary-home'),
+(27, 'default', 0, 'web/default/cms_no_route', 'no-route'),
 (28, 'default', 0, 'web/default/cms_no_cookies', 'enable-cookies'),
 (29, 'default', 0, 'web/default/show_cms_breadcrumbs', '1'),
 (30, 'default', 0, 'web/cookie/cookie_lifetime', '3600'),
@@ -2621,7 +3196,77 @@ INSERT DELAYED IGNORE INTO `core_config_data` VALUES
 (39, 'default', 0, 'web/session/use_frontend_sid', '1'),
 (40, 'default', 0, 'web/browser_capabilities/cookies', '1'),
 (41, 'default', 0, 'web/browser_capabilities/javascript', '1'),
-(42, 'default', 0, 'web/browser_capabilities/local_storage', '0');
+(42, 'default', 0, 'web/browser_capabilities/local_storage', '0'),
+(43, 'default', 0, 'design/theme/ua_regexp', 'a:0:{}'),
+(44, 'default', 0, 'design/head/default_title', 'VMUGreen'),
+(45, 'default', 0, 'design/head/title_prefix', 'VMUGreen'),
+(46, 'default', 0, 'design/head/title_suffix', 'VMUGreen'),
+(47, 'default', 0, 'design/head/default_description', 'VMUGreen'),
+(48, 'default', 0, 'design/head/default_keywords', 'Magento, Varien, E-commerce, VMUGreen'),
+(49, 'default', 0, 'design/head/includes', NULL),
+(50, 'default', 0, 'design/head/demonotice', '0'),
+(51, 'default', 0, 'design/head/shortcut_icon', 'default/logo_2.png'),
+(52, 'default', 0, 'design/search_engine_robots/default_robots', 'INDEX,FOLLOW'),
+(53, 'default', 0, 'design/search_engine_robots/custom_instructions', NULL),
+(54, 'default', 0, 'design/header/logo_width', '150'),
+(55, 'default', 0, 'design/header/logo_height', '90'),
+(56, 'default', 0, 'design/header/logo_alt', 'Bán rau sạch'),
+(57, 'default', 0, 'design/header/welcome', 'Chào mừng'),
+(58, 'default', 0, 'design/header/logo_src', 'default/logo_3.png'),
+(59, 'default', 0, 'design/footer/copyright', 'Copyright © 2017 Magento. All rights reserved.'),
+(60, 'default', 0, 'design/footer/absolute_footer', NULL),
+(61, 'default', 0, 'design/watermark/image_size', NULL),
+(62, 'default', 0, 'design/watermark/image_imageOpacity', NULL),
+(63, 'default', 0, 'design/watermark/image_position', 'stretch'),
+(64, 'default', 0, 'design/watermark/small_image_size', NULL),
+(65, 'default', 0, 'design/watermark/small_image_imageOpacity', NULL),
+(66, 'default', 0, 'design/watermark/small_image_position', 'stretch'),
+(67, 'default', 0, 'design/watermark/swatch_image_size', NULL),
+(68, 'default', 0, 'design/watermark/swatch_image_imageOpacity', NULL),
+(69, 'default', 0, 'design/watermark/swatch_image_position', 'stretch'),
+(70, 'default', 0, 'design/watermark/thumbnail_size', NULL),
+(71, 'default', 0, 'design/watermark/thumbnail_imageOpacity', NULL),
+(72, 'default', 0, 'design/watermark/thumbnail_position', 'stretch'),
+(73, 'default', 0, 'design/watermark/image_image', NULL),
+(74, 'default', 0, 'design/watermark/small_image_image', NULL),
+(75, 'default', 0, 'design/watermark/swatch_image_image', NULL),
+(76, 'default', 0, 'design/watermark/thumbnail_image', NULL),
+(77, 'default', 0, 'design/pagination/pagination_frame', '5'),
+(78, 'default', 0, 'design/pagination/pagination_frame_skip', NULL),
+(79, 'default', 0, 'design/pagination/anchor_text_for_previous', NULL),
+(80, 'default', 0, 'design/pagination/anchor_text_for_next', NULL),
+(81, 'default', 0, 'design/email/logo_alt', NULL),
+(82, 'default', 0, 'design/email/logo_width', NULL),
+(83, 'default', 0, 'design/email/logo_height', NULL),
+(84, 'default', 0, 'design/email/header_template', 'design_email_header_template'),
+(85, 'default', 0, 'design/email/footer_template', 'design_email_footer_template'),
+(86, 'default', 0, 'design/email/logo', NULL),
+(87, 'default', 0, 'general/country/default', 'VN'),
+(88, 'default', 0, 'general/country/allow', 'VN'),
+(89, 'default', 0, 'general/country/optional_zip_countries', 'VN'),
+(90, 'default', 0, 'general/country/eu_countries', 'VN'),
+(91, 'default', 0, 'general/country/destinations', 'VN'),
+(92, 'default', 0, 'general/locale/weight_unit', 'kgs'),
+(93, 'default', 0, 'general/locale/firstday', '0'),
+(94, 'default', 0, 'general/locale/weekend', '0,6'),
+(95, 'default', 0, 'general/store_information/name', 'VMUGreen'),
+(96, 'default', 0, 'general/store_information/phone', NULL),
+(97, 'default', 0, 'general/store_information/hours', NULL),
+(98, 'default', 0, 'general/store_information/country_id', 'VN'),
+(99, 'default', 0, 'general/store_information/region_id', NULL),
+(100, 'default', 0, 'general/store_information/postcode', NULL),
+(101, 'default', 0, 'general/store_information/city', NULL),
+(102, 'default', 0, 'general/store_information/street_line1', NULL),
+(103, 'default', 0, 'general/store_information/street_line2', NULL),
+(104, 'default', 0, 'general/store_information/merchant_vat_number', NULL),
+(105, 'default', 0, 'general/single_store_mode/enabled', '0'),
+(106, 'default', 0, 'quickshop/general/active', '1'),
+(107, 'default', 0, 'quickshop/general/additional_tab_display', '1'),
+(108, 'default', 0, 'quickshop/general/review_tab_display', '1'),
+(109, 'default', 0, 'quickshop/general/label', 'Quick Shop'),
+(110, 'default', 0, 'quickshop/general/auto_add_buttons', '1'),
+(111, 'default', 0, 'quickshop/general/item_class', '.product-item'),
+(112, 'default', 0, 'quickshop/general/target', '.product-item-info');
 
 -- --------------------------------------------------------
 
@@ -2629,30 +3274,30 @@ INSERT DELAYED IGNORE INTO `core_config_data` VALUES
 -- Table structure for table `cron_schedule`
 --
 
-CREATE TABLE `cron_schedule` (
-  `schedule_id` int(10) UNSIGNED NOT NULL COMMENT 'Schedule Id',
+DROP TABLE IF EXISTS `cron_schedule`;
+CREATE TABLE IF NOT EXISTS `cron_schedule` (
+  `schedule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Schedule Id',
   `job_code` varchar(255) NOT NULL DEFAULT '0' COMMENT 'Job Code',
   `status` varchar(7) NOT NULL DEFAULT 'pending' COMMENT 'Status',
   `messages` text COMMENT 'Messages',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `scheduled_at` timestamp NULL DEFAULT NULL COMMENT 'Scheduled At',
   `executed_at` timestamp NULL DEFAULT NULL COMMENT 'Executed At',
-  `finished_at` timestamp NULL DEFAULT NULL COMMENT 'Finished At'
+  `finished_at` timestamp NULL DEFAULT NULL COMMENT 'Finished At',
+  PRIMARY KEY (`schedule_id`),
+  KEY `CRON_SCHEDULE_JOB_CODE` (`job_code`),
+  KEY `CRON_SCHEDULE_SCHEDULED_AT_STATUS` (`scheduled_at`,`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Cron Schedule';
 
---
--- Truncate table before insert `cron_schedule`
---
-
-TRUNCATE TABLE `cron_schedule`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity`
 --
 
-CREATE TABLE `customer_address_entity` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `customer_address_entity`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `increment_id` varchar(50) DEFAULT NULL COMMENT 'Increment Id',
   `parent_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Parent Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
@@ -2676,111 +3321,115 @@ CREATE TABLE `customer_address_entity` (
   `vat_is_valid` int(10) UNSIGNED DEFAULT NULL COMMENT 'VAT number validity',
   `vat_request_date` varchar(255) DEFAULT NULL COMMENT 'VAT number validation request date',
   `vat_request_id` varchar(255) DEFAULT NULL COMMENT 'VAT number validation request ID',
-  `vat_request_success` int(10) UNSIGNED DEFAULT NULL COMMENT 'VAT number validation request success'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity';
+  `vat_request_success` int(10) UNSIGNED DEFAULT NULL COMMENT 'VAT number validation request success',
+  PRIMARY KEY (`entity_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_PARENT_ID` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity';
 
 --
--- Truncate table before insert `customer_address_entity`
+-- Dumping data for table `customer_address_entity`
 --
 
-TRUNCATE TABLE `customer_address_entity`;
+INSERT INTO `customer_address_entity` (`entity_id`, `increment_id`, `parent_id`, `created_at`, `updated_at`, `is_active`, `city`, `company`, `country_id`, `fax`, `firstname`, `lastname`, `middlename`, `postcode`, `prefix`, `region`, `region_id`, `street`, `suffix`, `telephone`, `vat_id`, `vat_is_valid`, `vat_request_date`, `vat_request_id`, `vat_request_success`) VALUES
+(1, NULL, 2, '2017-03-16 21:50:45', '2017-03-16 21:50:45', 1, 'Hải Phòng', NULL, 'VN', NULL, 'ntp', 'thao', NULL, NULL, NULL, NULL, 0, 'thủy Nguyên', NULL, '34243432', NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity_datetime`
 --
 
-CREATE TABLE `customer_address_entity_datetime` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_address_entity_datetime`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity_datetime` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` datetime DEFAULT NULL COMMENT 'Value'
+  `value` datetime DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity Datetime';
 
---
--- Truncate table before insert `customer_address_entity_datetime`
---
-
-TRUNCATE TABLE `customer_address_entity_datetime`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity_decimal`
 --
 
-CREATE TABLE `customer_address_entity_decimal` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_address_entity_decimal`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity_decimal` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity Decimal';
 
---
--- Truncate table before insert `customer_address_entity_decimal`
---
-
-TRUNCATE TABLE `customer_address_entity_decimal`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity_int`
 --
 
-CREATE TABLE `customer_address_entity_int` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_address_entity_int`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity_int` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value'
+  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity Int';
 
---
--- Truncate table before insert `customer_address_entity_int`
---
-
-TRUNCATE TABLE `customer_address_entity_int`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity_text`
 --
 
-CREATE TABLE `customer_address_entity_text` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_address_entity_text`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity_text` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` text NOT NULL COMMENT 'Value'
+  `value` text NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity Text';
 
---
--- Truncate table before insert `customer_address_entity_text`
---
-
-TRUNCATE TABLE `customer_address_entity_text`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_address_entity_varchar`
 --
 
-CREATE TABLE `customer_address_entity_varchar` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_address_entity_varchar`;
+CREATE TABLE IF NOT EXISTS `customer_address_entity_varchar` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Address Entity Varchar';
 
---
--- Truncate table before insert `customer_address_entity_varchar`
---
-
-TRUNCATE TABLE `customer_address_entity_varchar`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_eav_attribute`
 --
 
-CREATE TABLE `customer_eav_attribute` (
+DROP TABLE IF EXISTS `customer_eav_attribute`;
+CREATE TABLE IF NOT EXISTS `customer_eav_attribute` (
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
   `is_visible` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Is Visible',
   `input_filter` varchar(255) DEFAULT NULL COMMENT 'Input Filter',
@@ -2792,19 +3441,15 @@ CREATE TABLE `customer_eav_attribute` (
   `is_used_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Used in Grid',
   `is_visible_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible in Grid',
   `is_filterable_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Filterable in Grid',
-  `is_searchable_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Searchable in Grid'
+  `is_searchable_in_grid` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Searchable in Grid',
+  PRIMARY KEY (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Eav Attribute';
 
---
--- Truncate table before insert `customer_eav_attribute`
---
-
-TRUNCATE TABLE `customer_eav_attribute`;
 --
 -- Dumping data for table `customer_eav_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `customer_eav_attribute` VALUES
+INSERT INTO `customer_eav_attribute` (`attribute_id`, `is_visible`, `input_filter`, `multiline_count`, `validate_rules`, `is_system`, `sort_order`, `data_model`, `is_used_in_grid`, `is_visible_in_grid`, `is_filterable_in_grid`, `is_searchable_in_grid`) VALUES
 (1, 1, NULL, 0, NULL, 1, 10, NULL, 1, 1, 1, 0),
 (2, 0, NULL, 0, NULL, 1, 0, NULL, 0, 0, 0, 0),
 (3, 1, NULL, 0, NULL, 1, 20, NULL, 1, 1, 0, 1),
@@ -2853,25 +3498,23 @@ INSERT DELAYED IGNORE INTO `customer_eav_attribute` VALUES
 -- Table structure for table `customer_eav_attribute_website`
 --
 
-CREATE TABLE `customer_eav_attribute_website` (
+DROP TABLE IF EXISTS `customer_eav_attribute_website`;
+CREATE TABLE IF NOT EXISTS `customer_eav_attribute_website` (
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `is_visible` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Is Visible',
   `is_required` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Is Required',
   `default_value` text COMMENT 'Default Value',
-  `multiline_count` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Multiline Count'
+  `multiline_count` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Multiline Count',
+  PRIMARY KEY (`attribute_id`,`website_id`),
+  KEY `CUSTOMER_EAV_ATTRIBUTE_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Eav Attribute Website';
 
---
--- Truncate table before insert `customer_eav_attribute_website`
---
-
-TRUNCATE TABLE `customer_eav_attribute_website`;
 --
 -- Dumping data for table `customer_eav_attribute_website`
 --
 
-INSERT DELAYED IGNORE INTO `customer_eav_attribute_website` VALUES
+INSERT INTO `customer_eav_attribute_website` (`attribute_id`, `website_id`, `is_visible`, `is_required`, `default_value`, `multiline_count`) VALUES
 (1, 1, NULL, NULL, NULL, NULL),
 (3, 1, NULL, NULL, NULL, NULL),
 (9, 1, NULL, NULL, NULL, NULL),
@@ -2901,8 +3544,9 @@ INSERT DELAYED IGNORE INTO `customer_eav_attribute_website` VALUES
 -- Table structure for table `customer_entity`
 --
 
-CREATE TABLE `customer_entity` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `customer_entity`;
+CREATE TABLE IF NOT EXISTS `customer_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `website_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Website Id',
   `email` varchar(255) DEFAULT NULL COMMENT 'Email',
   `group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Group Id',
@@ -2926,125 +3570,131 @@ CREATE TABLE `customer_entity` (
   `default_shipping` int(10) UNSIGNED DEFAULT NULL COMMENT 'Default Shipping Address',
   `taxvat` varchar(50) DEFAULT NULL COMMENT 'Tax/VAT Number',
   `confirmation` varchar(64) DEFAULT NULL COMMENT 'Is Confirmed',
-  `gender` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Gender'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity';
+  `gender` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Gender',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_EMAIL_WEBSITE_ID` (`email`,`website_id`),
+  KEY `CUSTOMER_ENTITY_STORE_ID` (`store_id`),
+  KEY `CUSTOMER_ENTITY_WEBSITE_ID` (`website_id`),
+  KEY `CUSTOMER_ENTITY_FIRSTNAME` (`firstname`),
+  KEY `CUSTOMER_ENTITY_LASTNAME` (`lastname`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Customer Entity';
 
 --
--- Truncate table before insert `customer_entity`
+-- Dumping data for table `customer_entity`
 --
 
-TRUNCATE TABLE `customer_entity`;
+INSERT INTO `customer_entity` (`entity_id`, `website_id`, `email`, `group_id`, `increment_id`, `store_id`, `created_at`, `updated_at`, `is_active`, `disable_auto_group_change`, `created_in`, `prefix`, `firstname`, `middlename`, `lastname`, `suffix`, `dob`, `password_hash`, `rp_token`, `rp_token_created_at`, `default_billing`, `default_shipping`, `taxvat`, `confirmation`, `gender`) VALUES
+(1, 1, 'cohoanghp@gmail.com', 1, NULL, 1, '2017-03-15 23:48:35', '2017-03-16 21:32:29', 1, 0, 'Default Store View', NULL, 'ntp', NULL, 'thao', NULL, NULL, '85499690c4c2379971208c49d2c7859f4b4d43d8f72e0b50c3bd41f7025d16f4:DFzeCeAYnukVDSygObw32h1abltQ2MBV:1', 'c0cce96fa4ad5c664cd6b0d9a2f72d06', '2017-03-16 14:32:29', NULL, NULL, NULL, NULL, NULL),
+(2, 1, 'admin@gmail.com', 1, NULL, 1, '2017-03-16 21:38:30', '2017-03-16 21:50:45', 1, 0, 'Default Store View', NULL, 'ntp', NULL, 'thao', NULL, NULL, '5ac45914fbc543d505e697cf6fe1629bd3cf25dfbb359a1bc4bcb2961cfe522a:M3gEQGnARIVLQA8rERxbYCOopfrqwuyo:1', 'e0881914c69f98bb092f88ef7d31fd8c', '2017-03-16 14:38:31', NULL, 1, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_entity_datetime`
 --
 
-CREATE TABLE `customer_entity_datetime` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_entity_datetime`;
+CREATE TABLE IF NOT EXISTS `customer_entity_datetime` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` datetime DEFAULT NULL COMMENT 'Value'
+  `value` datetime DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity Datetime';
 
---
--- Truncate table before insert `customer_entity_datetime`
---
-
-TRUNCATE TABLE `customer_entity_datetime`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_entity_decimal`
 --
 
-CREATE TABLE `customer_entity_decimal` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_entity_decimal`;
+CREATE TABLE IF NOT EXISTS `customer_entity_decimal` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value'
+  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity Decimal';
 
---
--- Truncate table before insert `customer_entity_decimal`
---
-
-TRUNCATE TABLE `customer_entity_decimal`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_entity_int`
 --
 
-CREATE TABLE `customer_entity_int` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_entity_int`;
+CREATE TABLE IF NOT EXISTS `customer_entity_int` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value'
+  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity Int';
 
---
--- Truncate table before insert `customer_entity_int`
---
-
-TRUNCATE TABLE `customer_entity_int`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_entity_text`
 --
 
-CREATE TABLE `customer_entity_text` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_entity_text`;
+CREATE TABLE IF NOT EXISTS `customer_entity_text` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` text NOT NULL COMMENT 'Value'
+  `value` text NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity Text';
 
---
--- Truncate table before insert `customer_entity_text`
---
-
-TRUNCATE TABLE `customer_entity_text`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_entity_varchar`
 --
 
-CREATE TABLE `customer_entity_varchar` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `customer_entity_varchar`;
+CREATE TABLE IF NOT EXISTS `customer_entity_varchar` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `CUSTOMER_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
+  KEY `CUSTOMER_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `CUSTOMER_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Entity Varchar';
 
---
--- Truncate table before insert `customer_entity_varchar`
---
-
-TRUNCATE TABLE `customer_entity_varchar`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_form_attribute`
 --
 
-CREATE TABLE `customer_form_attribute` (
+DROP TABLE IF EXISTS `customer_form_attribute`;
+CREATE TABLE IF NOT EXISTS `customer_form_attribute` (
   `form_code` varchar(32) NOT NULL COMMENT 'Form Code',
-  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id'
+  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+  PRIMARY KEY (`form_code`,`attribute_id`),
+  KEY `CUSTOMER_FORM_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Form Attribute';
 
---
--- Truncate table before insert `customer_form_attribute`
---
-
-TRUNCATE TABLE `customer_form_attribute`;
 --
 -- Dumping data for table `customer_form_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `customer_form_attribute` VALUES
+INSERT INTO `customer_form_attribute` (`form_code`, `attribute_id`) VALUES
 ('adminhtml_checkout', 9),
 ('adminhtml_checkout', 10),
 ('adminhtml_checkout', 11),
@@ -3136,7 +3786,8 @@ INSERT DELAYED IGNORE INTO `customer_form_attribute` VALUES
 -- Table structure for table `customer_grid_flat`
 --
 
-CREATE TABLE `customer_grid_flat` (
+DROP TABLE IF EXISTS `customer_grid_flat`;
+CREATE TABLE IF NOT EXISTS `customer_grid_flat` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `name` text COMMENT 'Name',
   `email` varchar(255) DEFAULT NULL COMMENT 'Email',
@@ -3161,36 +3812,45 @@ CREATE TABLE `customer_grid_flat` (
   `billing_fax` varchar(255) DEFAULT NULL COMMENT 'Billing_fax',
   `billing_vat_id` varchar(255) DEFAULT NULL COMMENT 'Billing_vat_id',
   `billing_company` varchar(255) DEFAULT NULL COMMENT 'Billing_company',
-  `shipping_full` text COMMENT 'Shipping_full'
+  `shipping_full` text COMMENT 'Shipping_full',
+  PRIMARY KEY (`entity_id`),
+  KEY `CUSTOMER_GRID_FLAT_GROUP_ID` (`group_id`),
+  KEY `CUSTOMER_GRID_FLAT_CREATED_AT` (`created_at`),
+  KEY `CUSTOMER_GRID_FLAT_WEBSITE_ID` (`website_id`),
+  KEY `CUSTOMER_GRID_FLAT_CONFIRMATION` (`confirmation`),
+  KEY `CUSTOMER_GRID_FLAT_DOB` (`dob`),
+  KEY `CUSTOMER_GRID_FLAT_GENDER` (`gender`),
+  KEY `CUSTOMER_GRID_FLAT_LAST_VISIT_AT` (`last_visit_at`),
+  KEY `CUSTOMER_GRID_FLAT_BILLING_COUNTRY_ID` (`billing_country_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='customer_grid_flat';
 
 --
--- Truncate table before insert `customer_grid_flat`
+-- Dumping data for table `customer_grid_flat`
 --
 
-TRUNCATE TABLE `customer_grid_flat`;
+INSERT INTO `customer_grid_flat` (`entity_id`, `name`, `email`, `group_id`, `created_at`, `website_id`, `confirmation`, `created_in`, `dob`, `gender`, `taxvat`, `last_visit_at`, `billing_full`, `billing_firstname`, `billing_lastname`, `billing_telephone`, `billing_postcode`, `billing_country_id`, `billing_region`, `billing_street`, `billing_city`, `billing_fax`, `billing_vat_id`, `billing_company`, `shipping_full`) VALUES
+(1, 'ntp thao', 'cohoanghp@gmail.com', 1, '2017-03-15 23:48:35', 1, NULL, 'Default Store View', NULL, NULL, NULL, '2017-03-15 16:58:55', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, ''),
+(2, 'ntp thao', 'admin@gmail.com', 1, '2017-03-16 21:38:30', 1, NULL, 'Default Store View', NULL, NULL, NULL, '2017-03-16 14:50:11', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'thủy Nguyên Hải Phòng');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_group`
 --
 
-CREATE TABLE `customer_group` (
-  `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
+DROP TABLE IF EXISTS `customer_group`;
+CREATE TABLE IF NOT EXISTS `customer_group` (
+  `customer_group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Customer Group Id',
   `customer_group_code` varchar(32) NOT NULL COMMENT 'Customer Group Code',
-  `tax_class_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Tax Class Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Group';
+  `tax_class_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Tax Class Id',
+  PRIMARY KEY (`customer_group_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Customer Group';
 
---
--- Truncate table before insert `customer_group`
---
-
-TRUNCATE TABLE `customer_group`;
 --
 -- Dumping data for table `customer_group`
 --
 
-INSERT DELAYED IGNORE INTO `customer_group` VALUES
+INSERT INTO `customer_group` (`customer_group_id`, `customer_group_code`, `tax_class_id`) VALUES
 (0, 'NOT LOGGED IN', 3),
 (1, 'General', 3),
 (2, 'Wholesale', 3),
@@ -3202,46 +3862,129 @@ INSERT DELAYED IGNORE INTO `customer_group` VALUES
 -- Table structure for table `customer_log`
 --
 
-CREATE TABLE `customer_log` (
-  `log_id` int(11) NOT NULL COMMENT 'Log ID',
+DROP TABLE IF EXISTS `customer_log`;
+CREATE TABLE IF NOT EXISTS `customer_log` (
+  `log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Log ID',
   `customer_id` int(11) NOT NULL COMMENT 'Customer ID',
   `last_login_at` timestamp NULL DEFAULT NULL COMMENT 'Last Login Time',
-  `last_logout_at` timestamp NULL DEFAULT NULL COMMENT 'Last Logout Time'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Customer Log Table';
+  `last_logout_at` timestamp NULL DEFAULT NULL COMMENT 'Last Logout Time',
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `CUSTOMER_LOG_CUSTOMER_ID` (`customer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Customer Log Table';
 
 --
--- Truncate table before insert `customer_log`
+-- Dumping data for table `customer_log`
 --
 
-TRUNCATE TABLE `customer_log`;
+INSERT INTO `customer_log` (`log_id`, `customer_id`, `last_login_at`, `last_logout_at`) VALUES
+(1, 1, '2017-03-15 23:51:25', NULL),
+(2, 2, '2017-03-16 21:38:50', NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `customer_visitor`
 --
 
-CREATE TABLE `customer_visitor` (
-  `visitor_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Visitor ID',
+DROP TABLE IF EXISTS `customer_visitor`;
+CREATE TABLE IF NOT EXISTS `customer_visitor` (
+  `visitor_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Visitor ID',
   `customer_id` int(11) DEFAULT NULL COMMENT 'Customer Id',
   `session_id` varchar(64) DEFAULT NULL COMMENT 'Session ID',
-  `last_visit_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Visit Time'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Visitor Table';
+  `last_visit_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Visit Time',
+  PRIMARY KEY (`visitor_id`),
+  KEY `CUSTOMER_VISITOR_CUSTOMER_ID` (`customer_id`),
+  KEY `CUSTOMER_VISITOR_LAST_VISIT_AT` (`last_visit_at`)
+) ENGINE=InnoDB AUTO_INCREMENT=84 DEFAULT CHARSET=utf8 COMMENT='Visitor Table';
 
---
--- Truncate table before insert `customer_visitor`
---
-
-TRUNCATE TABLE `customer_visitor`;
 --
 -- Dumping data for table `customer_visitor`
 --
 
-INSERT DELAYED IGNORE INTO `customer_visitor` VALUES
-(1, NULL, 'pq8srg0d17d011bhtn46fr0fu4', '2017-04-23 11:49:52'),
-(2, NULL, '3og1is22jt4ebqeo09cdtb89p4', '2017-04-23 13:44:47'),
-(3, NULL, '6mmoo01c8j8pgo0ujvi3rfsj24', '2017-04-23 13:49:50'),
-(4, NULL, 'k9jejp06gn3ojpt1un58rq1c54', '2017-04-23 13:49:59'),
-(5, NULL, 'vufibi19t2sep4pet86ojbbau2', '2017-04-23 13:49:59');
+INSERT INTO `customer_visitor` (`visitor_id`, `customer_id`, `session_id`, `last_visit_at`) VALUES
+(1, NULL, 'qjb8lr1sc0kc1l8dkj4mais0a4', '2017-03-15 22:16:29'),
+(2, NULL, 'j5ts2bfp42ukp2b3cvmfq1ebj5', '2017-03-15 22:25:21'),
+(3, NULL, 'qfqmg4lqn5mj15nfu045lnr4o4', '2017-03-15 22:25:21'),
+(4, NULL, '162hdoia1m03cnadv1ugcl39s4', '2017-03-15 22:25:21'),
+(5, NULL, '9spgk29uidmclplioq76tua5q6', '2017-03-15 22:28:15'),
+(6, NULL, 'nnqhhb6bj2v7lirt5i8ac1rbk0', '2017-03-15 22:28:22'),
+(7, NULL, 'i01d30b3cqd8vj6t98g1k4m010', '2017-03-15 22:28:28'),
+(8, NULL, 'jedo0npc5abb9aplqu0v7dl2h7', '2017-03-15 22:28:40'),
+(9, NULL, '8ahp8a7fgg9jh9r9vi84hpn7j2', '2017-03-15 22:28:42'),
+(10, NULL, 'psef9bvbiffrqjrhtv9k8vq4v2', '2017-03-15 22:33:20'),
+(11, NULL, 'f11i6uh3rpuqes667agm208e64', '2017-03-15 22:36:14'),
+(12, NULL, 'qkdfan4ibhjc0m127s7m6mgf97', '2017-03-15 22:53:47'),
+(13, NULL, '6c79vjmjq53c6i59svu6i979j0', '2017-03-15 22:54:44'),
+(14, NULL, 'uk5mdh9d7l9q4o1j8t2m1gm1o2', '2017-03-15 23:13:53'),
+(15, NULL, '05jjqf8s2qf22g1hoq9c5g68q1', '2017-03-15 23:19:06'),
+(16, NULL, 'd2bt8a8rc0t19d8qsg4vl54s44', '2017-03-15 23:19:14'),
+(17, NULL, '9r6nts318b6ir7qj1ica0pv900', '2017-03-15 23:19:26'),
+(18, NULL, '1tcu389ilsm7urf5bm6dhjpdi4', '2017-03-15 23:29:22'),
+(19, NULL, 'k00q97m8pi8vji8nm54ts4tce1', '2017-03-15 23:32:37'),
+(20, 1, '20e9354sp53d38ujp13lvnhc84', '2017-03-15 23:58:55'),
+(21, 1, 'au5nnuuq7ugpjsqtrqridqjuk1', '2017-03-15 23:56:19'),
+(22, NULL, '5vvrmfvl23lmoi7g2o3jd6k3r7', '2017-03-16 07:21:38'),
+(23, NULL, 'jd90vbo6m5026g90i9cn5cock0', '2017-03-16 07:46:41'),
+(24, NULL, 'dbvt5lo0fa8lt5cihl5ojffue1', '2017-03-16 07:22:33'),
+(25, NULL, 'mpi3hg2utdglqpnpqtu8enehc5', '2017-03-16 09:28:19'),
+(26, NULL, 'sjpb2q8d2maviqpdu1uf03m2e4', '2017-03-16 09:29:26'),
+(27, NULL, 'bp70c1tvgocu3k9vpkccju6187', '2017-03-16 09:59:40'),
+(28, NULL, '7k225fv8aiedka6apd39gt72q6', '2017-03-16 09:59:40'),
+(29, NULL, 'kv22vdb1t06hlits1dhd76eet2', '2017-03-16 11:00:47'),
+(30, NULL, 'i3m7tcd33m1l8ak17aec8c3o82', '2017-03-16 11:00:48'),
+(31, NULL, '8un8lfc394dpi9f7nk6tdpf607', '2017-03-16 11:35:58'),
+(32, NULL, 'md43gc2p5qbckgg77fbrdmsvm7', '2017-03-16 11:35:58'),
+(33, NULL, 'eoj0le0dscbm9f2r21n52jik50', '2017-03-16 12:39:18'),
+(34, NULL, 'fclueu2ls06nrsle9rtqgqci31', '2017-03-16 12:39:18'),
+(35, NULL, 'ici2pdn4iehi2rv7uotmn7pge4', '2017-03-16 14:35:57'),
+(36, NULL, '901taqu2pjktckc1nabf4rci01', '2017-03-16 14:35:57'),
+(37, NULL, 'a0p384tnqsuh9q8ba2tvr910h7', '2017-03-16 20:14:53'),
+(38, NULL, 'b9np0tjhk1a77dc8blglhgh8b4', '2017-03-16 20:14:53'),
+(39, 2, '4vqtri6sphe508pfd2p8smks71', '2017-03-16 22:19:18'),
+(40, NULL, 'ttk0fc7dl7dgomdloutepfkhi1', '2017-03-16 22:53:09'),
+(41, NULL, 'utmc56qu49ivm0a61en42rihf7', '2017-03-16 22:53:16'),
+(42, NULL, 'q003cdol8venft69pbkd84lso7', '2017-03-16 22:53:16'),
+(43, NULL, 'dgssosvg8miu8k2aeqdol5vam3', '2017-03-16 23:56:00'),
+(44, NULL, 'a8717vnkt30klpp9r40ag7l0c4', '2017-03-16 23:56:13'),
+(45, NULL, 'g86chpi127t8trd2a09cdc8rk7', '2017-03-16 23:56:13'),
+(46, NULL, '9pifau1dg7kgimvhprbrpchh41', '2017-03-19 18:10:09'),
+(47, NULL, '61ovd57nlaouacof55vi1se7c1', '2017-03-19 18:19:47'),
+(48, NULL, '0lem7evfid52g7c8p04qop2ha4', '2017-03-19 18:20:08'),
+(49, NULL, 'u839teqbhutm0la60rc6uerom6', '2017-03-19 18:21:18'),
+(50, NULL, 'q62m20bgmvigk54lfubcdaen56', '2017-03-19 18:21:19'),
+(51, NULL, 'lnq4fph8kc4hlv0etcmef0a632', '2017-03-19 18:21:19'),
+(52, NULL, 'mia6vbiukbg192f3it6314j0l1', '2017-03-19 18:32:16'),
+(53, NULL, 'tbjnlbndk52lilk2f7i15ittc5', '2017-03-19 18:38:23'),
+(54, NULL, 'kb1sq07eiecfkm4nlkd8clhkp4', '2017-03-19 18:38:31'),
+(55, NULL, 'fmqqpm91r05cahqq28r6e90dj5', '2017-03-19 18:42:26'),
+(56, NULL, 'mq30qdaten1ml7kqe75951fat1', '2017-03-20 20:47:45'),
+(57, NULL, 'nkmoae9ipk0h1mb1un6cvqvjo4', '2017-04-20 07:22:27'),
+(58, NULL, 'd671erhlj2vgnadm4dj3eg4rc5', '2017-04-20 07:22:35'),
+(59, NULL, '4bs1l3i83g2cmuj7mjufpenir4', '2017-04-20 07:23:17'),
+(60, NULL, 'u6emhg9dds0h4ch57sa999cek1', '2017-04-20 08:00:46'),
+(61, NULL, 'hl5p5pes4eqf3tn05lokrebvq4', '2017-04-21 13:41:14'),
+(62, NULL, 'etqbo57j86ikf9e6ki3ohfll52', '2017-04-21 13:41:14'),
+(63, NULL, 'k7ng9pdbfpsdec4iefhlh0j5r0', '2017-04-21 13:42:41'),
+(64, NULL, 'opucthjqb212lkkk0roj3p8g24', '2017-04-21 13:42:42'),
+(65, NULL, 'hl8jcqkgjrc0ifhnd0hfs0u2m5', '2017-04-21 13:44:16'),
+(66, NULL, '88u6sin8t3inae48l1vcjrgp20', '2017-04-21 14:06:05'),
+(67, NULL, '65mo0t7njhlmq7pj9ptn1siek3', '2017-04-21 14:19:32'),
+(68, NULL, 'urgqqodqapoaf00pl40lf8drm1', '2017-04-21 14:23:59'),
+(69, NULL, 'bfpdkvsc2kh81llitash8cjbj3', '2017-04-21 14:30:08'),
+(70, NULL, 'i232nl1i9no79cbihra2nnr5q0', '2017-04-22 09:09:59'),
+(71, NULL, 'o5tvon1h1c1lvar0fbfqft57n5', '2017-04-22 09:11:40'),
+(72, NULL, '0sn5t7k4km9sb9tjjsumrjka03', '2017-04-22 22:53:33'),
+(73, NULL, '37opik3a9h8v53e56nbk2ldhl5', '2017-04-22 22:53:33'),
+(74, NULL, 'b6soorv1r400pghsl44bln0vp5', '2017-04-22 23:03:34'),
+(75, NULL, 'qads0slai4oagtsf47ea9rjmk3', '2017-04-22 23:03:35'),
+(76, NULL, 'ji67ceqhaorgp3lfd23aaa2fg6', '2017-04-23 11:22:28'),
+(77, NULL, 'daclqcfj87d403j46mfv2retn1', '2017-04-23 11:22:28'),
+(78, NULL, 'mtl40ekq2t7lge9imv9jnftk40', '2017-04-23 14:19:11'),
+(79, NULL, 'dik9ropmk4qrdig9dluj6779b6', '2017-04-23 14:12:44'),
+(80, NULL, 'pj3vqkf1oh5j1vrqnganu0res1', '2017-04-23 15:15:16'),
+(81, NULL, 'rtf0hoh58nhsb8047pna79vlr5', '2017-04-23 15:15:27'),
+(82, NULL, '6k0s7fgmncapfm033v1scuuga1', '2017-04-23 15:46:11'),
+(83, NULL, 'jhdkjjhl8a835u4neuc9b7jg12', '2017-04-23 15:46:11');
 
 -- --------------------------------------------------------
 
@@ -3249,41 +3992,36 @@ INSERT DELAYED IGNORE INTO `customer_visitor` VALUES
 -- Table structure for table `design_change`
 --
 
-CREATE TABLE `design_change` (
-  `design_change_id` int(11) NOT NULL COMMENT 'Design Change Id',
+DROP TABLE IF EXISTS `design_change`;
+CREATE TABLE IF NOT EXISTS `design_change` (
+  `design_change_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Design Change Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `design` varchar(255) DEFAULT NULL COMMENT 'Design',
   `date_from` date DEFAULT NULL COMMENT 'First Date of Design Activity',
-  `date_to` date DEFAULT NULL COMMENT 'Last Date of Design Activity'
+  `date_to` date DEFAULT NULL COMMENT 'Last Date of Design Activity',
+  PRIMARY KEY (`design_change_id`),
+  KEY `DESIGN_CHANGE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Design Changes';
 
---
--- Truncate table before insert `design_change`
---
-
-TRUNCATE TABLE `design_change`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `directory_country`
 --
 
-CREATE TABLE `directory_country` (
+DROP TABLE IF EXISTS `directory_country`;
+CREATE TABLE IF NOT EXISTS `directory_country` (
   `country_id` varchar(2) NOT NULL COMMENT 'Country Id in ISO-2',
   `iso2_code` varchar(2) DEFAULT NULL COMMENT 'Country ISO-2 format',
-  `iso3_code` varchar(3) DEFAULT NULL COMMENT 'Country ISO-3'
+  `iso3_code` varchar(3) DEFAULT NULL COMMENT 'Country ISO-3',
+  PRIMARY KEY (`country_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directory Country';
 
---
--- Truncate table before insert `directory_country`
---
-
-TRUNCATE TABLE `directory_country`;
 --
 -- Dumping data for table `directory_country`
 --
 
-INSERT DELAYED IGNORE INTO `directory_country` VALUES
+INSERT INTO `directory_country` (`country_id`, `iso2_code`, `iso3_code`) VALUES
 ('AD', 'AD', 'AND'),
 ('AE', 'AE', 'ARE'),
 ('AF', 'AF', 'AFG'),
@@ -3536,41 +4274,37 @@ INSERT DELAYED IGNORE INTO `directory_country` VALUES
 -- Table structure for table `directory_country_format`
 --
 
-CREATE TABLE `directory_country_format` (
-  `country_format_id` int(10) UNSIGNED NOT NULL COMMENT 'Country Format Id',
+DROP TABLE IF EXISTS `directory_country_format`;
+CREATE TABLE IF NOT EXISTS `directory_country_format` (
+  `country_format_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Country Format Id',
   `country_id` varchar(2) DEFAULT NULL COMMENT 'Country Id in ISO-2',
   `type` varchar(30) DEFAULT NULL COMMENT 'Country Format Type',
-  `format` text NOT NULL COMMENT 'Country Format'
+  `format` text NOT NULL COMMENT 'Country Format',
+  PRIMARY KEY (`country_format_id`),
+  UNIQUE KEY `DIRECTORY_COUNTRY_FORMAT_COUNTRY_ID_TYPE` (`country_id`,`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directory Country Format';
 
---
--- Truncate table before insert `directory_country_format`
---
-
-TRUNCATE TABLE `directory_country_format`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `directory_country_region`
 --
 
-CREATE TABLE `directory_country_region` (
-  `region_id` int(10) UNSIGNED NOT NULL COMMENT 'Region Id',
+DROP TABLE IF EXISTS `directory_country_region`;
+CREATE TABLE IF NOT EXISTS `directory_country_region` (
+  `region_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Region Id',
   `country_id` varchar(4) NOT NULL DEFAULT '0' COMMENT 'Country Id in ISO-2',
   `code` varchar(32) DEFAULT NULL COMMENT 'Region code',
-  `default_name` varchar(255) DEFAULT NULL COMMENT 'Region Name'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directory Country Region';
+  `default_name` varchar(255) DEFAULT NULL COMMENT 'Region Name',
+  PRIMARY KEY (`region_id`),
+  KEY `DIRECTORY_COUNTRY_REGION_COUNTRY_ID` (`country_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=512 DEFAULT CHARSET=utf8 COMMENT='Directory Country Region';
 
---
--- Truncate table before insert `directory_country_region`
---
-
-TRUNCATE TABLE `directory_country_region`;
 --
 -- Dumping data for table `directory_country_region`
 --
 
-INSERT DELAYED IGNORE INTO `directory_country_region` VALUES
+INSERT INTO `directory_country_region` (`region_id`, `country_id`, `code`, `default_name`) VALUES
 (1, 'US', 'AL', 'Alabama'),
 (2, 'US', 'AK', 'Alaska'),
 (3, 'US', 'AS', 'American Samoa'),
@@ -4089,22 +4823,20 @@ INSERT DELAYED IGNORE INTO `directory_country_region` VALUES
 -- Table structure for table `directory_country_region_name`
 --
 
-CREATE TABLE `directory_country_region_name` (
+DROP TABLE IF EXISTS `directory_country_region_name`;
+CREATE TABLE IF NOT EXISTS `directory_country_region_name` (
   `locale` varchar(8) NOT NULL COMMENT 'Locale',
   `region_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Region Id',
-  `name` varchar(255) DEFAULT NULL COMMENT 'Region Name'
+  `name` varchar(255) DEFAULT NULL COMMENT 'Region Name',
+  PRIMARY KEY (`locale`,`region_id`),
+  KEY `DIRECTORY_COUNTRY_REGION_NAME_REGION_ID` (`region_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directory Country Region Name';
 
---
--- Truncate table before insert `directory_country_region_name`
---
-
-TRUNCATE TABLE `directory_country_region_name`;
 --
 -- Dumping data for table `directory_country_region_name`
 --
 
-INSERT DELAYED IGNORE INTO `directory_country_region_name` VALUES
+INSERT INTO `directory_country_region_name` (`locale`, `region_id`, `name`) VALUES
 ('en_US', 1, 'Alabama'),
 ('en_US', 2, 'Alaska'),
 ('en_US', 3, 'American Samoa'),
@@ -4623,22 +5355,20 @@ INSERT DELAYED IGNORE INTO `directory_country_region_name` VALUES
 -- Table structure for table `directory_currency_rate`
 --
 
-CREATE TABLE `directory_currency_rate` (
+DROP TABLE IF EXISTS `directory_currency_rate`;
+CREATE TABLE IF NOT EXISTS `directory_currency_rate` (
   `currency_from` varchar(3) NOT NULL COMMENT 'Currency Code Convert From',
   `currency_to` varchar(3) NOT NULL COMMENT 'Currency Code Convert To',
-  `rate` decimal(24,12) NOT NULL DEFAULT '0.000000000000' COMMENT 'Currency Conversion Rate'
+  `rate` decimal(24,12) NOT NULL DEFAULT '0.000000000000' COMMENT 'Currency Conversion Rate',
+  PRIMARY KEY (`currency_from`,`currency_to`),
+  KEY `DIRECTORY_CURRENCY_RATE_CURRENCY_TO` (`currency_to`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Directory Currency Rate';
 
---
--- Truncate table before insert `directory_currency_rate`
---
-
-TRUNCATE TABLE `directory_currency_rate`;
 --
 -- Dumping data for table `directory_currency_rate`
 --
 
-INSERT DELAYED IGNORE INTO `directory_currency_rate` VALUES
+INSERT INTO `directory_currency_rate` (`currency_from`, `currency_to`, `rate`) VALUES
 ('EUR', 'EUR', '1.000000000000'),
 ('EUR', 'USD', '1.415000000000'),
 ('USD', 'EUR', '0.706700000000'),
@@ -4650,8 +5380,9 @@ INSERT DELAYED IGNORE INTO `directory_currency_rate` VALUES
 -- Table structure for table `downloadable_link`
 --
 
-CREATE TABLE `downloadable_link` (
-  `link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link ID',
+DROP TABLE IF EXISTS `downloadable_link`;
+CREATE TABLE IF NOT EXISTS `downloadable_link` (
+  `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort order',
   `number_of_downloads` int(11) DEFAULT NULL COMMENT 'Number of downloads',
@@ -4661,40 +5392,37 @@ CREATE TABLE `downloadable_link` (
   `link_type` varchar(20) DEFAULT NULL COMMENT 'Link Type',
   `sample_url` varchar(255) DEFAULT NULL COMMENT 'Sample Url',
   `sample_file` varchar(255) DEFAULT NULL COMMENT 'Sample File',
-  `sample_type` varchar(20) DEFAULT NULL COMMENT 'Sample Type'
+  `sample_type` varchar(20) DEFAULT NULL COMMENT 'Sample Type',
+  PRIMARY KEY (`link_id`),
+  KEY `DOWNLOADABLE_LINK_PRODUCT_ID_SORT_ORDER` (`product_id`,`sort_order`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Link Table';
 
---
--- Truncate table before insert `downloadable_link`
---
-
-TRUNCATE TABLE `downloadable_link`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_link_price`
 --
 
-CREATE TABLE `downloadable_link_price` (
-  `price_id` int(10) UNSIGNED NOT NULL COMMENT 'Price ID',
+DROP TABLE IF EXISTS `downloadable_link_price`;
+CREATE TABLE IF NOT EXISTS `downloadable_link_price` (
+  `price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price ID',
   `link_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Link ID',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website ID',
-  `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price'
+  `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price',
+  PRIMARY KEY (`price_id`),
+  KEY `DOWNLOADABLE_LINK_PRICE_LINK_ID` (`link_id`),
+  KEY `DOWNLOADABLE_LINK_PRICE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Link Price Table';
 
---
--- Truncate table before insert `downloadable_link_price`
---
-
-TRUNCATE TABLE `downloadable_link_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_link_purchased`
 --
 
-CREATE TABLE `downloadable_link_purchased` (
-  `purchased_id` int(10) UNSIGNED NOT NULL COMMENT 'Purchased ID',
+DROP TABLE IF EXISTS `downloadable_link_purchased`;
+CREATE TABLE IF NOT EXISTS `downloadable_link_purchased` (
+  `purchased_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Purchased ID',
   `order_id` int(10) UNSIGNED DEFAULT '0' COMMENT 'Order ID',
   `order_increment_id` varchar(50) DEFAULT NULL COMMENT 'Order Increment ID',
   `order_item_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Item ID',
@@ -4703,22 +5431,22 @@ CREATE TABLE `downloadable_link_purchased` (
   `customer_id` int(10) UNSIGNED DEFAULT '0' COMMENT 'Customer ID',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product name',
   `product_sku` varchar(255) DEFAULT NULL COMMENT 'Product sku',
-  `link_section_title` varchar(255) DEFAULT NULL COMMENT 'Link_section_title'
+  `link_section_title` varchar(255) DEFAULT NULL COMMENT 'Link_section_title',
+  PRIMARY KEY (`purchased_id`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_ORDER_ID` (`order_id`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_ORDER_ITEM_ID` (`order_item_id`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_CUSTOMER_ID` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Link Purchased Table';
 
---
--- Truncate table before insert `downloadable_link_purchased`
---
-
-TRUNCATE TABLE `downloadable_link_purchased`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_link_purchased_item`
 --
 
-CREATE TABLE `downloadable_link_purchased_item` (
-  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item ID',
+DROP TABLE IF EXISTS `downloadable_link_purchased_item`;
+CREATE TABLE IF NOT EXISTS `downloadable_link_purchased_item` (
+  `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item ID',
   `purchased_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Purchased ID',
   `order_item_id` int(10) UNSIGNED DEFAULT '0' COMMENT 'Order Item ID',
   `product_id` int(10) UNSIGNED DEFAULT '0' COMMENT 'Product ID',
@@ -4733,78 +5461,74 @@ CREATE TABLE `downloadable_link_purchased_item` (
   `link_type` varchar(255) DEFAULT NULL COMMENT 'Link Type',
   `status` varchar(50) DEFAULT NULL COMMENT 'Status',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Time',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update Time'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update Time',
+  PRIMARY KEY (`item_id`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_LINK_HASH` (`link_hash`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_ORDER_ITEM_ID` (`order_item_id`),
+  KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_PURCHASED_ID` (`purchased_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Link Purchased Item Table';
 
---
--- Truncate table before insert `downloadable_link_purchased_item`
---
-
-TRUNCATE TABLE `downloadable_link_purchased_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_link_title`
 --
 
-CREATE TABLE `downloadable_link_title` (
-  `title_id` int(10) UNSIGNED NOT NULL COMMENT 'Title ID',
+DROP TABLE IF EXISTS `downloadable_link_title`;
+CREATE TABLE IF NOT EXISTS `downloadable_link_title` (
+  `title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Title ID',
   `link_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Link ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title'
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title',
+  PRIMARY KEY (`title_id`),
+  UNIQUE KEY `DOWNLOADABLE_LINK_TITLE_LINK_ID_STORE_ID` (`link_id`,`store_id`),
+  KEY `DOWNLOADABLE_LINK_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Link Title Table';
 
---
--- Truncate table before insert `downloadable_link_title`
---
-
-TRUNCATE TABLE `downloadable_link_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_sample`
 --
 
-CREATE TABLE `downloadable_sample` (
-  `sample_id` int(10) UNSIGNED NOT NULL COMMENT 'Sample ID',
+DROP TABLE IF EXISTS `downloadable_sample`;
+CREATE TABLE IF NOT EXISTS `downloadable_sample` (
+  `sample_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Sample ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `sample_url` varchar(255) DEFAULT NULL COMMENT 'Sample URL',
   `sample_file` varchar(255) DEFAULT NULL COMMENT 'Sample file',
   `sample_type` varchar(20) DEFAULT NULL COMMENT 'Sample Type',
-  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order'
+  `sort_order` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`sample_id`),
+  KEY `DOWNLOADABLE_SAMPLE_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Sample Table';
 
---
--- Truncate table before insert `downloadable_sample`
---
-
-TRUNCATE TABLE `downloadable_sample`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `downloadable_sample_title`
 --
 
-CREATE TABLE `downloadable_sample_title` (
-  `title_id` int(10) UNSIGNED NOT NULL COMMENT 'Title ID',
+DROP TABLE IF EXISTS `downloadable_sample_title`;
+CREATE TABLE IF NOT EXISTS `downloadable_sample_title` (
+  `title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Title ID',
   `sample_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sample ID',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `title` varchar(255) DEFAULT NULL COMMENT 'Title'
+  `title` varchar(255) DEFAULT NULL COMMENT 'Title',
+  PRIMARY KEY (`title_id`),
+  UNIQUE KEY `DOWNLOADABLE_SAMPLE_TITLE_SAMPLE_ID_STORE_ID` (`sample_id`,`store_id`),
+  KEY `DOWNLOADABLE_SAMPLE_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Downloadable Sample Title Table';
 
---
--- Truncate table before insert `downloadable_sample_title`
---
-
-TRUNCATE TABLE `downloadable_sample_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_attribute`
 --
 
-CREATE TABLE `eav_attribute` (
-  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+DROP TABLE IF EXISTS `eav_attribute`;
+CREATE TABLE IF NOT EXISTS `eav_attribute` (
+  `attribute_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_code` varchar(255) DEFAULT NULL COMMENT 'Attribute Code',
   `attribute_model` varchar(255) DEFAULT NULL COMMENT 'Attribute Model',
@@ -4820,19 +5544,16 @@ CREATE TABLE `eav_attribute` (
   `is_user_defined` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Defines Is User Defined',
   `default_value` text COMMENT 'Default Value',
   `is_unique` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Defines Is Unique',
-  `note` varchar(255) DEFAULT NULL COMMENT 'Note'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute';
+  `note` varchar(255) DEFAULT NULL COMMENT 'Note',
+  PRIMARY KEY (`attribute_id`),
+  UNIQUE KEY `EAV_ATTRIBUTE_ENTITY_TYPE_ID_ATTRIBUTE_CODE` (`entity_type_id`,`attribute_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8 COMMENT='Eav Attribute';
 
---
--- Truncate table before insert `eav_attribute`
---
-
-TRUNCATE TABLE `eav_attribute`;
 --
 -- Dumping data for table `eav_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `eav_attribute` VALUES
+INSERT INTO `eav_attribute` (`attribute_id`, `entity_type_id`, `attribute_code`, `attribute_model`, `backend_model`, `backend_type`, `backend_table`, `frontend_model`, `frontend_input`, `frontend_label`, `frontend_class`, `source_model`, `is_required`, `is_user_defined`, `default_value`, `is_unique`, `note`) VALUES
 (1, 1, 'website_id', NULL, 'Magento\\Customer\\Model\\Customer\\Attribute\\Backend\\Website', 'static', NULL, NULL, 'select', 'Associate to Website', NULL, 'Magento\\Customer\\Model\\Customer\\Attribute\\Source\\Website', 1, 0, NULL, 0, NULL),
 (2, 1, 'store_id', NULL, 'Magento\\Customer\\Model\\Customer\\Attribute\\Backend\\Store', 'static', NULL, NULL, 'select', 'Create In', NULL, 'Magento\\Customer\\Model\\Customer\\Attribute\\Source\\Store', 1, 0, NULL, 0, NULL),
 (3, 1, 'created_in', NULL, NULL, 'static', NULL, NULL, 'text', 'Created From', NULL, NULL, 0, 0, NULL, 0, NULL),
@@ -4973,26 +5694,25 @@ INSERT DELAYED IGNORE INTO `eav_attribute` VALUES
 -- Table structure for table `eav_attribute_group`
 --
 
-CREATE TABLE `eav_attribute_group` (
-  `attribute_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Group Id',
+DROP TABLE IF EXISTS `eav_attribute_group`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_group` (
+  `attribute_group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Group Id',
   `attribute_set_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Set Id',
   `attribute_group_name` varchar(255) DEFAULT NULL COMMENT 'Attribute Group Name',
   `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
   `default_id` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Default Id',
   `attribute_group_code` varchar(255) NOT NULL COMMENT 'Attribute Group Code',
-  `tab_group_code` varchar(255) DEFAULT NULL COMMENT 'Tab Group Code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Group';
+  `tab_group_code` varchar(255) DEFAULT NULL COMMENT 'Tab Group Code',
+  PRIMARY KEY (`attribute_group_id`),
+  UNIQUE KEY `EAV_ATTRIBUTE_GROUP_ATTRIBUTE_SET_ID_ATTRIBUTE_GROUP_NAME` (`attribute_set_id`,`attribute_group_name`),
+  KEY `EAV_ATTRIBUTE_GROUP_ATTRIBUTE_SET_ID_SORT_ORDER` (`attribute_set_id`,`sort_order`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Group';
 
---
--- Truncate table before insert `eav_attribute_group`
---
-
-TRUNCATE TABLE `eav_attribute_group`;
 --
 -- Dumping data for table `eav_attribute_group`
 --
 
-INSERT DELAYED IGNORE INTO `eav_attribute_group` VALUES
+INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`, `attribute_group_code`, `tab_group_code`) VALUES
 (1, 1, 'General', 1, 1, 'general', NULL),
 (2, 2, 'General', 1, 1, 'general', NULL),
 (3, 3, 'General', 10, 1, 'general', NULL),
@@ -5016,40 +5736,37 @@ INSERT DELAYED IGNORE INTO `eav_attribute_group` VALUES
 -- Table structure for table `eav_attribute_label`
 --
 
-CREATE TABLE `eav_attribute_label` (
-  `attribute_label_id` int(10) UNSIGNED NOT NULL COMMENT 'Attribute Label Id',
+DROP TABLE IF EXISTS `eav_attribute_label`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_label` (
+  `attribute_label_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Label Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`attribute_label_id`),
+  KEY `EAV_ATTRIBUTE_LABEL_STORE_ID` (`store_id`),
+  KEY `EAV_ATTRIBUTE_LABEL_ATTRIBUTE_ID_STORE_ID` (`attribute_id`,`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Label';
 
---
--- Truncate table before insert `eav_attribute_label`
---
-
-TRUNCATE TABLE `eav_attribute_label`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_attribute_option`
 --
 
-CREATE TABLE `eav_attribute_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
+DROP TABLE IF EXISTS `eav_attribute_option`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
-  `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Option';
+  `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`option_id`),
+  KEY `EAV_ATTRIBUTE_OPTION_ATTRIBUTE_ID` (`attribute_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Option';
 
---
--- Truncate table before insert `eav_attribute_option`
---
-
-TRUNCATE TABLE `eav_attribute_option`;
 --
 -- Dumping data for table `eav_attribute_option`
 --
 
-INSERT DELAYED IGNORE INTO `eav_attribute_option` VALUES
+INSERT INTO `eav_attribute_option` (`option_id`, `attribute_id`, `sort_order`) VALUES
 (1, 20, 0),
 (2, 20, 1),
 (3, 20, 3);
@@ -5060,42 +5777,41 @@ INSERT DELAYED IGNORE INTO `eav_attribute_option` VALUES
 -- Table structure for table `eav_attribute_option_swatch`
 --
 
-CREATE TABLE `eav_attribute_option_swatch` (
-  `swatch_id` int(10) UNSIGNED NOT NULL COMMENT 'Swatch ID',
+DROP TABLE IF EXISTS `eav_attribute_option_swatch`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_option_swatch` (
+  `swatch_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Swatch ID',
   `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option ID',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store ID',
   `type` smallint(5) UNSIGNED NOT NULL COMMENT 'Swatch type: 0 - text, 1 - visual color, 2 - visual image',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Swatch Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Swatch Value',
+  PRIMARY KEY (`swatch_id`),
+  UNIQUE KEY `EAV_ATTRIBUTE_OPTION_SWATCH_STORE_ID_OPTION_ID` (`store_id`,`option_id`),
+  KEY `EAV_ATTRIBUTE_OPTION_SWATCH_SWATCH_ID` (`swatch_id`),
+  KEY `EAV_ATTR_OPT_SWATCH_OPT_ID_EAV_ATTR_OPT_OPT_ID` (`option_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Magento Swatches table';
 
---
--- Truncate table before insert `eav_attribute_option_swatch`
---
-
-TRUNCATE TABLE `eav_attribute_option_swatch`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_attribute_option_value`
 --
 
-CREATE TABLE `eav_attribute_option_value` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_attribute_option_value`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_option_value` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Option Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Option Value';
+  `value` varchar(255) DEFAULT NULL COMMENT 'Value',
+  PRIMARY KEY (`value_id`),
+  KEY `EAV_ATTRIBUTE_OPTION_VALUE_OPTION_ID` (`option_id`),
+  KEY `EAV_ATTRIBUTE_OPTION_VALUE_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Option Value';
 
---
--- Truncate table before insert `eav_attribute_option_value`
---
-
-TRUNCATE TABLE `eav_attribute_option_value`;
 --
 -- Dumping data for table `eav_attribute_option_value`
 --
 
-INSERT DELAYED IGNORE INTO `eav_attribute_option_value` VALUES
+INSERT INTO `eav_attribute_option_value` (`value_id`, `option_id`, `store_id`, `value`) VALUES
 (1, 1, 0, 'Male'),
 (2, 2, 0, 'Female'),
 (3, 3, 0, 'Not Specified');
@@ -5106,23 +5822,22 @@ INSERT DELAYED IGNORE INTO `eav_attribute_option_value` VALUES
 -- Table structure for table `eav_attribute_set`
 --
 
-CREATE TABLE `eav_attribute_set` (
-  `attribute_set_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Set Id',
+DROP TABLE IF EXISTS `eav_attribute_set`;
+CREATE TABLE IF NOT EXISTS `eav_attribute_set` (
+  `attribute_set_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Set Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_set_name` varchar(255) DEFAULT NULL COMMENT 'Attribute Set Name',
-  `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Set';
+  `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`attribute_set_id`),
+  UNIQUE KEY `EAV_ATTRIBUTE_SET_ENTITY_TYPE_ID_ATTRIBUTE_SET_NAME` (`entity_type_id`,`attribute_set_name`),
+  KEY `EAV_ATTRIBUTE_SET_ENTITY_TYPE_ID_SORT_ORDER` (`entity_type_id`,`sort_order`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='Eav Attribute Set';
 
---
--- Truncate table before insert `eav_attribute_set`
---
-
-TRUNCATE TABLE `eav_attribute_set`;
 --
 -- Dumping data for table `eav_attribute_set`
 --
 
-INSERT DELAYED IGNORE INTO `eav_attribute_set` VALUES
+INSERT INTO `eav_attribute_set` (`attribute_set_id`, `entity_type_id`, `attribute_set_name`, `sort_order`) VALUES
 (1, 1, 'Default', 2),
 (2, 2, 'Default', 2),
 (3, 3, 'Default', 1),
@@ -5138,8 +5853,9 @@ INSERT DELAYED IGNORE INTO `eav_attribute_set` VALUES
 -- Table structure for table `eav_entity`
 --
 
-CREATE TABLE `eav_entity` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `eav_entity`;
+CREATE TABLE IF NOT EXISTS `eav_entity` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_set_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Set Id',
   `increment_id` varchar(50) DEFAULT NULL COMMENT 'Increment Id',
@@ -5147,39 +5863,38 @@ CREATE TABLE `eav_entity` (
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
-  `is_active` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Defines Is Entity Active'
+  `is_active` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Defines Is Entity Active',
+  PRIMARY KEY (`entity_id`),
+  KEY `EAV_ENTITY_ENTITY_TYPE_ID` (`entity_type_id`),
+  KEY `EAV_ENTITY_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity';
 
---
--- Truncate table before insert `eav_entity`
---
-
-TRUNCATE TABLE `eav_entity`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_attribute`
 --
 
-CREATE TABLE `eav_entity_attribute` (
-  `entity_attribute_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Attribute Id',
+DROP TABLE IF EXISTS `eav_entity_attribute`;
+CREATE TABLE IF NOT EXISTS `eav_entity_attribute` (
+  `entity_attribute_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Attribute Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_set_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Set Id',
   `attribute_group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Group Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
-  `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Attributes';
+  `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`entity_attribute_id`),
+  UNIQUE KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_SET_ID_ATTRIBUTE_ID` (`attribute_set_id`,`attribute_id`),
+  UNIQUE KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_GROUP_ID_ATTRIBUTE_ID` (`attribute_group_id`,`attribute_id`),
+  KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_SET_ID_SORT_ORDER` (`attribute_set_id`,`sort_order`),
+  KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=132 DEFAULT CHARSET=utf8 COMMENT='Eav Entity Attributes';
 
---
--- Truncate table before insert `eav_entity_attribute`
---
-
-TRUNCATE TABLE `eav_entity_attribute`;
 --
 -- Dumping data for table `eav_entity_attribute`
 --
 
-INSERT DELAYED IGNORE INTO `eav_entity_attribute` VALUES
+INSERT INTO `eav_entity_attribute` (`entity_attribute_id`, `entity_type_id`, `attribute_set_id`, `attribute_group_id`, `attribute_id`, `sort_order`) VALUES
 (1, 1, 1, 1, 1, 10),
 (2, 1, 1, 1, 2, 20),
 (3, 1, 1, 1, 3, 20),
@@ -5318,107 +6033,111 @@ INSERT DELAYED IGNORE INTO `eav_entity_attribute` VALUES
 -- Table structure for table `eav_entity_datetime`
 --
 
-CREATE TABLE `eav_entity_datetime` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_entity_datetime`;
+CREATE TABLE IF NOT EXISTS `eav_entity_datetime` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` datetime DEFAULT NULL COMMENT 'Attribute Value'
+  `value` datetime DEFAULT NULL COMMENT 'Attribute Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `EAV_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `EAV_ENTITY_DATETIME_STORE_ID` (`store_id`),
+  KEY `EAV_ENTITY_DATETIME_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
+  KEY `EAV_ENTITY_DATETIME_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Value Prefix';
 
---
--- Truncate table before insert `eav_entity_datetime`
---
-
-TRUNCATE TABLE `eav_entity_datetime`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_decimal`
 --
 
-CREATE TABLE `eav_entity_decimal` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_entity_decimal`;
+CREATE TABLE IF NOT EXISTS `eav_entity_decimal` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Attribute Value'
+  `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Attribute Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `EAV_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `EAV_ENTITY_DECIMAL_STORE_ID` (`store_id`),
+  KEY `EAV_ENTITY_DECIMAL_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
+  KEY `EAV_ENTITY_DECIMAL_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Value Prefix';
 
---
--- Truncate table before insert `eav_entity_decimal`
---
-
-TRUNCATE TABLE `eav_entity_decimal`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_int`
 --
 
-CREATE TABLE `eav_entity_int` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_entity_int`;
+CREATE TABLE IF NOT EXISTS `eav_entity_int` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Attribute Value'
+  `value` int(11) NOT NULL DEFAULT '0' COMMENT 'Attribute Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `EAV_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `EAV_ENTITY_INT_STORE_ID` (`store_id`),
+  KEY `EAV_ENTITY_INT_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
+  KEY `EAV_ENTITY_INT_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Value Prefix';
 
---
--- Truncate table before insert `eav_entity_int`
---
-
-TRUNCATE TABLE `eav_entity_int`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_store`
 --
 
-CREATE TABLE `eav_entity_store` (
-  `entity_store_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Store Id',
+DROP TABLE IF EXISTS `eav_entity_store`;
+CREATE TABLE IF NOT EXISTS `eav_entity_store` (
+  `entity_store_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Store Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `increment_prefix` varchar(20) DEFAULT NULL COMMENT 'Increment Prefix',
-  `increment_last_id` varchar(50) DEFAULT NULL COMMENT 'Last Incremented Id'
+  `increment_last_id` varchar(50) DEFAULT NULL COMMENT 'Last Incremented Id',
+  PRIMARY KEY (`entity_store_id`),
+  KEY `EAV_ENTITY_STORE_ENTITY_TYPE_ID` (`entity_type_id`),
+  KEY `EAV_ENTITY_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Store';
 
---
--- Truncate table before insert `eav_entity_store`
---
-
-TRUNCATE TABLE `eav_entity_store`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_text`
 --
 
-CREATE TABLE `eav_entity_text` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_entity_text`;
+CREATE TABLE IF NOT EXISTS `eav_entity_text` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` text NOT NULL COMMENT 'Attribute Value'
+  `value` text NOT NULL COMMENT 'Attribute Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `EAV_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `EAV_ENTITY_TEXT_ENTITY_TYPE_ID` (`entity_type_id`),
+  KEY `EAV_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
+  KEY `EAV_ENTITY_TEXT_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Value Prefix';
 
---
--- Truncate table before insert `eav_entity_text`
---
-
-TRUNCATE TABLE `eav_entity_text`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_entity_type`
 --
 
-CREATE TABLE `eav_entity_type` (
-  `entity_type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Entity Type Id',
+DROP TABLE IF EXISTS `eav_entity_type`;
+CREATE TABLE IF NOT EXISTS `eav_entity_type` (
+  `entity_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Type Id',
   `entity_type_code` varchar(50) NOT NULL COMMENT 'Entity Type Code',
   `entity_model` varchar(255) NOT NULL COMMENT 'Entity Model',
   `attribute_model` varchar(255) DEFAULT NULL COMMENT 'Attribute Model',
@@ -5433,19 +6152,16 @@ CREATE TABLE `eav_entity_type` (
   `increment_pad_length` smallint(5) UNSIGNED NOT NULL DEFAULT '8' COMMENT 'Increment Pad Length',
   `increment_pad_char` varchar(1) NOT NULL DEFAULT '0' COMMENT 'Increment Pad Char',
   `additional_attribute_table` varchar(255) DEFAULT NULL COMMENT 'Additional Attribute Table',
-  `entity_attribute_collection` varchar(255) DEFAULT NULL COMMENT 'Entity Attribute Collection'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Type';
+  `entity_attribute_collection` varchar(255) DEFAULT NULL COMMENT 'Entity Attribute Collection',
+  PRIMARY KEY (`entity_type_id`),
+  KEY `EAV_ENTITY_TYPE_ENTITY_TYPE_CODE` (`entity_type_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='Eav Entity Type';
 
---
--- Truncate table before insert `eav_entity_type`
---
-
-TRUNCATE TABLE `eav_entity_type`;
 --
 -- Dumping data for table `eav_entity_type`
 --
 
-INSERT DELAYED IGNORE INTO `eav_entity_type` VALUES
+INSERT INTO `eav_entity_type` (`entity_type_id`, `entity_type_code`, `entity_model`, `attribute_model`, `entity_table`, `value_table_prefix`, `entity_id_field`, `is_data_sharing`, `data_sharing_key`, `default_attribute_set_id`, `increment_model`, `increment_per_store`, `increment_pad_length`, `increment_pad_char`, `additional_attribute_table`, `entity_attribute_collection`) VALUES
 (1, 'customer', 'Magento\\Customer\\Model\\ResourceModel\\Customer', 'Magento\\Customer\\Model\\Attribute', 'customer_entity', NULL, NULL, 1, 'default', 1, 'Magento\\Eav\\Model\\Entity\\Increment\\NumericValue', 0, 8, '0', 'customer_eav_attribute', 'Magento\\Customer\\Model\\ResourceModel\\Attribute\\Collection'),
 (2, 'customer_address', 'Magento\\Customer\\Model\\ResourceModel\\Address', 'Magento\\Customer\\Model\\Attribute', 'customer_address_entity', NULL, NULL, 1, 'default', 2, NULL, 0, 8, '0', 'customer_eav_attribute', 'Magento\\Customer\\Model\\ResourceModel\\Address\\Attribute\\Collection'),
 (3, 'catalog_category', 'Magento\\Catalog\\Model\\ResourceModel\\Category', 'Magento\\Catalog\\Model\\ResourceModel\\Eav\\Attribute', 'catalog_category_entity', NULL, NULL, 1, 'default', 3, NULL, 0, 8, '0', 'catalog_eav_attribute', 'Magento\\Catalog\\Model\\ResourceModel\\Category\\Attribute\\Collection'),
@@ -5461,44 +6177,45 @@ INSERT DELAYED IGNORE INTO `eav_entity_type` VALUES
 -- Table structure for table `eav_entity_varchar`
 --
 
-CREATE TABLE `eav_entity_varchar` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `eav_entity_varchar`;
+CREATE TABLE IF NOT EXISTS `eav_entity_varchar` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `entity_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Type Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Attribute Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
-  `value` varchar(255) DEFAULT NULL COMMENT 'Attribute Value'
+  `value` varchar(255) DEFAULT NULL COMMENT 'Attribute Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `EAV_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  KEY `EAV_ENTITY_VARCHAR_STORE_ID` (`store_id`),
+  KEY `EAV_ENTITY_VARCHAR_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
+  KEY `EAV_ENTITY_VARCHAR_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Entity Value Prefix';
 
---
--- Truncate table before insert `eav_entity_varchar`
---
-
-TRUNCATE TABLE `eav_entity_varchar`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_form_element`
 --
 
-CREATE TABLE `eav_form_element` (
-  `element_id` int(10) UNSIGNED NOT NULL COMMENT 'Element Id',
+DROP TABLE IF EXISTS `eav_form_element`;
+CREATE TABLE IF NOT EXISTS `eav_form_element` (
+  `element_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Element Id',
   `type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Type Id',
   `fieldset_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Fieldset Id',
   `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
-  `sort_order` int(11) NOT NULL DEFAULT '0' COMMENT 'Sort Order'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Form Element';
+  `sort_order` int(11) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`element_id`),
+  UNIQUE KEY `EAV_FORM_ELEMENT_TYPE_ID_ATTRIBUTE_ID` (`type_id`,`attribute_id`),
+  KEY `EAV_FORM_ELEMENT_FIELDSET_ID` (`fieldset_id`),
+  KEY `EAV_FORM_ELEMENT_ATTRIBUTE_ID` (`attribute_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8 COMMENT='Eav Form Element';
 
---
--- Truncate table before insert `eav_form_element`
---
-
-TRUNCATE TABLE `eav_form_element`;
 --
 -- Dumping data for table `eav_form_element`
 --
 
-INSERT DELAYED IGNORE INTO `eav_form_element` VALUES
+INSERT INTO `eav_form_element` (`element_id`, `type_id`, `fieldset_id`, `attribute_id`, `sort_order`) VALUES
 (1, 1, NULL, 23, 0),
 (2, 1, NULL, 25, 1),
 (3, 1, NULL, 27, 2),
@@ -5548,60 +6265,55 @@ INSERT DELAYED IGNORE INTO `eav_form_element` VALUES
 -- Table structure for table `eav_form_fieldset`
 --
 
-CREATE TABLE `eav_form_fieldset` (
-  `fieldset_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Fieldset Id',
+DROP TABLE IF EXISTS `eav_form_fieldset`;
+CREATE TABLE IF NOT EXISTS `eav_form_fieldset` (
+  `fieldset_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Fieldset Id',
   `type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Type Id',
   `code` varchar(64) NOT NULL COMMENT 'Code',
-  `sort_order` int(11) NOT NULL DEFAULT '0' COMMENT 'Sort Order'
+  `sort_order` int(11) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+  PRIMARY KEY (`fieldset_id`),
+  UNIQUE KEY `EAV_FORM_FIELDSET_TYPE_ID_CODE` (`type_id`,`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Form Fieldset';
 
---
--- Truncate table before insert `eav_form_fieldset`
---
-
-TRUNCATE TABLE `eav_form_fieldset`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_form_fieldset_label`
 --
 
-CREATE TABLE `eav_form_fieldset_label` (
+DROP TABLE IF EXISTS `eav_form_fieldset_label`;
+CREATE TABLE IF NOT EXISTS `eav_form_fieldset_label` (
   `fieldset_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Fieldset Id',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `label` varchar(255) NOT NULL COMMENT 'Label'
+  `label` varchar(255) NOT NULL COMMENT 'Label',
+  PRIMARY KEY (`fieldset_id`,`store_id`),
+  KEY `EAV_FORM_FIELDSET_LABEL_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Form Fieldset Label';
 
---
--- Truncate table before insert `eav_form_fieldset_label`
---
-
-TRUNCATE TABLE `eav_form_fieldset_label`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `eav_form_type`
 --
 
-CREATE TABLE `eav_form_type` (
-  `type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Type Id',
+DROP TABLE IF EXISTS `eav_form_type`;
+CREATE TABLE IF NOT EXISTS `eav_form_type` (
+  `type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Type Id',
   `code` varchar(64) NOT NULL COMMENT 'Code',
   `label` varchar(255) NOT NULL COMMENT 'Label',
   `is_system` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is System',
   `theme` varchar(64) DEFAULT NULL COMMENT 'Theme',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Form Type';
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
+  PRIMARY KEY (`type_id`),
+  UNIQUE KEY `EAV_FORM_TYPE_CODE_THEME_STORE_ID` (`code`,`theme`,`store_id`),
+  KEY `EAV_FORM_TYPE_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Eav Form Type';
 
---
--- Truncate table before insert `eav_form_type`
---
-
-TRUNCATE TABLE `eav_form_type`;
 --
 -- Dumping data for table `eav_form_type`
 --
 
-INSERT DELAYED IGNORE INTO `eav_form_type` VALUES
+INSERT INTO `eav_form_type` (`type_id`, `code`, `label`, `is_system`, `theme`, `store_id`) VALUES
 (1, 'checkout_onepage_register', 'checkout_onepage_register', 1, '', 0),
 (2, 'checkout_onepage_register_guest', 'checkout_onepage_register_guest', 1, '', 0),
 (3, 'checkout_onepage_billing_address', 'checkout_onepage_billing_address', 1, '', 0),
@@ -5613,21 +6325,19 @@ INSERT DELAYED IGNORE INTO `eav_form_type` VALUES
 -- Table structure for table `eav_form_type_entity`
 --
 
-CREATE TABLE `eav_form_type_entity` (
+DROP TABLE IF EXISTS `eav_form_type_entity`;
+CREATE TABLE IF NOT EXISTS `eav_form_type_entity` (
   `type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Type Id',
-  `entity_type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Entity Type Id'
+  `entity_type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Entity Type Id',
+  PRIMARY KEY (`type_id`,`entity_type_id`),
+  KEY `EAV_FORM_TYPE_ENTITY_ENTITY_TYPE_ID` (`entity_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Eav Form Type Entity';
 
---
--- Truncate table before insert `eav_form_type_entity`
---
-
-TRUNCATE TABLE `eav_form_type_entity`;
 --
 -- Dumping data for table `eav_form_type_entity`
 --
 
-INSERT DELAYED IGNORE INTO `eav_form_type_entity` VALUES
+INSERT INTO `eav_form_type_entity` (`type_id`, `entity_type_id`) VALUES
 (1, 1),
 (1, 2),
 (2, 1),
@@ -5641,8 +6351,9 @@ INSERT DELAYED IGNORE INTO `eav_form_type_entity` VALUES
 -- Table structure for table `email_template`
 --
 
-CREATE TABLE `email_template` (
-  `template_id` int(10) UNSIGNED NOT NULL COMMENT 'Template ID',
+DROP TABLE IF EXISTS `email_template`;
+CREATE TABLE IF NOT EXISTS `email_template` (
+  `template_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Template ID',
   `template_code` varchar(150) NOT NULL COMMENT 'Template Name',
   `template_text` text NOT NULL COMMENT 'Template Content',
   `template_styles` text COMMENT 'Templste Styles',
@@ -5653,163 +6364,158 @@ CREATE TABLE `email_template` (
   `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date of Template Creation',
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Date of Template Modification',
   `orig_template_code` varchar(200) DEFAULT NULL COMMENT 'Original Template Code',
-  `orig_template_variables` text COMMENT 'Original Template Variables'
+  `orig_template_variables` text COMMENT 'Original Template Variables',
+  PRIMARY KEY (`template_id`),
+  UNIQUE KEY `EMAIL_TEMPLATE_TEMPLATE_CODE` (`template_code`),
+  KEY `EMAIL_TEMPLATE_ADDED_AT` (`added_at`),
+  KEY `EMAIL_TEMPLATE_MODIFIED_AT` (`modified_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Email Templates';
 
---
--- Truncate table before insert `email_template`
---
-
-TRUNCATE TABLE `email_template`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `emthemes_config_data`
 --
 
-CREATE TABLE `emthemes_config_data` (
-  `config_id` int(10) UNSIGNED NOT NULL COMMENT 'Config Id',
+DROP TABLE IF EXISTS `emthemes_config_data`;
+CREATE TABLE IF NOT EXISTS `emthemes_config_data` (
+  `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Config Id',
   `scope` varchar(8) NOT NULL DEFAULT 'default' COMMENT 'Config Scope',
   `scope_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Config Scope Id',
   `theme_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Config Theme Id',
   `path` varchar(255) NOT NULL DEFAULT 'general' COMMENT 'Config Path',
-  `value` text COMMENT 'Config Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Emthemes Config Data';
+  `value` text COMMENT 'Config Value',
+  PRIMARY KEY (`config_id`),
+  UNIQUE KEY `EMTHEMES_CONFIG_DATA_SCOPE_SCOPE_ID_PATH_THEME_ID` (`scope`,`scope_id`,`path`,`theme_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='Emthemes Config Data';
 
 --
--- Truncate table before insert `emthemes_config_data`
+-- Dumping data for table `emthemes_config_data`
 --
 
-TRUNCATE TABLE `emthemes_config_data`;
+INSERT INTO `emthemes_config_data` (`config_id`, `scope`, `scope_id`, `theme_id`, `path`, `value`) VALUES
+(1, 'default', 0, 4, 'general_section/layout/small_logo_src', 'logo_1.png'),
+(2, 'default', 0, 4, 'general_section/layout/enable_rtl', '0'),
+(3, 'default', 0, 4, 'general_section/layout/box_wide', '0'),
+(4, 'default', 0, 4, 'general_section/layout/sticky_menu', '1'),
+(5, 'default', 0, 4, 'general_section/layout/default_top_navigation', '0'),
+(6, 'default', 0, 4, 'general_section/general_blocks/handle_login_form', '2'),
+(7, 'default', 0, 4, 'general_section/general_blocks/popup_block', '2');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `flag`
 --
 
-CREATE TABLE `flag` (
-  `flag_id` int(10) UNSIGNED NOT NULL COMMENT 'Flag Id',
+DROP TABLE IF EXISTS `flag`;
+CREATE TABLE IF NOT EXISTS `flag` (
+  `flag_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Flag Id',
   `flag_code` varchar(255) NOT NULL COMMENT 'Flag Code',
   `state` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Flag State',
   `flag_data` text COMMENT 'Flag Data',
-  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Date of Last Flag Update'
+  `last_update` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Date of Last Flag Update',
+  PRIMARY KEY (`flag_id`),
+  KEY `FLAG_LAST_UPDATE` (`last_update`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Flag';
 
---
--- Truncate table before insert `flag`
---
-
-TRUNCATE TABLE `flag`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `gift_message`
 --
 
-CREATE TABLE `gift_message` (
-  `gift_message_id` int(10) UNSIGNED NOT NULL COMMENT 'GiftMessage Id',
+DROP TABLE IF EXISTS `gift_message`;
+CREATE TABLE IF NOT EXISTS `gift_message` (
+  `gift_message_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'GiftMessage Id',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer id',
   `sender` varchar(255) DEFAULT NULL COMMENT 'Sender',
   `recipient` varchar(255) DEFAULT NULL COMMENT 'Registrant',
-  `message` text COMMENT 'Message'
+  `message` text COMMENT 'Message',
+  PRIMARY KEY (`gift_message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Gift Message';
 
---
--- Truncate table before insert `gift_message`
---
-
-TRUNCATE TABLE `gift_message`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `googleoptimizer_code`
 --
 
-CREATE TABLE `googleoptimizer_code` (
-  `code_id` int(10) UNSIGNED NOT NULL COMMENT 'Google experiment code id',
+DROP TABLE IF EXISTS `googleoptimizer_code`;
+CREATE TABLE IF NOT EXISTS `googleoptimizer_code` (
+  `code_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Google experiment code id',
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Optimized entity id product id or catalog id',
   `entity_type` varchar(50) DEFAULT NULL COMMENT 'Optimized entity type',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store id',
-  `experiment_script` text COMMENT 'Google experiment script'
+  `experiment_script` text COMMENT 'Google experiment script',
+  PRIMARY KEY (`code_id`),
+  UNIQUE KEY `GOOGLEOPTIMIZER_CODE_STORE_ID_ENTITY_ID_ENTITY_TYPE` (`store_id`,`entity_id`,`entity_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Google Experiment code';
 
---
--- Truncate table before insert `googleoptimizer_code`
---
-
-TRUNCATE TABLE `googleoptimizer_code`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `importexport_importdata`
 --
 
-CREATE TABLE `importexport_importdata` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `importexport_importdata`;
+CREATE TABLE IF NOT EXISTS `importexport_importdata` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `entity` varchar(50) NOT NULL COMMENT 'Entity',
   `behavior` varchar(10) NOT NULL DEFAULT 'append' COMMENT 'Behavior',
-  `data` longtext COMMENT 'Data'
+  `data` longtext COMMENT 'Data',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Import Data Table';
 
---
--- Truncate table before insert `importexport_importdata`
---
-
-TRUNCATE TABLE `importexport_importdata`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `import_history`
 --
 
-CREATE TABLE `import_history` (
-  `history_id` int(10) UNSIGNED NOT NULL COMMENT 'History record Id',
+DROP TABLE IF EXISTS `import_history`;
+CREATE TABLE IF NOT EXISTS `import_history` (
+  `history_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'History record Id',
   `started_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Started at',
   `user_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'User ID',
   `imported_file` varchar(255) DEFAULT NULL COMMENT 'Imported file',
   `execution_time` varchar(255) DEFAULT NULL COMMENT 'Execution time',
   `summary` varchar(255) DEFAULT NULL COMMENT 'Summary',
-  `error_file` varchar(255) NOT NULL COMMENT 'Imported file with errors'
+  `error_file` varchar(255) NOT NULL COMMENT 'Imported file with errors',
+  PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Import history table';
 
---
--- Truncate table before insert `import_history`
---
-
-TRUNCATE TABLE `import_history`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `indexer_state`
 --
 
-CREATE TABLE `indexer_state` (
-  `state_id` int(10) UNSIGNED NOT NULL COMMENT 'Indexer State Id',
+DROP TABLE IF EXISTS `indexer_state`;
+CREATE TABLE IF NOT EXISTS `indexer_state` (
+  `state_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Indexer State Id',
   `indexer_id` varchar(255) DEFAULT NULL COMMENT 'Indexer Id',
   `status` varchar(16) DEFAULT 'invalid' COMMENT 'Indexer Status',
   `updated` datetime DEFAULT NULL COMMENT 'Indexer Status',
-  `hash_config` varchar(32) NOT NULL COMMENT 'Hash of indexer config'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Indexer State';
+  `hash_config` varchar(32) NOT NULL COMMENT 'Hash of indexer config',
+  PRIMARY KEY (`state_id`),
+  KEY `INDEXER_STATE_INDEXER_ID` (`indexer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COMMENT='Indexer State';
 
---
--- Truncate table before insert `indexer_state`
---
-
-TRUNCATE TABLE `indexer_state`;
 --
 -- Dumping data for table `indexer_state`
 --
 
-INSERT DELAYED IGNORE INTO `indexer_state` VALUES
-(1, 'customer_grid', 'valid', '2017-04-23 04:47:11', '9b4506442a512a649dde7c6f25924134'),
-(2, 'catalog_category_product', 'invalid', '2017-04-23 04:47:11', '86038392fe878acd22d5650a99b4f9b3'),
-(3, 'catalog_product_category', 'invalid', '2017-04-23 04:47:12', '8fd6f9a1ec8741ce1c7984b549915e8e'),
-(4, 'catalog_product_price', 'invalid', '2017-04-23 04:47:12', '0dce29088c0563479f66b2a70ebf152b'),
-(5, 'catalog_product_attribute', 'invalid', '2017-04-23 04:47:12', '5ee6fe2540126b9b2c90c53fe25c4d9a'),
-(6, 'cataloginventory_stock', 'invalid', '2017-04-23 04:47:12', '030021373629a9e2b3b8ffcc92be9483'),
-(7, 'catalogrule_rule', 'invalid', '2017-04-23 04:47:12', '63676f01f658a0964f150347a6596a0a'),
-(8, 'catalogrule_product', 'invalid', '2017-04-23 04:47:12', 'f9512548ab97beef43ea393d4a6dc545'),
-(9, 'catalogsearch_fulltext', 'valid', '2017-04-23 04:48:22', 'a959fbd517e02dc6c79ef261cc983c97');
+INSERT INTO `indexer_state` (`state_id`, `indexer_id`, `status`, `updated`, `hash_config`) VALUES
+(1, 'customer_grid', 'valid', '2017-03-15 15:06:16', '9b4506442a512a649dde7c6f25924134'),
+(2, 'catalog_category_product', 'invalid', '2017-03-15 15:06:16', '86038392fe878acd22d5650a99b4f9b3'),
+(3, 'catalog_product_category', 'invalid', '2017-03-15 15:06:16', '8fd6f9a1ec8741ce1c7984b549915e8e'),
+(4, 'catalog_product_price', 'invalid', '2017-03-15 15:06:16', '0dce29088c0563479f66b2a70ebf152b'),
+(5, 'catalog_product_attribute', 'invalid', '2017-03-15 15:06:16', '5ee6fe2540126b9b2c90c53fe25c4d9a'),
+(6, 'cataloginventory_stock', 'invalid', '2017-03-15 15:06:16', '030021373629a9e2b3b8ffcc92be9483'),
+(7, 'catalogrule_rule', 'invalid', '2017-03-15 15:06:16', '63676f01f658a0964f150347a6596a0a'),
+(8, 'catalogrule_product', 'invalid', '2017-03-15 15:06:16', 'f9512548ab97beef43ea393d4a6dc545'),
+(9, 'catalogsearch_fulltext', 'valid', '2017-03-15 15:07:27', 'a959fbd517e02dc6c79ef261cc983c97');
 
 -- --------------------------------------------------------
 
@@ -5817,8 +6523,9 @@ INSERT DELAYED IGNORE INTO `indexer_state` VALUES
 -- Table structure for table `integration`
 --
 
-CREATE TABLE `integration` (
-  `integration_id` int(10) UNSIGNED NOT NULL COMMENT 'Integration ID',
+DROP TABLE IF EXISTS `integration`;
+CREATE TABLE IF NOT EXISTS `integration` (
+  `integration_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Integration ID',
   `name` varchar(255) NOT NULL COMMENT 'Integration name is displayed in the admin interface',
   `email` varchar(255) NOT NULL COMMENT 'Email address of the contact person',
   `endpoint` varchar(255) DEFAULT NULL COMMENT 'Endpoint for posting consumer credentials',
@@ -5827,38 +6534,36 @@ CREATE TABLE `integration` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Creation Time',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Update Time',
   `setup_type` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Integration type - manual or config file',
-  `identity_link_url` varchar(255) DEFAULT NULL COMMENT 'Identity linking Url'
+  `identity_link_url` varchar(255) DEFAULT NULL COMMENT 'Identity linking Url',
+  PRIMARY KEY (`integration_id`),
+  UNIQUE KEY `INTEGRATION_NAME` (`name`),
+  UNIQUE KEY `INTEGRATION_CONSUMER_ID` (`consumer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='integration';
 
---
--- Truncate table before insert `integration`
---
-
-TRUNCATE TABLE `integration`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `layout_link`
 --
 
-CREATE TABLE `layout_link` (
-  `layout_link_id` int(10) UNSIGNED NOT NULL COMMENT 'Link Id',
+DROP TABLE IF EXISTS `layout_link`;
+CREATE TABLE IF NOT EXISTS `layout_link` (
+  `layout_link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `theme_id` int(10) UNSIGNED NOT NULL COMMENT 'Theme id',
   `layout_update_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Layout Update Id',
-  `is_temporary` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Defines whether Layout Update is Temporary'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Layout Link';
+  `is_temporary` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Defines whether Layout Update is Temporary',
+  PRIMARY KEY (`layout_link_id`),
+  KEY `LAYOUT_LINK_LAYOUT_UPDATE_ID` (`layout_update_id`),
+  KEY `LAYOUT_LINK_STORE_ID_THEME_ID_LAYOUT_UPDATE_ID_IS_TEMPORARY` (`store_id`,`theme_id`,`layout_update_id`,`is_temporary`),
+  KEY `LAYOUT_LINK_THEME_ID_THEME_THEME_ID` (`theme_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='Layout Link';
 
---
--- Truncate table before insert `layout_link`
---
-
-TRUNCATE TABLE `layout_link`;
 --
 -- Dumping data for table `layout_link`
 --
 
-INSERT DELAYED IGNORE INTO `layout_link` VALUES
+INSERT INTO `layout_link` (`layout_link_id`, `store_id`, `theme_id`, `layout_update_id`, `is_temporary`) VALUES
 (1, 0, 2, 1, 0),
 (2, 0, 2, 2, 0),
 (3, 0, 2, 3, 0),
@@ -5904,62 +6609,60 @@ INSERT DELAYED IGNORE INTO `layout_link` VALUES
 -- Table structure for table `layout_update`
 --
 
-CREATE TABLE `layout_update` (
-  `layout_update_id` int(10) UNSIGNED NOT NULL COMMENT 'Layout Update Id',
+DROP TABLE IF EXISTS `layout_update`;
+CREATE TABLE IF NOT EXISTS `layout_update` (
+  `layout_update_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Layout Update Id',
   `handle` varchar(255) DEFAULT NULL COMMENT 'Handle',
   `xml` text COMMENT 'Xml',
   `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
-  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update Timestamp'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Layout Updates';
+  `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last Update Timestamp',
+  PRIMARY KEY (`layout_update_id`),
+  KEY `LAYOUT_UPDATE_HANDLE` (`handle`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='Layout Updates';
 
---
--- Truncate table before insert `layout_update`
---
-
-TRUNCATE TABLE `layout_update`;
 --
 -- Dumping data for table `layout_update`
 --
 
-INSERT DELAYED IGNORE INTO `layout_update` VALUES
-(1, 'contact_index_index', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"d0749e16f8b14f19a74f09ead4a9f915\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">2</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(2, 'default', '<body><referenceContainer name=\"cms_footer_links_container\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"039362539bf380c7c099ffcc9f8a9662\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">1</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(3, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"35bb11a52af892e4b22a5f494a13044e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">3</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(4, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"43626903578f81bc2bf164d9e66be51a\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">4</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(5, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"87908fc6055e41ffd560d04950ed30b2\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">5</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(6, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"673500939c74f2b27cf9370a3352e004\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">6</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(7, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"90a0d051c8e73506028661e5b9229116\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">7</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(8, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"d1af185f0de041397c18965892cff34a\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">8</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(9, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"ac5a67e83b1cd15895010243004cb5c2\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">9</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(10, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"5af67ac260729c8166189e2a103a2268\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">10</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(11, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"a7f661a44fb42537650eae1bbdf2fd7c\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">11</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(12, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"cbcd1057a9ea97416322226162289211\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">13</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(13, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"3a67dbe3b36d1bcfde3eae3330adae59\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">12</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(14, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"98a738dc6226e2f6fc5f6ca94698e2fb\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">14</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(15, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"d8c5425fa510e2bb8b91c4334febe67f\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">15</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(16, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"381d692be68afacf5bd0e1fafb8acfa6\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">16</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(17, 'customer_account_login', '<body><referenceContainer name=\"customer.login.container\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"b8e543333a45005dc2ae6799394163fe\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">18</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(18, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"7e9430611955ea408071986f34cbd18e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">17</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(19, 'cms_index_index', '<body><referenceContainer name=\"columns.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"6baea9531ca378cb335858b22fe997f9\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">19</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(20, 'cms_index_index', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"3795c450470927f0c229fe95b7c1d093\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(21, 'catalog_product_view', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"582016c78af3d891661c0bbebf66f76c\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(22, 'catalog_category_view', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4df409b9a1846d9186214e06c18a7aca\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(23, 'default', '<body><referenceContainer name=\"sidebar.additional\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"94c295588f3d347f00d182c160a6ac08\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">21</argument></action></block></referenceContainer></body>', 2, '0000-00-00 00:00:00'),
-(24, 'cms_index_index', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"5c9f1cb923c46ff1bd5e070e5c69bcfd\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">22</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
-(25, 'cms_index_index', '<body><referenceContainer name=\"sidebar.additional\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"1a14be30bce58b56dea7cb11f00c088b\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">23</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
-(26, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c68c9b84eb72b86d51cb48b9c966a97b\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">24</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(27, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"3e8a7a5a271cb341a8bfaf8f3dbf5609\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">25</argument></action></block></referenceContainer></body>', 2, '0000-00-00 00:00:00'),
-(28, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"754f2ca301b053aa4acfb6eea7497b2e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">26</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
-(29, 'cms_index_index', '<body><referenceContainer name=\"page.bottom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4049ea0a1a40710fa156887660eefb25\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">27</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(30, 'cms_index_index', '<body><referenceContainer name=\"page.bottom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"eeabb83c3175628c052f3890c7fcef91\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">29</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
-(31, 'default', '<body><referenceContainer name=\"footer.area.1\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c6e45a85e79fc521c9e6182821d55c98\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">30</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
-(32, 'default', '<body><referenceContainer name=\"footer.area.2\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"cfa4928f887c62b53e969f09c20d83eb\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">31</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(33, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4991e4b57505a27137f5e9a40444dd02\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">32</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
-(34, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c015f500f3d980764bf631a9ed52a4aa\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">33</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
-(35, 'default', '<body><referenceContainer name=\"topNavigation\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"217f0a1eca3abc2a2d491e202d1651aa\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">34</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(36, 'catalog_product_view', '<body><referenceContainer name=\"product_view_block_custom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"a7b47fbf8fb2d95b58e3b7b187ad4dbc\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">35</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(37, 'catalog_product_view', '<body><referenceContainer name=\"product.info.social\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"666d2a78457440b538dd58b8d431e339\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">36</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
-(38, 'default', '<body><referenceContainer name=\"popup.static.block\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"8708c30394e98388893703e3871f2e6a\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">37</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00');
+INSERT INTO `layout_update` (`layout_update_id`, `handle`, `xml`, `sort_order`, `updated_at`) VALUES
+(1, 'contact_index_index', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"32073c6526a4c1e0b4e5f2c8bc98732a\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">2</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(2, 'default', '<body><referenceContainer name=\"cms_footer_links_container\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"a9e4f7b3dd5b6bcc0e02d719be38ba9b\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">1</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(3, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"cb2e375652e0c5d233d4b0dabb1a15df\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">3</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(4, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"665a389b31f8afdf85457cec386025c0\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">4</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(5, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"32d2f9b6d3a3ac24f36d6c31feb7d22b\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">5</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(6, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c8bbe7c48913523bd9a9242e38dc4580\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">6</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(7, 'catalog_category_view_id_', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"5a391aec0f31cc346a2445c7aff9a529\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">7</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(8, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"0c0f812b5c0e45f0e657367007909b94\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">8</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(9, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"5c806f3788c34bb8be5f188b2827faee\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">9</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(10, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"1fc84d89d00ad4e137eacb8297fd7df3\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">10</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(11, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"e0ecab2fa8dbf26dd9dd9e8df1f09394\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">11</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(12, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"11a77c312de14433d2869e0773fd971e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">13</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(13, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"f0dc83b7ea657bd1f328b2d94460c150\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">12</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(14, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"87e477d55491bb7ec2444c5d96bcec66\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">14</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(15, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c3593a398411d6a121170186b9820577\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">15</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(16, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"c0c1004651065e80ce25f3516b9eb654\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">16</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(17, 'customer_account_login', '<body><referenceContainer name=\"customer.login.container\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"980fcfc996fac6d1a88f8efef02cb705\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">18</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(18, 'catalog_category_view_id_', '<body><referenceContainer name=\"content.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"6f9964dbe9e3d1c824fbfc45f5fc13eb\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">17</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(19, 'cms_index_index', '<body><referenceContainer name=\"columns.top\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"18ed30edd1e8c9b33f67147b0ff60020\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">19</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(20, 'cms_index_index', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"fff3874df62450262ebdb7ee509e2e73\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(21, 'catalog_product_view', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"a4f71245017c34cb2f473463adfb7d79\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(22, 'catalog_category_view', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"11f68466edd4803184bb4d3b47821b4e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">20</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(23, 'default', '<body><referenceContainer name=\"sidebar.additional\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"834ed2fd4d09664156cba25036432950\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">21</argument></action></block></referenceContainer></body>', 2, '0000-00-00 00:00:00'),
+(24, 'cms_index_index', '<body><referenceContainer name=\"sidebar.main\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"d3c71099a692e59d4e626b00ba157c9e\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">22</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
+(25, 'cms_index_index', '<body><referenceContainer name=\"sidebar.additional\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4ea0cc6fb79de9814a97b3e64c6d71e4\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">23</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
+(26, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4751aab600efe74c4d0330c863c3a526\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">24</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(27, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"762c55957b9b52ca0e8832191e27c96f\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">25</argument></action></block></referenceContainer></body>', 2, '0000-00-00 00:00:00'),
+(28, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"81f8f41efe67f03305896f3de98de3ad\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">26</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
+(29, 'cms_index_index', '<body><referenceContainer name=\"page.bottom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"6af00489914c0ded9bcedb795cdb6bd1\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">27</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(30, 'cms_index_index', '<body><referenceContainer name=\"page.bottom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"5a21a295ee4cfaeb2884ab4d1806cae9\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">29</argument></action></block></referenceContainer></body>', 3, '0000-00-00 00:00:00'),
+(31, 'default', '<body><referenceContainer name=\"footer.area.1\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"4ddf4358d245730690153b01257233a4\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">30</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
+(32, 'default', '<body><referenceContainer name=\"footer.area.2\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"1b8ad71a7e7acd87dd024c251f67be7d\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">31</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(33, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"95af76e671e095ec2db08624b9448915\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">32</argument></action></block></referenceContainer></body>', 4, '0000-00-00 00:00:00'),
+(34, 'cms_index_index', '<body><referenceContainer name=\"content\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"6eb21cbe1948665d1c91190b8595c1a6\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">33</argument></action></block></referenceContainer></body>', 0, '0000-00-00 00:00:00'),
+(35, 'default', '<body><referenceContainer name=\"topNavigation\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"dd1e39d7ed204a36605c8f3993aeac1a\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">34</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(36, 'catalog_product_view', '<body><referenceContainer name=\"product_view_block_custom\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"0547ee44b4b895c67b2357b11de7ef16\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">35</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(37, 'catalog_product_view', '<body><referenceContainer name=\"product.info.social\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"fa6457664aa0a6485ff4f14a5acf3b8c\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">36</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00'),
+(38, 'default', '<body><referenceContainer name=\"popup.static.block\"><block class=\"Magento\\Cms\\Block\\Widget\\Block\" name=\"6d32b262469061ee95c7c6fe8eb87ec4\" template=\"widget/static_block/default.phtml\"><action method=\"setData\"><argument name=\"name\" xsi:type=\"string\">block_id</argument><argument name=\"value\" xsi:type=\"string\">37</argument></action></block></referenceContainer></body>', 1, '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -5967,47 +6670,46 @@ INSERT DELAYED IGNORE INTO `layout_update` VALUES
 -- Table structure for table `mview_state`
 --
 
-CREATE TABLE `mview_state` (
-  `state_id` int(10) UNSIGNED NOT NULL COMMENT 'View State Id',
+DROP TABLE IF EXISTS `mview_state`;
+CREATE TABLE IF NOT EXISTS `mview_state` (
+  `state_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'View State Id',
   `view_id` varchar(255) DEFAULT NULL COMMENT 'View Id',
   `mode` varchar(16) DEFAULT 'disabled' COMMENT 'View Mode',
   `status` varchar(16) DEFAULT 'idle' COMMENT 'View Status',
   `updated` datetime DEFAULT NULL COMMENT 'View updated time',
-  `version_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'View Version Id'
+  `version_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'View Version Id',
+  PRIMARY KEY (`state_id`),
+  KEY `MVIEW_STATE_VIEW_ID` (`view_id`),
+  KEY `MVIEW_STATE_MODE` (`mode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='View State';
 
---
--- Truncate table before insert `mview_state`
---
-
-TRUNCATE TABLE `mview_state`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_problem`
 --
 
-CREATE TABLE `newsletter_problem` (
-  `problem_id` int(10) UNSIGNED NOT NULL COMMENT 'Problem Id',
+DROP TABLE IF EXISTS `newsletter_problem`;
+CREATE TABLE IF NOT EXISTS `newsletter_problem` (
+  `problem_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Problem Id',
   `subscriber_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Subscriber Id',
   `queue_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Queue Id',
   `problem_error_code` int(10) UNSIGNED DEFAULT '0' COMMENT 'Problem Error Code',
-  `problem_error_text` varchar(200) DEFAULT NULL COMMENT 'Problem Error Text'
+  `problem_error_text` varchar(200) DEFAULT NULL COMMENT 'Problem Error Text',
+  PRIMARY KEY (`problem_id`),
+  KEY `NEWSLETTER_PROBLEM_SUBSCRIBER_ID` (`subscriber_id`),
+  KEY `NEWSLETTER_PROBLEM_QUEUE_ID` (`queue_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Problems';
 
---
--- Truncate table before insert `newsletter_problem`
---
-
-TRUNCATE TABLE `newsletter_problem`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_queue`
 --
 
-CREATE TABLE `newsletter_queue` (
-  `queue_id` int(10) UNSIGNED NOT NULL COMMENT 'Queue Id',
+DROP TABLE IF EXISTS `newsletter_queue`;
+CREATE TABLE IF NOT EXISTS `newsletter_queue` (
+  `queue_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Queue Id',
   `template_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Template ID',
   `newsletter_type` int(11) DEFAULT NULL COMMENT 'Newsletter Type',
   `newsletter_text` text COMMENT 'Newsletter Text',
@@ -6017,77 +6719,79 @@ CREATE TABLE `newsletter_queue` (
   `newsletter_sender_email` varchar(200) DEFAULT NULL COMMENT 'Newsletter Sender Email',
   `queue_status` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Queue Status',
   `queue_start_at` timestamp NULL DEFAULT NULL COMMENT 'Queue Start At',
-  `queue_finish_at` timestamp NULL DEFAULT NULL COMMENT 'Queue Finish At'
+  `queue_finish_at` timestamp NULL DEFAULT NULL COMMENT 'Queue Finish At',
+  PRIMARY KEY (`queue_id`),
+  KEY `NEWSLETTER_QUEUE_TEMPLATE_ID` (`template_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Queue';
 
---
--- Truncate table before insert `newsletter_queue`
---
-
-TRUNCATE TABLE `newsletter_queue`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_queue_link`
 --
 
-CREATE TABLE `newsletter_queue_link` (
-  `queue_link_id` int(10) UNSIGNED NOT NULL COMMENT 'Queue Link Id',
+DROP TABLE IF EXISTS `newsletter_queue_link`;
+CREATE TABLE IF NOT EXISTS `newsletter_queue_link` (
+  `queue_link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Queue Link Id',
   `queue_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Queue Id',
   `subscriber_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Subscriber Id',
-  `letter_sent_at` timestamp NULL DEFAULT NULL COMMENT 'Letter Sent At'
+  `letter_sent_at` timestamp NULL DEFAULT NULL COMMENT 'Letter Sent At',
+  PRIMARY KEY (`queue_link_id`),
+  KEY `NEWSLETTER_QUEUE_LINK_SUBSCRIBER_ID` (`subscriber_id`),
+  KEY `NEWSLETTER_QUEUE_LINK_QUEUE_ID_LETTER_SENT_AT` (`queue_id`,`letter_sent_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Queue Link';
 
---
--- Truncate table before insert `newsletter_queue_link`
---
-
-TRUNCATE TABLE `newsletter_queue_link`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_queue_store_link`
 --
 
-CREATE TABLE `newsletter_queue_store_link` (
+DROP TABLE IF EXISTS `newsletter_queue_store_link`;
+CREATE TABLE IF NOT EXISTS `newsletter_queue_store_link` (
   `queue_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Queue Id',
-  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id'
+  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
+  PRIMARY KEY (`queue_id`,`store_id`),
+  KEY `NEWSLETTER_QUEUE_STORE_LINK_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Queue Store Link';
 
---
--- Truncate table before insert `newsletter_queue_store_link`
---
-
-TRUNCATE TABLE `newsletter_queue_store_link`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_subscriber`
 --
 
-CREATE TABLE `newsletter_subscriber` (
-  `subscriber_id` int(10) UNSIGNED NOT NULL COMMENT 'Subscriber Id',
+DROP TABLE IF EXISTS `newsletter_subscriber`;
+CREATE TABLE IF NOT EXISTS `newsletter_subscriber` (
+  `subscriber_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Subscriber Id',
   `store_id` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Store Id',
   `change_status_at` timestamp NULL DEFAULT NULL COMMENT 'Change Status At',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Id',
   `subscriber_email` varchar(150) DEFAULT NULL COMMENT 'Subscriber Email',
   `subscriber_status` int(11) NOT NULL DEFAULT '0' COMMENT 'Subscriber Status',
-  `subscriber_confirm_code` varchar(32) DEFAULT 'NULL' COMMENT 'Subscriber Confirm Code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Subscriber';
+  `subscriber_confirm_code` varchar(32) DEFAULT 'NULL' COMMENT 'Subscriber Confirm Code',
+  PRIMARY KEY (`subscriber_id`),
+  KEY `NEWSLETTER_SUBSCRIBER_CUSTOMER_ID` (`customer_id`),
+  KEY `NEWSLETTER_SUBSCRIBER_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Newsletter Subscriber';
 
 --
--- Truncate table before insert `newsletter_subscriber`
+-- Dumping data for table `newsletter_subscriber`
 --
 
-TRUNCATE TABLE `newsletter_subscriber`;
+INSERT INTO `newsletter_subscriber` (`subscriber_id`, `store_id`, `change_status_at`, `customer_id`, `subscriber_email`, `subscriber_status`, `subscriber_confirm_code`) VALUES
+(1, 1, NULL, 1, 'cohoanghp@gmail.com', 1, '6puyis4n4a4rv1fauv33hkdrfjephh58'),
+(2, 1, NULL, 2, 'admin@gmail.com', 1, 'uxaj93vjdal3vnmlwkwg64iczaunlecl');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `newsletter_template`
 --
 
-CREATE TABLE `newsletter_template` (
-  `template_id` int(10) UNSIGNED NOT NULL COMMENT 'Template ID',
+DROP TABLE IF EXISTS `newsletter_template`;
+CREATE TABLE IF NOT EXISTS `newsletter_template` (
+  `template_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Template ID',
   `template_code` varchar(150) DEFAULT NULL COMMENT 'Template Code',
   `template_text` text COMMENT 'Template Text',
   `template_styles` text COMMENT 'Template Styles',
@@ -6097,61 +6801,60 @@ CREATE TABLE `newsletter_template` (
   `template_sender_email` varchar(200) DEFAULT NULL COMMENT 'Template Sender Email',
   `template_actual` smallint(5) UNSIGNED DEFAULT '1' COMMENT 'Template Actual',
   `added_at` timestamp NULL DEFAULT NULL COMMENT 'Added At',
-  `modified_at` timestamp NULL DEFAULT NULL COMMENT 'Modified At'
+  `modified_at` timestamp NULL DEFAULT NULL COMMENT 'Modified At',
+  PRIMARY KEY (`template_id`),
+  KEY `NEWSLETTER_TEMPLATE_TEMPLATE_ACTUAL` (`template_actual`),
+  KEY `NEWSLETTER_TEMPLATE_ADDED_AT` (`added_at`),
+  KEY `NEWSLETTER_TEMPLATE_MODIFIED_AT` (`modified_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Newsletter Template';
 
---
--- Truncate table before insert `newsletter_template`
---
-
-TRUNCATE TABLE `newsletter_template`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `oauth_consumer`
 --
 
-CREATE TABLE `oauth_consumer` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `oauth_consumer`;
+CREATE TABLE IF NOT EXISTS `oauth_consumer` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
   `name` varchar(255) NOT NULL COMMENT 'Name of consumer',
   `key` varchar(32) NOT NULL COMMENT 'Key code',
   `secret` varchar(32) NOT NULL COMMENT 'Secret code',
   `callback_url` varchar(255) DEFAULT NULL COMMENT 'Callback URL',
-  `rejected_callback_url` varchar(255) NOT NULL COMMENT 'Rejected callback URL'
+  `rejected_callback_url` varchar(255) NOT NULL COMMENT 'Rejected callback URL',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `OAUTH_CONSUMER_KEY` (`key`),
+  UNIQUE KEY `OAUTH_CONSUMER_SECRET` (`secret`),
+  KEY `OAUTH_CONSUMER_CREATED_AT` (`created_at`),
+  KEY `OAUTH_CONSUMER_UPDATED_AT` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='OAuth Consumers';
 
---
--- Truncate table before insert `oauth_consumer`
---
-
-TRUNCATE TABLE `oauth_consumer`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `oauth_nonce`
 --
 
-CREATE TABLE `oauth_nonce` (
+DROP TABLE IF EXISTS `oauth_nonce`;
+CREATE TABLE IF NOT EXISTS `oauth_nonce` (
   `nonce` varchar(32) NOT NULL COMMENT 'Nonce String',
   `timestamp` int(10) UNSIGNED NOT NULL COMMENT 'Nonce Timestamp',
-  `consumer_id` int(10) UNSIGNED NOT NULL COMMENT 'Consumer ID'
+  `consumer_id` int(10) UNSIGNED NOT NULL COMMENT 'Consumer ID',
+  UNIQUE KEY `OAUTH_NONCE_NONCE_CONSUMER_ID` (`nonce`,`consumer_id`),
+  KEY `OAUTH_NONCE_CONSUMER_ID_OAUTH_CONSUMER_ENTITY_ID` (`consumer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='OAuth Nonce';
 
---
--- Truncate table before insert `oauth_nonce`
---
-
-TRUNCATE TABLE `oauth_nonce`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `oauth_token`
 --
 
-CREATE TABLE `oauth_token` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
+DROP TABLE IF EXISTS `oauth_token`;
+CREATE TABLE IF NOT EXISTS `oauth_token` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID',
   `consumer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Oauth Consumer ID',
   `admin_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Admin user ID',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer user ID',
@@ -6163,41 +6866,40 @@ CREATE TABLE `oauth_token` (
   `revoked` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Token revoked',
   `authorized` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Token authorized',
   `user_type` int(11) DEFAULT NULL COMMENT 'User type',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Token creation timestamp'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Token creation timestamp',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `OAUTH_TOKEN_TOKEN` (`token`),
+  KEY `OAUTH_TOKEN_CONSUMER_ID` (`consumer_id`),
+  KEY `OAUTH_TOKEN_ADMIN_ID_ADMIN_USER_USER_ID` (`admin_id`),
+  KEY `OAUTH_TOKEN_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='OAuth Tokens';
 
---
--- Truncate table before insert `oauth_token`
---
-
-TRUNCATE TABLE `oauth_token`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `oauth_token_request_log`
 --
 
-CREATE TABLE `oauth_token_request_log` (
-  `log_id` int(10) UNSIGNED NOT NULL COMMENT 'Log Id',
+DROP TABLE IF EXISTS `oauth_token_request_log`;
+CREATE TABLE IF NOT EXISTS `oauth_token_request_log` (
+  `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Log Id',
   `user_name` varchar(255) NOT NULL COMMENT 'Customer email or admin login',
   `user_type` smallint(5) UNSIGNED NOT NULL COMMENT 'User type (admin or customer)',
   `failures_count` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Number of failed authentication attempts in a row',
-  `lock_expires_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Lock expiration time'
+  `lock_expires_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Lock expiration time',
+  PRIMARY KEY (`log_id`),
+  UNIQUE KEY `OAUTH_TOKEN_REQUEST_LOG_USER_NAME_USER_TYPE` (`user_name`,`user_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Log of token request authentication failures.';
 
---
--- Truncate table before insert `oauth_token_request_log`
---
-
-TRUNCATE TABLE `oauth_token_request_log`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_billing_agreement`
 --
 
-CREATE TABLE `paypal_billing_agreement` (
-  `agreement_id` int(10) UNSIGNED NOT NULL COMMENT 'Agreement Id',
+DROP TABLE IF EXISTS `paypal_billing_agreement`;
+CREATE TABLE IF NOT EXISTS `paypal_billing_agreement` (
+  `agreement_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Agreement Id',
   `customer_id` int(10) UNSIGNED NOT NULL COMMENT 'Customer Id',
   `method_code` varchar(32) NOT NULL COMMENT 'Method Code',
   `reference_id` varchar(32) NOT NULL COMMENT 'Reference Id',
@@ -6205,93 +6907,84 @@ CREATE TABLE `paypal_billing_agreement` (
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
-  `agreement_label` varchar(255) DEFAULT NULL COMMENT 'Agreement Label'
+  `agreement_label` varchar(255) DEFAULT NULL COMMENT 'Agreement Label',
+  PRIMARY KEY (`agreement_id`),
+  KEY `PAYPAL_BILLING_AGREEMENT_CUSTOMER_ID` (`customer_id`),
+  KEY `PAYPAL_BILLING_AGREEMENT_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Billing Agreement';
 
---
--- Truncate table before insert `paypal_billing_agreement`
---
-
-TRUNCATE TABLE `paypal_billing_agreement`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_billing_agreement_order`
 --
 
-CREATE TABLE `paypal_billing_agreement_order` (
+DROP TABLE IF EXISTS `paypal_billing_agreement_order`;
+CREATE TABLE IF NOT EXISTS `paypal_billing_agreement_order` (
   `agreement_id` int(10) UNSIGNED NOT NULL COMMENT 'Agreement Id',
-  `order_id` int(10) UNSIGNED NOT NULL COMMENT 'Order Id'
+  `order_id` int(10) UNSIGNED NOT NULL COMMENT 'Order Id',
+  PRIMARY KEY (`agreement_id`,`order_id`),
+  KEY `PAYPAL_BILLING_AGREEMENT_ORDER_ORDER_ID` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Billing Agreement Order';
 
---
--- Truncate table before insert `paypal_billing_agreement_order`
---
-
-TRUNCATE TABLE `paypal_billing_agreement_order`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_cert`
 --
 
-CREATE TABLE `paypal_cert` (
-  `cert_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Cert Id',
+DROP TABLE IF EXISTS `paypal_cert`;
+CREATE TABLE IF NOT EXISTS `paypal_cert` (
+  `cert_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Cert Id',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id',
   `content` text COMMENT 'Content',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At'
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At',
+  PRIMARY KEY (`cert_id`),
+  KEY `PAYPAL_CERT_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Paypal Certificate Table';
 
---
--- Truncate table before insert `paypal_cert`
---
-
-TRUNCATE TABLE `paypal_cert`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_payment_transaction`
 --
 
-CREATE TABLE `paypal_payment_transaction` (
-  `transaction_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `paypal_payment_transaction`;
+CREATE TABLE IF NOT EXISTS `paypal_payment_transaction` (
+  `transaction_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `txn_id` varchar(100) DEFAULT NULL COMMENT 'Txn Id',
   `additional_information` blob COMMENT 'Additional Information',
-  `created_at` timestamp NULL DEFAULT NULL COMMENT 'Created At'
+  `created_at` timestamp NULL DEFAULT NULL COMMENT 'Created At',
+  PRIMARY KEY (`transaction_id`),
+  UNIQUE KEY `PAYPAL_PAYMENT_TRANSACTION_TXN_ID` (`txn_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='PayPal Payflow Link Payment Transaction';
 
---
--- Truncate table before insert `paypal_payment_transaction`
---
-
-TRUNCATE TABLE `paypal_payment_transaction`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_settlement_report`
 --
 
-CREATE TABLE `paypal_settlement_report` (
-  `report_id` int(10) UNSIGNED NOT NULL COMMENT 'Report Id',
+DROP TABLE IF EXISTS `paypal_settlement_report`;
+CREATE TABLE IF NOT EXISTS `paypal_settlement_report` (
+  `report_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Report Id',
   `report_date` timestamp NULL DEFAULT NULL COMMENT 'Report Date',
   `account_id` varchar(64) DEFAULT NULL COMMENT 'Account Id',
   `filename` varchar(24) DEFAULT NULL COMMENT 'Filename',
-  `last_modified` timestamp NULL DEFAULT NULL COMMENT 'Last Modified'
+  `last_modified` timestamp NULL DEFAULT NULL COMMENT 'Last Modified',
+  PRIMARY KEY (`report_id`),
+  UNIQUE KEY `PAYPAL_SETTLEMENT_REPORT_REPORT_DATE_ACCOUNT_ID` (`report_date`,`account_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Paypal Settlement Report Table';
 
---
--- Truncate table before insert `paypal_settlement_report`
---
-
-TRUNCATE TABLE `paypal_settlement_report`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `paypal_settlement_report_row`
 --
 
-CREATE TABLE `paypal_settlement_report_row` (
-  `row_id` int(10) UNSIGNED NOT NULL COMMENT 'Row Id',
+DROP TABLE IF EXISTS `paypal_settlement_report_row`;
+CREATE TABLE IF NOT EXISTS `paypal_settlement_report_row` (
+  `row_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Row Id',
   `report_id` int(10) UNSIGNED NOT NULL COMMENT 'Report Id',
   `transaction_id` varchar(19) DEFAULT NULL COMMENT 'Transaction Id',
   `invoice_id` varchar(127) DEFAULT NULL COMMENT 'Invoice Id',
@@ -6309,42 +7002,41 @@ CREATE TABLE `paypal_settlement_report_row` (
   `custom_field` varchar(255) DEFAULT NULL COMMENT 'Custom Field',
   `consumer_id` varchar(127) DEFAULT NULL COMMENT 'Consumer Id',
   `payment_tracking_id` varchar(255) DEFAULT NULL COMMENT 'Payment Tracking ID',
-  `store_id` varchar(50) DEFAULT NULL COMMENT 'Store ID'
+  `store_id` varchar(50) DEFAULT NULL COMMENT 'Store ID',
+  PRIMARY KEY (`row_id`),
+  KEY `PAYPAL_SETTLEMENT_REPORT_ROW_REPORT_ID` (`report_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Paypal Settlement Report Row Table';
 
---
--- Truncate table before insert `paypal_settlement_report_row`
---
-
-TRUNCATE TABLE `paypal_settlement_report_row`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `persistent_session`
 --
 
-CREATE TABLE `persistent_session` (
-  `persistent_id` int(10) UNSIGNED NOT NULL COMMENT 'Session id',
+DROP TABLE IF EXISTS `persistent_session`;
+CREATE TABLE IF NOT EXISTS `persistent_session` (
+  `persistent_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Session id',
   `key` varchar(50) NOT NULL COMMENT 'Unique cookie key',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer id',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website ID',
   `info` text COMMENT 'Session Data',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`persistent_id`),
+  UNIQUE KEY `PERSISTENT_SESSION_KEY` (`key`),
+  UNIQUE KEY `PERSISTENT_SESSION_CUSTOMER_ID` (`customer_id`),
+  KEY `PERSISTENT_SESSION_UPDATED_AT` (`updated_at`),
+  KEY `PERSISTENT_SESSION_WEBSITE_ID_STORE_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Persistent Session';
 
---
--- Truncate table before insert `persistent_session`
---
-
-TRUNCATE TABLE `persistent_session`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `product_alert_price`
 --
 
-CREATE TABLE `product_alert_price` (
-  `alert_price_id` int(10) UNSIGNED NOT NULL COMMENT 'Product alert price id',
+DROP TABLE IF EXISTS `product_alert_price`;
+CREATE TABLE IF NOT EXISTS `product_alert_price` (
+  `alert_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product alert price id',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer id',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product id',
   `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price amount',
@@ -6352,44 +7044,44 @@ CREATE TABLE `product_alert_price` (
   `add_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Product alert add date',
   `last_send_date` timestamp NULL DEFAULT NULL COMMENT 'Product alert last send date',
   `send_count` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product alert send count',
-  `status` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product alert status'
+  `status` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product alert status',
+  PRIMARY KEY (`alert_price_id`),
+  KEY `PRODUCT_ALERT_PRICE_CUSTOMER_ID` (`customer_id`),
+  KEY `PRODUCT_ALERT_PRICE_PRODUCT_ID` (`product_id`),
+  KEY `PRODUCT_ALERT_PRICE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Product Alert Price';
 
---
--- Truncate table before insert `product_alert_price`
---
-
-TRUNCATE TABLE `product_alert_price`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `product_alert_stock`
 --
 
-CREATE TABLE `product_alert_stock` (
-  `alert_stock_id` int(10) UNSIGNED NOT NULL COMMENT 'Product alert stock id',
+DROP TABLE IF EXISTS `product_alert_stock`;
+CREATE TABLE IF NOT EXISTS `product_alert_stock` (
+  `alert_stock_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product alert stock id',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer id',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product id',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website id',
   `add_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Product alert add date',
   `send_date` timestamp NULL DEFAULT NULL COMMENT 'Product alert send date',
   `send_count` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Send Count',
-  `status` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product alert status'
+  `status` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product alert status',
+  PRIMARY KEY (`alert_stock_id`),
+  KEY `PRODUCT_ALERT_STOCK_CUSTOMER_ID` (`customer_id`),
+  KEY `PRODUCT_ALERT_STOCK_PRODUCT_ID` (`product_id`),
+  KEY `PRODUCT_ALERT_STOCK_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Product Alert Stock';
 
---
--- Truncate table before insert `product_alert_stock`
---
-
-TRUNCATE TABLE `product_alert_stock`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote`
 --
 
-CREATE TABLE `quote` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `quote`;
+CREATE TABLE IF NOT EXISTS `quote` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
@@ -6439,22 +7131,30 @@ CREATE TABLE `quote` (
   `trigger_recollect` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Trigger Recollect',
   `ext_shipping_info` text COMMENT 'Ext Shipping Info',
   `is_persistent` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Is Quote Persistent',
-  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote';
+  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id',
+  PRIMARY KEY (`entity_id`),
+  KEY `QUOTE_CUSTOMER_ID_STORE_ID_IS_ACTIVE` (`customer_id`,`store_id`,`is_active`),
+  KEY `QUOTE_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote';
 
 --
--- Truncate table before insert `quote`
+-- Dumping data for table `quote`
 --
 
-TRUNCATE TABLE `quote`;
+INSERT INTO `quote` (`entity_id`, `store_id`, `created_at`, `updated_at`, `converted_at`, `is_active`, `is_virtual`, `is_multi_shipping`, `items_count`, `items_qty`, `orig_order_id`, `store_to_base_rate`, `store_to_quote_rate`, `base_currency_code`, `store_currency_code`, `quote_currency_code`, `grand_total`, `base_grand_total`, `checkout_method`, `customer_id`, `customer_tax_class_id`, `customer_group_id`, `customer_email`, `customer_prefix`, `customer_firstname`, `customer_middlename`, `customer_lastname`, `customer_suffix`, `customer_dob`, `customer_note`, `customer_note_notify`, `customer_is_guest`, `remote_ip`, `applied_rule_ids`, `reserved_order_id`, `password_hash`, `coupon_code`, `global_currency_code`, `base_to_global_rate`, `base_to_quote_rate`, `customer_taxvat`, `customer_gender`, `subtotal`, `base_subtotal`, `subtotal_with_discount`, `base_subtotal_with_discount`, `is_changed`, `trigger_recollect`, `ext_shipping_info`, `is_persistent`, `gift_message_id`) VALUES
+(1, 1, '2017-03-15 23:49:02', '0000-00-00 00:00:00', NULL, 1, 0, 0, 0, '0.0000', 0, '0.0000', '0.0000', 'VND', 'VND', 'VND', '0.0000', '0.0000', NULL, 1, NULL, 1, 'cohoanghp@gmail.com', NULL, 'ntp', NULL, 'thao', NULL, NULL, NULL, 1, 0, '::1', NULL, NULL, NULL, NULL, 'VND', '1.0000', '1.0000', NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', 1, 0, NULL, 0, NULL),
+(2, 1, '2017-03-16 21:38:52', '2017-03-16 21:51:11', NULL, 0, 0, 0, 1, '1.0000', 0, '0.0000', '0.0000', 'VND', 'VND', 'VND', '35005.0000', '35005.0000', NULL, 2, 3, 1, 'admin@gmail.com', NULL, 'ntp', NULL, 'thao', NULL, NULL, NULL, 1, 0, '::1', NULL, '000000001', NULL, NULL, 'VND', '1.0000', '1.0000', NULL, NULL, '35000.0000', '35000.0000', '35000.0000', '35000.0000', 1, 0, NULL, 0, NULL),
+(3, 1, '2017-04-20 07:29:41', '2017-04-20 07:33:41', NULL, 0, 0, 0, 1, '3.0000', 0, '0.0000', '0.0000', 'VND', 'VND', 'VND', '72015.0000', '72015.0000', 'guest', NULL, 3, 0, 'ntpthao@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, '::1', NULL, '000000002', NULL, NULL, 'VND', '1.0000', '1.0000', NULL, NULL, '72000.0000', '72000.0000', '72000.0000', '72000.0000', 1, 0, NULL, 0, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_address`
 --
 
-CREATE TABLE `quote_address` (
-  `address_id` int(10) UNSIGNED NOT NULL COMMENT 'Address Id',
+DROP TABLE IF EXISTS `quote_address`;
+CREATE TABLE IF NOT EXISTS `quote_address` (
+  `address_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Address Id',
   `quote_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quote Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
@@ -6515,22 +7215,32 @@ CREATE TABLE `quote_address` (
   `vat_request_id` text COMMENT 'Vat Request Id',
   `vat_request_date` text COMMENT 'Vat Request Date',
   `vat_request_success` smallint(6) DEFAULT NULL COMMENT 'Vat Request Success',
-  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Address';
+  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id',
+  PRIMARY KEY (`address_id`),
+  KEY `QUOTE_ADDRESS_QUOTE_ID` (`quote_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Address';
 
 --
--- Truncate table before insert `quote_address`
+-- Dumping data for table `quote_address`
 --
 
-TRUNCATE TABLE `quote_address`;
+INSERT INTO `quote_address` (`address_id`, `quote_id`, `created_at`, `updated_at`, `customer_id`, `save_in_address_book`, `customer_address_id`, `address_type`, `email`, `prefix`, `firstname`, `middlename`, `lastname`, `suffix`, `company`, `street`, `city`, `region`, `region_id`, `postcode`, `country_id`, `telephone`, `fax`, `same_as_billing`, `collect_shipping_rates`, `shipping_method`, `shipping_description`, `weight`, `subtotal`, `base_subtotal`, `subtotal_with_discount`, `base_subtotal_with_discount`, `tax_amount`, `base_tax_amount`, `shipping_amount`, `base_shipping_amount`, `shipping_tax_amount`, `base_shipping_tax_amount`, `discount_amount`, `base_discount_amount`, `grand_total`, `base_grand_total`, `customer_notes`, `applied_taxes`, `discount_description`, `shipping_discount_amount`, `base_shipping_discount_amount`, `subtotal_incl_tax`, `base_subtotal_total_incl_tax`, `discount_tax_compensation_amount`, `base_discount_tax_compensation_amount`, `shipping_discount_tax_compensation_amount`, `base_shipping_discount_tax_compensation_amnt`, `shipping_incl_tax`, `base_shipping_incl_tax`, `free_shipping`, `vat_id`, `vat_is_valid`, `vat_request_id`, `vat_request_date`, `vat_request_success`, `gift_message_id`) VALUES
+(1, 1, '2017-03-15 23:49:02', '0000-00-00 00:00:00', 1, 0, NULL, 'billing', 'cohoanghp@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', NULL, 'N;', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 1, '2017-03-15 23:49:02', '0000-00-00 00:00:00', 1, 0, NULL, 'shipping', 'cohoanghp@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 1, 0, NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', NULL, 'N;', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 2, '2017-03-16 21:38:52', '0000-00-00 00:00:00', 2, 0, NULL, 'billing', 'admin@gmail.com', NULL, 'ntp', NULL, 'thao', NULL, NULL, 'thủy Nguyên', 'Hải Phòng', NULL, NULL, NULL, 'VN', '34243432', NULL, 0, 0, NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', NULL, 'N;', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 2, '2017-03-16 21:38:52', '0000-00-00 00:00:00', 2, 1, NULL, 'shipping', 'admin@gmail.com', NULL, 'ntp', NULL, 'thao', NULL, NULL, 'thủy Nguyên', 'Hải Phòng', NULL, NULL, NULL, 'VN', '34243432', NULL, 0, 0, 'flatrate_flatrate', 'Flat Rate - Fixed', '0.0000', '35000.0000', '35000.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', '5.0000', '5.0000', '0.0000', '0.0000', '0.0000', '0.0000', '35005.0000', '35005.0000', NULL, 'a:0:{}', NULL, '0.0000', '0.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', '0.0000', NULL, '5.0000', '5.0000', 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 3, '2017-04-20 07:29:41', '0000-00-00 00:00:00', NULL, 0, NULL, 'billing', 'ntpthao@gmail.com', NULL, 'Thao', NULL, 'nguyen', NULL, NULL, 'sdgd fhfgh', 'fghgf fghgff', NULL, NULL, NULL, 'VN', '095634534543', NULL, 0, 0, NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, '0.0000', '0.0000', '0.0000', '0.0000', NULL, 'N;', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, 3, '2017-04-20 07:29:41', '0000-00-00 00:00:00', NULL, 0, NULL, 'shipping', 'ntpthao@gmail.com', NULL, 'Thao', NULL, 'nguyen', NULL, NULL, 'sdgd fhfgh', 'fghgf fghgff', NULL, NULL, NULL, 'VN', '095634534543', NULL, 0, 0, 'flatrate_flatrate', 'Flat Rate - Fixed', '0.0000', '72000.0000', '72000.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', '15.0000', '15.0000', '0.0000', '0.0000', '0.0000', '0.0000', '72015.0000', '72015.0000', NULL, 'a:0:{}', NULL, '0.0000', '0.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', '0.0000', NULL, '15.0000', '15.0000', 0, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_address_item`
 --
 
-CREATE TABLE `quote_address_item` (
-  `address_item_id` int(10) UNSIGNED NOT NULL COMMENT 'Address Item Id',
+DROP TABLE IF EXISTS `quote_address_item`;
+CREATE TABLE IF NOT EXISTS `quote_address_item` (
+  `address_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Address Item Id',
   `parent_item_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Parent Item Id',
   `quote_address_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quote Address Id',
   `quote_item_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quote Item Id',
@@ -6569,39 +7279,45 @@ CREATE TABLE `quote_address_item` (
   `discount_tax_compensation_amount` decimal(12,4) DEFAULT NULL COMMENT 'Discount Tax Compensation Amount',
   `base_discount_tax_compensation_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Discount Tax Compensation Amount',
   `free_shipping` int(11) DEFAULT NULL,
-  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id'
+  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id',
+  PRIMARY KEY (`address_item_id`),
+  KEY `QUOTE_ADDRESS_ITEM_QUOTE_ADDRESS_ID` (`quote_address_id`),
+  KEY `QUOTE_ADDRESS_ITEM_PARENT_ITEM_ID` (`parent_item_id`),
+  KEY `QUOTE_ADDRESS_ITEM_QUOTE_ITEM_ID` (`quote_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Address Item';
 
---
--- Truncate table before insert `quote_address_item`
---
-
-TRUNCATE TABLE `quote_address_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_id_mask`
 --
 
-CREATE TABLE `quote_id_mask` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `quote_id_mask`;
+CREATE TABLE IF NOT EXISTS `quote_id_mask` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `quote_id` int(10) UNSIGNED NOT NULL COMMENT 'Quote ID',
-  `masked_id` varchar(32) DEFAULT NULL COMMENT 'Masked ID'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Quote ID and masked ID mapping';
+  `masked_id` varchar(32) DEFAULT NULL COMMENT 'Masked ID',
+  PRIMARY KEY (`entity_id`,`quote_id`),
+  KEY `QUOTE_ID_MASK_QUOTE_ID` (`quote_id`),
+  KEY `QUOTE_ID_MASK_MASKED_ID` (`masked_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Quote ID and masked ID mapping';
 
 --
--- Truncate table before insert `quote_id_mask`
+-- Dumping data for table `quote_id_mask`
 --
 
-TRUNCATE TABLE `quote_id_mask`;
+INSERT INTO `quote_id_mask` (`entity_id`, `quote_id`, `masked_id`) VALUES
+(1, 3, '235be1145b49c8450d089515b06024d6');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_item`
 --
 
-CREATE TABLE `quote_item` (
-  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+DROP TABLE IF EXISTS `quote_item`;
+CREATE TABLE IF NOT EXISTS `quote_item` (
+  `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id',
   `quote_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quote Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
@@ -6653,41 +7369,56 @@ CREATE TABLE `quote_item` (
   `base_weee_tax_applied_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Amount',
   `base_weee_tax_applied_row_amnt` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Row Amnt',
   `base_weee_tax_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Disposition',
-  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Item';
+  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition',
+  PRIMARY KEY (`item_id`),
+  KEY `QUOTE_ITEM_PARENT_ITEM_ID` (`parent_item_id`),
+  KEY `QUOTE_ITEM_PRODUCT_ID` (`product_id`),
+  KEY `QUOTE_ITEM_QUOTE_ID` (`quote_id`),
+  KEY `QUOTE_ITEM_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Item';
 
 --
--- Truncate table before insert `quote_item`
+-- Dumping data for table `quote_item`
 --
 
-TRUNCATE TABLE `quote_item`;
+INSERT INTO `quote_item` (`item_id`, `quote_id`, `created_at`, `updated_at`, `product_id`, `store_id`, `parent_item_id`, `is_virtual`, `sku`, `name`, `description`, `applied_rule_ids`, `additional_data`, `is_qty_decimal`, `no_discount`, `weight`, `qty`, `price`, `base_price`, `custom_price`, `discount_percent`, `discount_amount`, `base_discount_amount`, `tax_percent`, `tax_amount`, `base_tax_amount`, `row_total`, `base_row_total`, `row_total_with_discount`, `row_weight`, `product_type`, `base_tax_before_discount`, `tax_before_discount`, `original_custom_price`, `redirect_url`, `base_cost`, `price_incl_tax`, `base_price_incl_tax`, `row_total_incl_tax`, `base_row_total_incl_tax`, `discount_tax_compensation_amount`, `base_discount_tax_compensation_amount`, `free_shipping`, `gift_message_id`, `weee_tax_applied`, `weee_tax_applied_amount`, `weee_tax_applied_row_amount`, `weee_tax_disposition`, `weee_tax_row_disposition`, `base_weee_tax_applied_amount`, `base_weee_tax_applied_row_amnt`, `base_weee_tax_disposition`, `base_weee_tax_row_disposition`) VALUES
+(1, 2, '2017-03-16 21:41:27', '0000-00-00 00:00:00', 2, 1, NULL, 0, 'Cải tím', 'Cải tím', NULL, NULL, NULL, 0, 0, NULL, '1.0000', '35000.0000', '35000.0000', NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', 'simple', NULL, NULL, NULL, NULL, NULL, '35000.0000', '35000.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 3, '2017-04-20 07:29:42', '2017-04-20 07:31:01', 1, 1, NULL, 0, 'Cải bắp', 'Cải bắp', NULL, NULL, NULL, 0, 0, NULL, '3.0000', '24000.0000', '24000.0000', NULL, '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', 'simple', NULL, NULL, NULL, NULL, NULL, '24000.0000', '24000.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_item_option`
 --
 
-CREATE TABLE `quote_item_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
+DROP TABLE IF EXISTS `quote_item_option`;
+CREATE TABLE IF NOT EXISTS `quote_item_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id',
   `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `code` varchar(255) NOT NULL COMMENT 'Code',
-  `value` text COMMENT 'Value'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Item Option';
+  `value` text COMMENT 'Value',
+  PRIMARY KEY (`option_id`),
+  KEY `QUOTE_ITEM_OPTION_ITEM_ID` (`item_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Item Option';
 
 --
--- Truncate table before insert `quote_item_option`
+-- Dumping data for table `quote_item_option`
 --
 
-TRUNCATE TABLE `quote_item_option`;
+INSERT INTO `quote_item_option` (`option_id`, `item_id`, `product_id`, `code`, `value`) VALUES
+(1, 1, 2, 'info_buyRequest', 'a:3:{s:4:\"uenc\";s:64:\"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvcmF1LXhhbmgvcmF1LWNhaS5odG1s\";s:7:\"product\";s:1:\"2\";s:3:\"qty\";i:1;}'),
+(2, 2, 1, 'info_buyRequest', 'a:5:{s:4:\"uenc\";s:72:\"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvcXVpY2tzaG9wL2luZGV4L3ZpZXcvaWQvMS8,\";s:7:\"product\";s:1:\"1\";s:28:\"selected_configurable_option\";s:0:\"\";s:15:\"related_product\";s:0:\"\";s:3:\"qty\";s:1:\"1\";}');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_payment`
 --
 
-CREATE TABLE `quote_payment` (
-  `payment_id` int(10) UNSIGNED NOT NULL COMMENT 'Payment Id',
+DROP TABLE IF EXISTS `quote_payment`;
+CREATE TABLE IF NOT EXISTS `quote_payment` (
+  `payment_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Payment Id',
   `quote_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Quote Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
@@ -6708,22 +7439,28 @@ CREATE TABLE `quote_payment` (
   `additional_information` text COMMENT 'Additional Information',
   `paypal_payer_id` varchar(255) DEFAULT NULL COMMENT 'Paypal Payer Id',
   `paypal_payer_status` varchar(255) DEFAULT NULL COMMENT 'Paypal Payer Status',
-  `paypal_correlation_id` varchar(255) DEFAULT NULL COMMENT 'Paypal Correlation Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Payment';
+  `paypal_correlation_id` varchar(255) DEFAULT NULL COMMENT 'Paypal Correlation Id',
+  PRIMARY KEY (`payment_id`),
+  KEY `QUOTE_PAYMENT_QUOTE_ID` (`quote_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Payment';
 
 --
--- Truncate table before insert `quote_payment`
+-- Dumping data for table `quote_payment`
 --
 
-TRUNCATE TABLE `quote_payment`;
+INSERT INTO `quote_payment` (`payment_id`, `quote_id`, `created_at`, `updated_at`, `method`, `cc_type`, `cc_number_enc`, `cc_last_4`, `cc_cid_enc`, `cc_owner`, `cc_exp_month`, `cc_exp_year`, `cc_ss_owner`, `cc_ss_start_month`, `cc_ss_start_year`, `po_number`, `additional_data`, `cc_ss_issue`, `additional_information`, `paypal_payer_id`, `paypal_payer_status`, `paypal_correlation_id`) VALUES
+(1, 2, '2017-03-16 21:50:39', '0000-00-00 00:00:00', 'checkmo', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 3, '2017-04-20 07:32:59', '0000-00-00 00:00:00', 'checkmo', NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `quote_shipping_rate`
 --
 
-CREATE TABLE `quote_shipping_rate` (
-  `rate_id` int(10) UNSIGNED NOT NULL COMMENT 'Rate Id',
+DROP TABLE IF EXISTS `quote_shipping_rate`;
+CREATE TABLE IF NOT EXISTS `quote_shipping_rate` (
+  `rate_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rate Id',
   `address_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Address Id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
   `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
@@ -6734,38 +7471,42 @@ CREATE TABLE `quote_shipping_rate` (
   `method_description` text COMMENT 'Method Description',
   `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price',
   `error_message` text COMMENT 'Error Message',
-  `method_title` text COMMENT 'Method Title'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Shipping Rate';
+  `method_title` text COMMENT 'Method Title',
+  PRIMARY KEY (`rate_id`),
+  KEY `QUOTE_SHIPPING_RATE_ADDRESS_ID` (`address_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Quote Shipping Rate';
 
 --
--- Truncate table before insert `quote_shipping_rate`
+-- Dumping data for table `quote_shipping_rate`
 --
 
-TRUNCATE TABLE `quote_shipping_rate`;
+INSERT INTO `quote_shipping_rate` (`rate_id`, `address_id`, `created_at`, `updated_at`, `carrier`, `carrier_title`, `code`, `method`, `method_description`, `price`, `error_message`, `method_title`) VALUES
+(2, 4, '2017-03-16 21:50:38', '0000-00-00 00:00:00', 'flatrate', 'Flat Rate', 'flatrate_flatrate', 'flatrate', NULL, '5.0000', NULL, 'Fixed'),
+(4, 6, '2017-04-20 07:32:59', '0000-00-00 00:00:00', 'flatrate', 'Flat Rate', 'flatrate_flatrate', 'flatrate', NULL, '15.0000', NULL, 'Fixed');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `rating`
 --
 
-CREATE TABLE `rating` (
-  `rating_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Rating Id',
+DROP TABLE IF EXISTS `rating`;
+CREATE TABLE IF NOT EXISTS `rating` (
+  `rating_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rating Id',
   `entity_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
   `rating_code` varchar(64) NOT NULL COMMENT 'Rating Code',
   `position` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Position On Storefront',
-  `is_active` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Rating is active.'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Ratings';
+  `is_active` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Rating is active.',
+  PRIMARY KEY (`rating_id`),
+  UNIQUE KEY `RATING_RATING_CODE` (`rating_code`),
+  KEY `RATING_ENTITY_ID` (`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Ratings';
 
---
--- Truncate table before insert `rating`
---
-
-TRUNCATE TABLE `rating`;
 --
 -- Dumping data for table `rating`
 --
 
-INSERT DELAYED IGNORE INTO `rating` VALUES
+INSERT INTO `rating` (`rating_id`, `entity_id`, `rating_code`, `position`, `is_active`) VALUES
 (1, 1, 'Quality', 0, 1),
 (2, 1, 'Value', 0, 1),
 (3, 1, 'Price', 0, 1);
@@ -6776,21 +7517,19 @@ INSERT DELAYED IGNORE INTO `rating` VALUES
 -- Table structure for table `rating_entity`
 --
 
-CREATE TABLE `rating_entity` (
-  `entity_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Entity Id',
-  `entity_code` varchar(64) NOT NULL COMMENT 'Entity Code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating entities';
+DROP TABLE IF EXISTS `rating_entity`;
+CREATE TABLE IF NOT EXISTS `rating_entity` (
+  `entity_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
+  `entity_code` varchar(64) NOT NULL COMMENT 'Entity Code',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `RATING_ENTITY_ENTITY_CODE` (`entity_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Rating entities';
 
---
--- Truncate table before insert `rating_entity`
---
-
-TRUNCATE TABLE `rating_entity`;
 --
 -- Dumping data for table `rating_entity`
 --
 
-INSERT DELAYED IGNORE INTO `rating_entity` VALUES
+INSERT INTO `rating_entity` (`entity_id`, `entity_code`) VALUES
 (1, 'product'),
 (2, 'product_review'),
 (3, 'review');
@@ -6801,24 +7540,22 @@ INSERT DELAYED IGNORE INTO `rating_entity` VALUES
 -- Table structure for table `rating_option`
 --
 
-CREATE TABLE `rating_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Rating Option Id',
+DROP TABLE IF EXISTS `rating_option`;
+CREATE TABLE IF NOT EXISTS `rating_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rating Option Id',
   `rating_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Id',
   `code` varchar(32) NOT NULL COMMENT 'Rating Option Code',
   `value` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Option Value',
-  `position` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Ration option position on Storefront'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating options';
+  `position` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Ration option position on Storefront',
+  PRIMARY KEY (`option_id`),
+  KEY `RATING_OPTION_RATING_ID` (`rating_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='Rating options';
 
---
--- Truncate table before insert `rating_option`
---
-
-TRUNCATE TABLE `rating_option`;
 --
 -- Dumping data for table `rating_option`
 --
 
-INSERT DELAYED IGNORE INTO `rating_option` VALUES
+INSERT INTO `rating_option` (`option_id`, `rating_id`, `code`, `value`, `position`) VALUES
 (1, 1, '1', 1, 1),
 (2, 1, '2', 2, 2),
 (3, 1, '3', 3, 3),
@@ -6841,8 +7578,9 @@ INSERT DELAYED IGNORE INTO `rating_option` VALUES
 -- Table structure for table `rating_option_vote`
 --
 
-CREATE TABLE `rating_option_vote` (
-  `vote_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Vote id',
+DROP TABLE IF EXISTS `rating_option_vote`;
+CREATE TABLE IF NOT EXISTS `rating_option_vote` (
+  `vote_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Vote id',
   `option_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Vote option id',
   `remote_ip` varchar(16) NOT NULL COMMENT 'Customer IP',
   `remote_ip_long` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Customer IP converted to long integer format',
@@ -6851,226 +7589,225 @@ CREATE TABLE `rating_option_vote` (
   `rating_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating id',
   `review_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Review id',
   `percent` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Percent amount',
-  `value` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Vote option value'
+  `value` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Vote option value',
+  PRIMARY KEY (`vote_id`),
+  KEY `RATING_OPTION_VOTE_OPTION_ID` (`option_id`),
+  KEY `RATING_OPTION_VOTE_REVIEW_ID_REVIEW_REVIEW_ID` (`review_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating option values';
 
---
--- Truncate table before insert `rating_option_vote`
---
-
-TRUNCATE TABLE `rating_option_vote`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `rating_option_vote_aggregated`
 --
 
-CREATE TABLE `rating_option_vote_aggregated` (
-  `primary_id` int(11) NOT NULL COMMENT 'Vote aggregation id',
+DROP TABLE IF EXISTS `rating_option_vote_aggregated`;
+CREATE TABLE IF NOT EXISTS `rating_option_vote_aggregated` (
+  `primary_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Vote aggregation id',
   `rating_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating id',
   `entity_pk_value` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product id',
   `vote_count` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Vote dty',
   `vote_value_sum` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'General vote sum',
   `percent` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Vote percent',
   `percent_approved` smallint(6) DEFAULT '0' COMMENT 'Vote percent approved by admin',
-  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id'
+  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
+  PRIMARY KEY (`primary_id`),
+  KEY `RATING_OPTION_VOTE_AGGREGATED_RATING_ID` (`rating_id`),
+  KEY `RATING_OPTION_VOTE_AGGREGATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating vote aggregated';
 
---
--- Truncate table before insert `rating_option_vote_aggregated`
---
-
-TRUNCATE TABLE `rating_option_vote_aggregated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `rating_store`
 --
 
-CREATE TABLE `rating_store` (
+DROP TABLE IF EXISTS `rating_store`;
+CREATE TABLE IF NOT EXISTS `rating_store` (
   `rating_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating id',
-  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id'
+  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id',
+  PRIMARY KEY (`rating_id`,`store_id`),
+  KEY `RATING_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating Store';
 
---
--- Truncate table before insert `rating_store`
---
-
-TRUNCATE TABLE `rating_store`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `rating_title`
 --
 
-CREATE TABLE `rating_title` (
+DROP TABLE IF EXISTS `rating_title`;
+CREATE TABLE IF NOT EXISTS `rating_title` (
   `rating_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
-  `value` varchar(255) NOT NULL COMMENT 'Rating Label'
+  `value` varchar(255) NOT NULL COMMENT 'Rating Label',
+  PRIMARY KEY (`rating_id`,`store_id`),
+  KEY `RATING_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Rating Title';
 
---
--- Truncate table before insert `rating_title`
---
-
-TRUNCATE TABLE `rating_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reporting_counts`
 --
 
-CREATE TABLE `reporting_counts` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `reporting_counts`;
+CREATE TABLE IF NOT EXISTS `reporting_counts` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `type` varchar(255) DEFAULT NULL COMMENT 'Item Reported',
   `count` int(10) UNSIGNED DEFAULT NULL COMMENT 'Count Value',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reporting for all count related events generated via the cron job';
 
---
--- Truncate table before insert `reporting_counts`
---
-
-TRUNCATE TABLE `reporting_counts`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reporting_module_status`
 --
 
-CREATE TABLE `reporting_module_status` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Module Id',
+DROP TABLE IF EXISTS `reporting_module_status`;
+CREATE TABLE IF NOT EXISTS `reporting_module_status` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Module Id',
   `name` varchar(255) DEFAULT NULL COMMENT 'Module Name',
   `active` varchar(255) DEFAULT NULL COMMENT 'Module Active Status',
   `setup_version` varchar(255) DEFAULT NULL COMMENT 'Module Version',
   `state` varchar(255) DEFAULT NULL COMMENT 'Module State',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Module Status Table';
 
---
--- Truncate table before insert `reporting_module_status`
---
-
-TRUNCATE TABLE `reporting_module_status`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reporting_orders`
 --
 
-CREATE TABLE `reporting_orders` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `reporting_orders`;
+CREATE TABLE IF NOT EXISTS `reporting_orders` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer Id',
   `total` decimal(20,2) DEFAULT NULL COMMENT 'Total From Store',
   `total_base` decimal(20,2) DEFAULT NULL COMMENT 'Total From Base Currency',
   `item_count` int(10) UNSIGNED NOT NULL COMMENT 'Line Item Count',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reporting for all orders';
 
---
--- Truncate table before insert `reporting_orders`
---
-
-TRUNCATE TABLE `reporting_orders`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reporting_system_updates`
 --
 
-CREATE TABLE `reporting_system_updates` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `reporting_system_updates`;
+CREATE TABLE IF NOT EXISTS `reporting_system_updates` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `type` varchar(255) DEFAULT NULL COMMENT 'Update Type',
   `action` varchar(255) DEFAULT NULL COMMENT 'Action Performed',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reporting for system updates';
 
---
--- Truncate table before insert `reporting_system_updates`
---
-
-TRUNCATE TABLE `reporting_system_updates`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `reporting_users`
 --
 
-CREATE TABLE `reporting_users` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `reporting_users`;
+CREATE TABLE IF NOT EXISTS `reporting_users` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `type` varchar(255) DEFAULT NULL COMMENT 'User Type',
   `action` varchar(255) DEFAULT NULL COMMENT 'Action Performed',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reporting for user actions';
 
---
--- Truncate table before insert `reporting_users`
---
-
-TRUNCATE TABLE `reporting_users`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_compared_product_index`
 --
 
-CREATE TABLE `report_compared_product_index` (
-  `index_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Index Id',
+DROP TABLE IF EXISTS `report_compared_product_index`;
+CREATE TABLE IF NOT EXISTS `report_compared_product_index` (
+  `index_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Index Id',
   `visitor_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Visitor Id',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer Id',
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
-  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Added At'
+  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Added At',
+  PRIMARY KEY (`index_id`),
+  UNIQUE KEY `REPORT_COMPARED_PRODUCT_INDEX_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
+  UNIQUE KEY `REPORT_COMPARED_PRODUCT_INDEX_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
+  KEY `REPORT_COMPARED_PRODUCT_INDEX_STORE_ID` (`store_id`),
+  KEY `REPORT_COMPARED_PRODUCT_INDEX_ADDED_AT` (`added_at`),
+  KEY `REPORT_COMPARED_PRODUCT_INDEX_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reports Compared Product Index Table';
 
---
--- Truncate table before insert `report_compared_product_index`
---
-
-TRUNCATE TABLE `report_compared_product_index`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_event`
 --
 
-CREATE TABLE `report_event` (
-  `event_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Event Id',
+DROP TABLE IF EXISTS `report_event`;
+CREATE TABLE IF NOT EXISTS `report_event` (
+  `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Event Id',
   `logged_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Logged At',
   `event_type_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Event Type Id',
   `object_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Object Id',
   `subject_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Subject Id',
   `subtype` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Subtype',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reports Event Table';
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
+  PRIMARY KEY (`event_id`),
+  KEY `REPORT_EVENT_EVENT_TYPE_ID` (`event_type_id`),
+  KEY `REPORT_EVENT_SUBJECT_ID` (`subject_id`),
+  KEY `REPORT_EVENT_OBJECT_ID` (`object_id`),
+  KEY `REPORT_EVENT_SUBTYPE` (`subtype`),
+  KEY `REPORT_EVENT_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='Reports Event Table';
 
 --
--- Truncate table before insert `report_event`
+-- Dumping data for table `report_event`
 --
 
-TRUNCATE TABLE `report_event`;
+INSERT INTO `report_event` (`event_id`, `logged_at`, `event_type_id`, `object_id`, `subject_id`, `subtype`, `store_id`) VALUES
+(1, '2017-03-15 23:54:51', 1, 1, 1, 0, 1),
+(2, '2017-03-16 09:28:47', 1, 1, 26, 1, 1),
+(3, '2017-03-16 21:41:27', 4, 2, 2, 0, 1),
+(4, '2017-03-16 21:42:56', 1, 2, 2, 0, 1),
+(5, '2017-03-19 18:19:53', 1, 1, 47, 1, 1),
+(6, '2017-03-19 18:38:24', 1, 2, 53, 1, 1),
+(7, '2017-04-20 07:24:19', 1, 1, 60, 1, 1),
+(8, '2017-04-20 07:29:19', 1, 1, 60, 1, 1),
+(9, '2017-04-20 07:29:41', 4, 1, 60, 1, 1),
+(10, '2017-04-20 07:30:01', 1, 1, 60, 1, 1),
+(11, '2017-04-20 07:30:32', 1, 1, 60, 1, 1),
+(12, '2017-04-20 07:45:50', 1, 1, 60, 1, 1),
+(13, '2017-04-21 14:26:31', 1, 2, 69, 1, 1),
+(14, '2017-04-23 15:15:18', 1, 9, 80, 1, 1);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_event_types`
 --
 
-CREATE TABLE `report_event_types` (
-  `event_type_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Event Type Id',
+DROP TABLE IF EXISTS `report_event_types`;
+CREATE TABLE IF NOT EXISTS `report_event_types` (
+  `event_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Event Type Id',
   `event_name` varchar(64) NOT NULL COMMENT 'Event Name',
-  `customer_login` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Login'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reports Event Type Table';
+  `customer_login` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Login',
+  PRIMARY KEY (`event_type_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COMMENT='Reports Event Type Table';
 
---
--- Truncate table before insert `report_event_types`
---
-
-TRUNCATE TABLE `report_event_types`;
 --
 -- Dumping data for table `report_event_types`
 --
 
-INSERT DELAYED IGNORE INTO `report_event_types` VALUES
+INSERT INTO `report_event_types` (`event_type_id`, `event_name`, `customer_login`) VALUES
 (1, 'catalog_product_view', 0),
 (2, 'sendfriend_product', 0),
 (3, 'catalog_product_compare_add_product', 0),
@@ -7084,147 +7821,160 @@ INSERT DELAYED IGNORE INTO `report_event_types` VALUES
 -- Table structure for table `report_viewed_product_aggregated_daily`
 --
 
-CREATE TABLE `report_viewed_product_aggregated_daily` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `report_viewed_product_aggregated_daily`;
+CREATE TABLE IF NOT EXISTS `report_viewed_product_aggregated_daily` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `views_num` int(11) NOT NULL DEFAULT '0' COMMENT 'Number of Views',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_DAILY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_DAILY_STORE_ID` (`store_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_DAILY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Most Viewed Products Aggregated Daily';
 
---
--- Truncate table before insert `report_viewed_product_aggregated_daily`
---
-
-TRUNCATE TABLE `report_viewed_product_aggregated_daily`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_viewed_product_aggregated_monthly`
 --
 
-CREATE TABLE `report_viewed_product_aggregated_monthly` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `report_viewed_product_aggregated_monthly`;
+CREATE TABLE IF NOT EXISTS `report_viewed_product_aggregated_monthly` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `views_num` int(11) NOT NULL DEFAULT '0' COMMENT 'Number of Views',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_MONTHLY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_MONTHLY_STORE_ID` (`store_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_MONTHLY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Most Viewed Products Aggregated Monthly';
 
---
--- Truncate table before insert `report_viewed_product_aggregated_monthly`
---
-
-TRUNCATE TABLE `report_viewed_product_aggregated_monthly`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_viewed_product_aggregated_yearly`
 --
 
-CREATE TABLE `report_viewed_product_aggregated_yearly` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `report_viewed_product_aggregated_yearly`;
+CREATE TABLE IF NOT EXISTS `report_viewed_product_aggregated_yearly` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `views_num` int(11) NOT NULL DEFAULT '0' COMMENT 'Number of Views',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_YEARLY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_YEARLY_STORE_ID` (`store_id`),
+  KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_YEARLY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Most Viewed Products Aggregated Yearly';
 
---
--- Truncate table before insert `report_viewed_product_aggregated_yearly`
---
-
-TRUNCATE TABLE `report_viewed_product_aggregated_yearly`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `report_viewed_product_index`
 --
 
-CREATE TABLE `report_viewed_product_index` (
-  `index_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Index Id',
+DROP TABLE IF EXISTS `report_viewed_product_index`;
+CREATE TABLE IF NOT EXISTS `report_viewed_product_index` (
+  `index_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Index Id',
   `visitor_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Visitor Id',
   `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer Id',
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
-  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Added At'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Reports Viewed Product Index Table';
+  `added_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Added At',
+  PRIMARY KEY (`index_id`),
+  UNIQUE KEY `REPORT_VIEWED_PRODUCT_INDEX_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
+  UNIQUE KEY `REPORT_VIEWED_PRODUCT_INDEX_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
+  KEY `REPORT_VIEWED_PRODUCT_INDEX_STORE_ID` (`store_id`),
+  KEY `REPORT_VIEWED_PRODUCT_INDEX_ADDED_AT` (`added_at`),
+  KEY `REPORT_VIEWED_PRODUCT_INDEX_PRODUCT_ID` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='Reports Viewed Product Index Table';
 
 --
--- Truncate table before insert `report_viewed_product_index`
+-- Dumping data for table `report_viewed_product_index`
 --
 
-TRUNCATE TABLE `report_viewed_product_index`;
+INSERT INTO `report_viewed_product_index` (`index_id`, `visitor_id`, `customer_id`, `product_id`, `store_id`, `added_at`) VALUES
+(1, NULL, 1, 1, 1, '2017-03-15 23:54:51'),
+(2, 26, NULL, 1, 1, '2017-03-16 09:28:46'),
+(3, NULL, 2, 2, 1, '2017-03-16 21:42:55'),
+(4, 47, NULL, 1, 1, '2017-03-19 18:19:52'),
+(5, 53, NULL, 2, 1, '2017-03-19 18:38:24'),
+(6, 60, NULL, 1, 1, '2017-04-20 07:24:19'),
+(7, 69, NULL, 2, 1, '2017-04-21 14:26:31'),
+(8, 80, NULL, 9, 1, '2017-04-23 15:15:17');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `review`
 --
 
-CREATE TABLE `review` (
-  `review_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Review id',
+DROP TABLE IF EXISTS `review`;
+CREATE TABLE IF NOT EXISTS `review` (
+  `review_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review id',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Review create date',
   `entity_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity id',
   `entity_pk_value` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product id',
-  `status_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Status code'
+  `status_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Status code',
+  PRIMARY KEY (`review_id`),
+  KEY `REVIEW_ENTITY_ID` (`entity_id`),
+  KEY `REVIEW_STATUS_ID` (`status_id`),
+  KEY `REVIEW_ENTITY_PK_VALUE` (`entity_pk_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review base information';
 
---
--- Truncate table before insert `review`
---
-
-TRUNCATE TABLE `review`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `review_detail`
 --
 
-CREATE TABLE `review_detail` (
-  `detail_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Review detail id',
+DROP TABLE IF EXISTS `review_detail`;
+CREATE TABLE IF NOT EXISTS `review_detail` (
+  `detail_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review detail id',
   `review_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Review id',
   `store_id` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Store id',
   `title` varchar(255) NOT NULL COMMENT 'Title',
   `detail` text NOT NULL COMMENT 'Detail description',
   `nickname` varchar(128) NOT NULL COMMENT 'User nickname',
-  `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer Id'
+  `customer_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Customer Id',
+  PRIMARY KEY (`detail_id`),
+  KEY `REVIEW_DETAIL_REVIEW_ID` (`review_id`),
+  KEY `REVIEW_DETAIL_STORE_ID` (`store_id`),
+  KEY `REVIEW_DETAIL_CUSTOMER_ID` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review detail information';
 
---
--- Truncate table before insert `review_detail`
---
-
-TRUNCATE TABLE `review_detail`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `review_entity`
 --
 
-CREATE TABLE `review_entity` (
-  `entity_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Review entity id',
-  `entity_code` varchar(32) NOT NULL COMMENT 'Review entity code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review entities';
+DROP TABLE IF EXISTS `review_entity`;
+CREATE TABLE IF NOT EXISTS `review_entity` (
+  `entity_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review entity id',
+  `entity_code` varchar(32) NOT NULL COMMENT 'Review entity code',
+  PRIMARY KEY (`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Review entities';
 
---
--- Truncate table before insert `review_entity`
---
-
-TRUNCATE TABLE `review_entity`;
 --
 -- Dumping data for table `review_entity`
 --
 
-INSERT DELAYED IGNORE INTO `review_entity` VALUES
+INSERT INTO `review_entity` (`entity_id`, `entity_code`) VALUES
 (1, 'product'),
 (2, 'customer'),
 (3, 'category');
@@ -7235,41 +7985,36 @@ INSERT DELAYED IGNORE INTO `review_entity` VALUES
 -- Table structure for table `review_entity_summary`
 --
 
-CREATE TABLE `review_entity_summary` (
-  `primary_id` bigint(20) NOT NULL COMMENT 'Summary review entity id',
+DROP TABLE IF EXISTS `review_entity_summary`;
+CREATE TABLE IF NOT EXISTS `review_entity_summary` (
+  `primary_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Summary review entity id',
   `entity_pk_value` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Product id',
   `entity_type` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Entity type id',
   `reviews_count` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Qty of reviews',
   `rating_summary` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Summarized rating',
-  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id'
+  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id',
+  PRIMARY KEY (`primary_id`),
+  KEY `REVIEW_ENTITY_SUMMARY_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review aggregates';
 
---
--- Truncate table before insert `review_entity_summary`
---
-
-TRUNCATE TABLE `review_entity_summary`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `review_status`
 --
 
-CREATE TABLE `review_status` (
-  `status_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Status id',
-  `status_code` varchar(32) NOT NULL COMMENT 'Status code'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review statuses';
+DROP TABLE IF EXISTS `review_status`;
+CREATE TABLE IF NOT EXISTS `review_status` (
+  `status_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Status id',
+  `status_code` varchar(32) NOT NULL COMMENT 'Status code',
+  PRIMARY KEY (`status_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Review statuses';
 
---
--- Truncate table before insert `review_status`
---
-
-TRUNCATE TABLE `review_status`;
 --
 -- Dumping data for table `review_status`
 --
 
-INSERT DELAYED IGNORE INTO `review_status` VALUES
+INSERT INTO `review_status` (`status_id`, `status_code`) VALUES
 (1, 'Approved'),
 (2, 'Pending'),
 (3, 'Not Approved');
@@ -7280,24 +8025,23 @@ INSERT DELAYED IGNORE INTO `review_status` VALUES
 -- Table structure for table `review_store`
 --
 
-CREATE TABLE `review_store` (
+DROP TABLE IF EXISTS `review_store`;
+CREATE TABLE IF NOT EXISTS `review_store` (
   `review_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Review Id',
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id'
+  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
+  PRIMARY KEY (`review_id`,`store_id`),
+  KEY `REVIEW_STORE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Review Store';
 
---
--- Truncate table before insert `review_store`
---
-
-TRUNCATE TABLE `review_store`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule`
 --
 
-CREATE TABLE `salesrule` (
-  `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
+DROP TABLE IF EXISTS `salesrule`;
+CREATE TABLE IF NOT EXISTS `salesrule` (
+  `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Id',
   `name` varchar(255) DEFAULT NULL COMMENT 'Name',
   `description` text COMMENT 'Description',
   `from_date` date DEFAULT NULL COMMENT 'From',
@@ -7320,22 +8064,20 @@ CREATE TABLE `salesrule` (
   `coupon_type` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Coupon Type',
   `use_auto_generation` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Use Auto Generation',
   `uses_per_coupon` int(11) NOT NULL DEFAULT '0' COMMENT 'User Per Coupon',
-  `simple_free_shipping` smallint(6) DEFAULT NULL
+  `simple_free_shipping` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`rule_id`),
+  KEY `SALESRULE_IS_ACTIVE_SORT_ORDER_TO_DATE_FROM_DATE` (`is_active`,`sort_order`,`to_date`,`from_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule';
 
---
--- Truncate table before insert `salesrule`
---
-
-TRUNCATE TABLE `salesrule`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_coupon`
 --
 
-CREATE TABLE `salesrule_coupon` (
-  `coupon_id` int(10) UNSIGNED NOT NULL COMMENT 'Coupon Id',
+DROP TABLE IF EXISTS `salesrule_coupon`;
+CREATE TABLE IF NOT EXISTS `salesrule_coupon` (
+  `coupon_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Coupon Id',
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
   `code` varchar(255) DEFAULT NULL COMMENT 'Code',
   `usage_limit` int(10) UNSIGNED DEFAULT NULL COMMENT 'Usage Limit',
@@ -7344,22 +8086,22 @@ CREATE TABLE `salesrule_coupon` (
   `expiration_date` timestamp NULL DEFAULT NULL COMMENT 'Expiration Date',
   `is_primary` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Is Primary',
   `created_at` timestamp NULL DEFAULT NULL COMMENT 'Coupon Code Creation Date',
-  `type` smallint(6) DEFAULT '0' COMMENT 'Coupon Code Type'
+  `type` smallint(6) DEFAULT '0' COMMENT 'Coupon Code Type',
+  PRIMARY KEY (`coupon_id`),
+  UNIQUE KEY `SALESRULE_COUPON_CODE` (`code`),
+  UNIQUE KEY `SALESRULE_COUPON_RULE_ID_IS_PRIMARY` (`rule_id`,`is_primary`),
+  KEY `SALESRULE_COUPON_RULE_ID` (`rule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Coupon';
 
---
--- Truncate table before insert `salesrule_coupon`
---
-
-TRUNCATE TABLE `salesrule_coupon`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_coupon_aggregated`
 --
 
-CREATE TABLE `salesrule_coupon_aggregated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `salesrule_coupon_aggregated`;
+CREATE TABLE IF NOT EXISTS `salesrule_coupon_aggregated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date NOT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
@@ -7371,22 +8113,22 @@ CREATE TABLE `salesrule_coupon_aggregated` (
   `subtotal_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Subtotal Amount Actual',
   `discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount Actual',
   `total_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Amount Actual',
-  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name'
+  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALESRULE_COUPON_AGGRED_PERIOD_STORE_ID_ORDER_STS_COUPON_CODE` (`period`,`store_id`,`order_status`,`coupon_code`),
+  KEY `SALESRULE_COUPON_AGGREGATED_STORE_ID` (`store_id`),
+  KEY `SALESRULE_COUPON_AGGREGATED_RULE_NAME` (`rule_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Coupon Aggregated';
 
---
--- Truncate table before insert `salesrule_coupon_aggregated`
---
-
-TRUNCATE TABLE `salesrule_coupon_aggregated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_coupon_aggregated_order`
 --
 
-CREATE TABLE `salesrule_coupon_aggregated_order` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `salesrule_coupon_aggregated_order`;
+CREATE TABLE IF NOT EXISTS `salesrule_coupon_aggregated_order` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date NOT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
@@ -7395,22 +8137,22 @@ CREATE TABLE `salesrule_coupon_aggregated_order` (
   `subtotal_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Subtotal Amount',
   `discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount',
   `total_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Amount',
-  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name'
+  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNQ_1094D1FBBCBB11704A29DEF3ACC37D2B` (`period`,`store_id`,`order_status`,`coupon_code`),
+  KEY `SALESRULE_COUPON_AGGREGATED_ORDER_STORE_ID` (`store_id`),
+  KEY `SALESRULE_COUPON_AGGREGATED_ORDER_RULE_NAME` (`rule_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Coupon Aggregated Order';
 
---
--- Truncate table before insert `salesrule_coupon_aggregated_order`
---
-
-TRUNCATE TABLE `salesrule_coupon_aggregated_order`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_coupon_aggregated_updated`
 --
 
-CREATE TABLE `salesrule_coupon_aggregated_updated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `salesrule_coupon_aggregated_updated`;
+CREATE TABLE IF NOT EXISTS `salesrule_coupon_aggregated_updated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date NOT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
@@ -7422,191 +8164,183 @@ CREATE TABLE `salesrule_coupon_aggregated_updated` (
   `subtotal_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Subtotal Amount Actual',
   `discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Discount Amount Actual',
   `total_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Amount Actual',
-  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name'
+  `rule_name` varchar(255) DEFAULT NULL COMMENT 'Rule Name',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNQ_7196FA120A4F0F84E1B66605E87E213E` (`period`,`store_id`,`order_status`,`coupon_code`),
+  KEY `SALESRULE_COUPON_AGGREGATED_UPDATED_STORE_ID` (`store_id`),
+  KEY `SALESRULE_COUPON_AGGREGATED_UPDATED_RULE_NAME` (`rule_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Coupon Aggregated Updated';
 
---
--- Truncate table before insert `salesrule_coupon_aggregated_updated`
---
-
-TRUNCATE TABLE `salesrule_coupon_aggregated_updated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_coupon_usage`
 --
 
-CREATE TABLE `salesrule_coupon_usage` (
+DROP TABLE IF EXISTS `salesrule_coupon_usage`;
+CREATE TABLE IF NOT EXISTS `salesrule_coupon_usage` (
   `coupon_id` int(10) UNSIGNED NOT NULL COMMENT 'Coupon Id',
   `customer_id` int(10) UNSIGNED NOT NULL COMMENT 'Customer Id',
-  `times_used` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Times Used'
+  `times_used` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Times Used',
+  PRIMARY KEY (`coupon_id`,`customer_id`),
+  KEY `SALESRULE_COUPON_USAGE_CUSTOMER_ID` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Coupon Usage';
 
---
--- Truncate table before insert `salesrule_coupon_usage`
---
-
-TRUNCATE TABLE `salesrule_coupon_usage`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_customer`
 --
 
-CREATE TABLE `salesrule_customer` (
-  `rule_customer_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Customer Id',
+DROP TABLE IF EXISTS `salesrule_customer`;
+CREATE TABLE IF NOT EXISTS `salesrule_customer` (
+  `rule_customer_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Customer Id',
   `rule_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rule Id',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer Id',
-  `times_used` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Times Used'
+  `times_used` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Times Used',
+  PRIMARY KEY (`rule_customer_id`),
+  KEY `SALESRULE_CUSTOMER_RULE_ID_CUSTOMER_ID` (`rule_id`,`customer_id`),
+  KEY `SALESRULE_CUSTOMER_CUSTOMER_ID_RULE_ID` (`customer_id`,`rule_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Customer';
 
---
--- Truncate table before insert `salesrule_customer`
---
-
-TRUNCATE TABLE `salesrule_customer`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_customer_group`
 --
 
-CREATE TABLE `salesrule_customer_group` (
+DROP TABLE IF EXISTS `salesrule_customer_group`;
+CREATE TABLE IF NOT EXISTS `salesrule_customer_group` (
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
-  `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id'
+  `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
+  PRIMARY KEY (`rule_id`,`customer_group_id`),
+  KEY `SALESRULE_CUSTOMER_GROUP_CUSTOMER_GROUP_ID` (`customer_group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Rules To Customer Groups Relations';
 
---
--- Truncate table before insert `salesrule_customer_group`
---
-
-TRUNCATE TABLE `salesrule_customer_group`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_label`
 --
 
-CREATE TABLE `salesrule_label` (
-  `label_id` int(10) UNSIGNED NOT NULL COMMENT 'Label Id',
+DROP TABLE IF EXISTS `salesrule_label`;
+CREATE TABLE IF NOT EXISTS `salesrule_label` (
+  `label_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Label Id',
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `label` varchar(255) DEFAULT NULL COMMENT 'Label'
+  `label` varchar(255) DEFAULT NULL COMMENT 'Label',
+  PRIMARY KEY (`label_id`),
+  UNIQUE KEY `SALESRULE_LABEL_RULE_ID_STORE_ID` (`rule_id`,`store_id`),
+  KEY `SALESRULE_LABEL_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Label';
 
---
--- Truncate table before insert `salesrule_label`
---
-
-TRUNCATE TABLE `salesrule_label`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_product_attribute`
 --
 
-CREATE TABLE `salesrule_product_attribute` (
+DROP TABLE IF EXISTS `salesrule_product_attribute`;
+CREATE TABLE IF NOT EXISTS `salesrule_product_attribute` (
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
   `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
   `customer_group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Customer Group Id',
-  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id'
+  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+  PRIMARY KEY (`rule_id`,`website_id`,`customer_group_id`,`attribute_id`),
+  KEY `SALESRULE_PRODUCT_ATTRIBUTE_WEBSITE_ID` (`website_id`),
+  KEY `SALESRULE_PRODUCT_ATTRIBUTE_CUSTOMER_GROUP_ID` (`customer_group_id`),
+  KEY `SALESRULE_PRODUCT_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Salesrule Product Attribute';
 
---
--- Truncate table before insert `salesrule_product_attribute`
---
-
-TRUNCATE TABLE `salesrule_product_attribute`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `salesrule_website`
 --
 
-CREATE TABLE `salesrule_website` (
+DROP TABLE IF EXISTS `salesrule_website`;
+CREATE TABLE IF NOT EXISTS `salesrule_website` (
   `rule_id` int(10) UNSIGNED NOT NULL COMMENT 'Rule Id',
-  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id'
+  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
+  PRIMARY KEY (`rule_id`,`website_id`),
+  KEY `SALESRULE_WEBSITE_WEBSITE_ID` (`website_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Rules To Websites Relations';
 
---
--- Truncate table before insert `salesrule_website`
---
-
-TRUNCATE TABLE `salesrule_website`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_bestsellers_aggregated_daily`
 --
 
-CREATE TABLE `sales_bestsellers_aggregated_daily` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_bestsellers_aggregated_daily`;
+CREATE TABLE IF NOT EXISTS `sales_bestsellers_aggregated_daily` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `qty_ordered` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty Ordered',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_STORE_ID` (`store_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Bestsellers Aggregated Daily';
 
---
--- Truncate table before insert `sales_bestsellers_aggregated_daily`
---
-
-TRUNCATE TABLE `sales_bestsellers_aggregated_daily`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_bestsellers_aggregated_monthly`
 --
 
-CREATE TABLE `sales_bestsellers_aggregated_monthly` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_bestsellers_aggregated_monthly`;
+CREATE TABLE IF NOT EXISTS `sales_bestsellers_aggregated_monthly` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `qty_ordered` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty Ordered',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_STORE_ID` (`store_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Bestsellers Aggregated Monthly';
 
---
--- Truncate table before insert `sales_bestsellers_aggregated_monthly`
---
-
-TRUNCATE TABLE `sales_bestsellers_aggregated_monthly`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_bestsellers_aggregated_yearly`
 --
 
-CREATE TABLE `sales_bestsellers_aggregated_yearly` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_bestsellers_aggregated_yearly`;
+CREATE TABLE IF NOT EXISTS `sales_bestsellers_aggregated_yearly` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `product_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Product Id',
   `product_name` varchar(255) DEFAULT NULL COMMENT 'Product Name',
   `product_price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Product Price',
   `qty_ordered` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Qty Ordered',
-  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos'
+  `rating_pos` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Rating Pos',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_STORE_ID` (`store_id`),
+  KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_PRODUCT_ID` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Bestsellers Aggregated Yearly';
 
---
--- Truncate table before insert `sales_bestsellers_aggregated_yearly`
---
-
-TRUNCATE TABLE `sales_bestsellers_aggregated_yearly`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_creditmemo`
 --
 
-CREATE TABLE `sales_creditmemo` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_creditmemo`;
+CREATE TABLE IF NOT EXISTS `sales_creditmemo` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `adjustment_positive` decimal(12,4) DEFAULT NULL COMMENT 'Adjustment Positive',
   `base_shipping_tax_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Shipping Tax Amount',
@@ -7656,41 +8390,46 @@ CREATE TABLE `sales_creditmemo` (
   `base_shipping_incl_tax` decimal(12,4) DEFAULT NULL COMMENT 'Base Shipping Incl Tax',
   `discount_description` varchar(255) DEFAULT NULL COMMENT 'Discount Description',
   `customer_note` text COMMENT 'Customer Note',
-  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify'
+  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_CREDITMEMO_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_CREDITMEMO_STORE_ID` (`store_id`),
+  KEY `SALES_CREDITMEMO_ORDER_ID` (`order_id`),
+  KEY `SALES_CREDITMEMO_CREDITMEMO_STATUS` (`creditmemo_status`),
+  KEY `SALES_CREDITMEMO_STATE` (`state`),
+  KEY `SALES_CREDITMEMO_CREATED_AT` (`created_at`),
+  KEY `SALES_CREDITMEMO_UPDATED_AT` (`updated_at`),
+  KEY `SALES_CREDITMEMO_SEND_EMAIL` (`send_email`),
+  KEY `SALES_CREDITMEMO_EMAIL_SENT` (`email_sent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Creditmemo';
 
---
--- Truncate table before insert `sales_creditmemo`
---
-
-TRUNCATE TABLE `sales_creditmemo`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_creditmemo_comment`
 --
 
-CREATE TABLE `sales_creditmemo_comment` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_creditmemo_comment`;
+CREATE TABLE IF NOT EXISTS `sales_creditmemo_comment` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `is_customer_notified` int(11) DEFAULT NULL COMMENT 'Is Customer Notified',
   `is_visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible On Front',
   `comment` text COMMENT 'Comment',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_CREDITMEMO_COMMENT_CREATED_AT` (`created_at`),
+  KEY `SALES_CREDITMEMO_COMMENT_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Creditmemo Comment';
 
---
--- Truncate table before insert `sales_creditmemo_comment`
---
-
-TRUNCATE TABLE `sales_creditmemo_comment`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_creditmemo_grid`
 --
 
-CREATE TABLE `sales_creditmemo_grid` (
+DROP TABLE IF EXISTS `sales_creditmemo_grid`;
+CREATE TABLE IF NOT EXISTS `sales_creditmemo_grid` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `increment_id` varchar(50) DEFAULT NULL COMMENT 'Increment Id',
   `created_at` timestamp NULL DEFAULT NULL COMMENT 'Created At',
@@ -7714,22 +8453,31 @@ CREATE TABLE `sales_creditmemo_grid` (
   `shipping_and_handling` decimal(12,4) DEFAULT NULL COMMENT 'Shipping and handling amount',
   `adjustment_positive` decimal(12,4) DEFAULT NULL COMMENT 'Adjustment Positive',
   `adjustment_negative` decimal(12,4) DEFAULT NULL COMMENT 'Adjustment Negative',
-  `order_base_grand_total` decimal(12,4) DEFAULT NULL COMMENT 'Order Grand Total'
+  `order_base_grand_total` decimal(12,4) DEFAULT NULL COMMENT 'Order Grand Total',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_CREDITMEMO_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_CREDITMEMO_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
+  KEY `SALES_CREDITMEMO_GRID_CREATED_AT` (`created_at`),
+  KEY `SALES_CREDITMEMO_GRID_UPDATED_AT` (`updated_at`),
+  KEY `SALES_CREDITMEMO_GRID_ORDER_CREATED_AT` (`order_created_at`),
+  KEY `SALES_CREDITMEMO_GRID_STATE` (`state`),
+  KEY `SALES_CREDITMEMO_GRID_BILLING_NAME` (`billing_name`),
+  KEY `SALES_CREDITMEMO_GRID_ORDER_STATUS` (`order_status`),
+  KEY `SALES_CREDITMEMO_GRID_BASE_GRAND_TOTAL` (`base_grand_total`),
+  KEY `SALES_CREDITMEMO_GRID_STORE_ID` (`store_id`),
+  KEY `SALES_CREDITMEMO_GRID_ORDER_BASE_GRAND_TOTAL` (`order_base_grand_total`),
+  KEY `SALES_CREDITMEMO_GRID_ORDER_ID` (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Creditmemo Grid';
 
---
--- Truncate table before insert `sales_creditmemo_grid`
---
-
-TRUNCATE TABLE `sales_creditmemo_grid`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_creditmemo_item`
 --
 
-CREATE TABLE `sales_creditmemo_item` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_creditmemo_item`;
+CREATE TABLE IF NOT EXISTS `sales_creditmemo_item` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `base_price` decimal(12,4) DEFAULT NULL COMMENT 'Base Price',
   `tax_amount` decimal(12,4) DEFAULT NULL COMMENT 'Tax Amount',
@@ -7762,22 +8510,20 @@ CREATE TABLE `sales_creditmemo_item` (
   `base_weee_tax_applied_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Amount',
   `base_weee_tax_applied_row_amnt` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Row Amnt',
   `base_weee_tax_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Disposition',
-  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition'
+  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_CREDITMEMO_ITEM_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Creditmemo Item';
 
---
--- Truncate table before insert `sales_creditmemo_item`
---
-
-TRUNCATE TABLE `sales_creditmemo_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoice`
 --
 
-CREATE TABLE `sales_invoice` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_invoice`;
+CREATE TABLE IF NOT EXISTS `sales_invoice` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `base_grand_total` decimal(12,4) DEFAULT NULL COMMENT 'Base Grand Total',
   `shipping_tax_amount` decimal(12,4) DEFAULT NULL COMMENT 'Shipping Tax Amount',
@@ -7823,22 +8569,28 @@ CREATE TABLE `sales_invoice` (
   `base_total_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Base Total Refunded',
   `discount_description` varchar(255) DEFAULT NULL COMMENT 'Discount Description',
   `customer_note` text COMMENT 'Customer Note',
-  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify'
+  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_INVOICE_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_INVOICE_STORE_ID` (`store_id`),
+  KEY `SALES_INVOICE_GRAND_TOTAL` (`grand_total`),
+  KEY `SALES_INVOICE_ORDER_ID` (`order_id`),
+  KEY `SALES_INVOICE_STATE` (`state`),
+  KEY `SALES_INVOICE_CREATED_AT` (`created_at`),
+  KEY `SALES_INVOICE_UPDATED_AT` (`updated_at`),
+  KEY `SALES_INVOICE_SEND_EMAIL` (`send_email`),
+  KEY `SALES_INVOICE_EMAIL_SENT` (`email_sent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Invoice';
 
---
--- Truncate table before insert `sales_invoice`
---
-
-TRUNCATE TABLE `sales_invoice`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoiced_aggregated`
 --
 
-CREATE TABLE `sales_invoiced_aggregated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_invoiced_aggregated`;
+CREATE TABLE IF NOT EXISTS `sales_invoiced_aggregated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
@@ -7846,22 +8598,21 @@ CREATE TABLE `sales_invoiced_aggregated` (
   `orders_invoiced` decimal(12,4) DEFAULT NULL COMMENT 'Orders Invoiced',
   `invoiced` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced',
   `invoiced_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Captured',
-  `invoiced_not_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Not Captured'
+  `invoiced_not_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Not Captured',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_INVOICED_AGGREGATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_INVOICED_AGGREGATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Invoiced Aggregated';
 
---
--- Truncate table before insert `sales_invoiced_aggregated`
---
-
-TRUNCATE TABLE `sales_invoiced_aggregated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoiced_aggregated_order`
 --
 
-CREATE TABLE `sales_invoiced_aggregated_order` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_invoiced_aggregated_order`;
+CREATE TABLE IF NOT EXISTS `sales_invoiced_aggregated_order` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
@@ -7869,41 +8620,39 @@ CREATE TABLE `sales_invoiced_aggregated_order` (
   `orders_invoiced` decimal(12,4) DEFAULT NULL COMMENT 'Orders Invoiced',
   `invoiced` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced',
   `invoiced_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Captured',
-  `invoiced_not_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Not Captured'
+  `invoiced_not_captured` decimal(12,4) DEFAULT NULL COMMENT 'Invoiced Not Captured',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_INVOICED_AGGREGATED_ORDER_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_INVOICED_AGGREGATED_ORDER_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Invoiced Aggregated Order';
 
---
--- Truncate table before insert `sales_invoiced_aggregated_order`
---
-
-TRUNCATE TABLE `sales_invoiced_aggregated_order`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoice_comment`
 --
 
-CREATE TABLE `sales_invoice_comment` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_invoice_comment`;
+CREATE TABLE IF NOT EXISTS `sales_invoice_comment` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `is_customer_notified` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Is Customer Notified',
   `is_visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible On Front',
   `comment` text COMMENT 'Comment',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_INVOICE_COMMENT_CREATED_AT` (`created_at`),
+  KEY `SALES_INVOICE_COMMENT_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Invoice Comment';
 
---
--- Truncate table before insert `sales_invoice_comment`
---
-
-TRUNCATE TABLE `sales_invoice_comment`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoice_grid`
 --
 
-CREATE TABLE `sales_invoice_grid` (
+DROP TABLE IF EXISTS `sales_invoice_grid`;
+CREATE TABLE IF NOT EXISTS `sales_invoice_grid` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `increment_id` varchar(50) DEFAULT NULL COMMENT 'Increment Id',
   `state` int(11) DEFAULT NULL COMMENT 'State',
@@ -7928,22 +8677,29 @@ CREATE TABLE `sales_invoice_grid` (
   `shipping_and_handling` decimal(12,4) DEFAULT NULL COMMENT 'Shipping and handling amount',
   `grand_total` decimal(12,4) DEFAULT NULL COMMENT 'Grand Total',
   `created_at` timestamp NULL DEFAULT NULL COMMENT 'Created At',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At'
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_INVOICE_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_INVOICE_GRID_STORE_ID` (`store_id`),
+  KEY `SALES_INVOICE_GRID_GRAND_TOTAL` (`grand_total`),
+  KEY `SALES_INVOICE_GRID_ORDER_ID` (`order_id`),
+  KEY `SALES_INVOICE_GRID_STATE` (`state`),
+  KEY `SALES_INVOICE_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
+  KEY `SALES_INVOICE_GRID_CREATED_AT` (`created_at`),
+  KEY `SALES_INVOICE_GRID_UPDATED_AT` (`updated_at`),
+  KEY `SALES_INVOICE_GRID_ORDER_CREATED_AT` (`order_created_at`),
+  KEY `SALES_INVOICE_GRID_BILLING_NAME` (`billing_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Invoice Grid';
 
---
--- Truncate table before insert `sales_invoice_grid`
---
-
-TRUNCATE TABLE `sales_invoice_grid`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_invoice_item`
 --
 
-CREATE TABLE `sales_invoice_item` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_invoice_item`;
+CREATE TABLE IF NOT EXISTS `sales_invoice_item` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `base_price` decimal(12,4) DEFAULT NULL COMMENT 'Base Price',
   `tax_amount` decimal(12,4) DEFAULT NULL COMMENT 'Tax Amount',
@@ -7976,22 +8732,20 @@ CREATE TABLE `sales_invoice_item` (
   `base_weee_tax_applied_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Amount',
   `base_weee_tax_applied_row_amnt` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Row Amnt',
   `base_weee_tax_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Disposition',
-  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition'
+  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_INVOICE_ITEM_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Invoice Item';
 
---
--- Truncate table before insert `sales_invoice_item`
---
-
-TRUNCATE TABLE `sales_invoice_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order`
 --
 
-CREATE TABLE `sales_order` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_order`;
+CREATE TABLE IF NOT EXISTS `sales_order` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `state` varchar(32) DEFAULT NULL COMMENT 'State',
   `status` varchar(32) DEFAULT NULL COMMENT 'Status',
   `coupon_code` varchar(255) DEFAULT NULL COMMENT 'Coupon Code',
@@ -8128,22 +8882,38 @@ CREATE TABLE `sales_order` (
   `base_shipping_incl_tax` decimal(12,4) DEFAULT NULL COMMENT 'Base Shipping Incl Tax',
   `coupon_rule_name` varchar(255) DEFAULT NULL COMMENT 'Coupon Sales Rule Name',
   `paypal_ipn_customer_notified` int(11) DEFAULT '0' COMMENT 'Paypal Ipn Customer Notified',
-  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order';
+  `gift_message_id` int(11) DEFAULT NULL COMMENT 'Gift Message Id',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_ORDER_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_ORDER_STATUS` (`status`),
+  KEY `SALES_ORDER_STATE` (`state`),
+  KEY `SALES_ORDER_STORE_ID` (`store_id`),
+  KEY `SALES_ORDER_CREATED_AT` (`created_at`),
+  KEY `SALES_ORDER_CUSTOMER_ID` (`customer_id`),
+  KEY `SALES_ORDER_EXT_ORDER_ID` (`ext_order_id`),
+  KEY `SALES_ORDER_QUOTE_ID` (`quote_id`),
+  KEY `SALES_ORDER_UPDATED_AT` (`updated_at`),
+  KEY `SALES_ORDER_SEND_EMAIL` (`send_email`),
+  KEY `SALES_ORDER_EMAIL_SENT` (`email_sent`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order';
 
 --
--- Truncate table before insert `sales_order`
+-- Dumping data for table `sales_order`
 --
 
-TRUNCATE TABLE `sales_order`;
+INSERT INTO `sales_order` (`entity_id`, `state`, `status`, `coupon_code`, `protect_code`, `shipping_description`, `is_virtual`, `store_id`, `customer_id`, `base_discount_amount`, `base_discount_canceled`, `base_discount_invoiced`, `base_discount_refunded`, `base_grand_total`, `base_shipping_amount`, `base_shipping_canceled`, `base_shipping_invoiced`, `base_shipping_refunded`, `base_shipping_tax_amount`, `base_shipping_tax_refunded`, `base_subtotal`, `base_subtotal_canceled`, `base_subtotal_invoiced`, `base_subtotal_refunded`, `base_tax_amount`, `base_tax_canceled`, `base_tax_invoiced`, `base_tax_refunded`, `base_to_global_rate`, `base_to_order_rate`, `base_total_canceled`, `base_total_invoiced`, `base_total_invoiced_cost`, `base_total_offline_refunded`, `base_total_online_refunded`, `base_total_paid`, `base_total_qty_ordered`, `base_total_refunded`, `discount_amount`, `discount_canceled`, `discount_invoiced`, `discount_refunded`, `grand_total`, `shipping_amount`, `shipping_canceled`, `shipping_invoiced`, `shipping_refunded`, `shipping_tax_amount`, `shipping_tax_refunded`, `store_to_base_rate`, `store_to_order_rate`, `subtotal`, `subtotal_canceled`, `subtotal_invoiced`, `subtotal_refunded`, `tax_amount`, `tax_canceled`, `tax_invoiced`, `tax_refunded`, `total_canceled`, `total_invoiced`, `total_offline_refunded`, `total_online_refunded`, `total_paid`, `total_qty_ordered`, `total_refunded`, `can_ship_partially`, `can_ship_partially_item`, `customer_is_guest`, `customer_note_notify`, `billing_address_id`, `customer_group_id`, `edit_increment`, `email_sent`, `send_email`, `forced_shipment_with_invoice`, `payment_auth_expiration`, `quote_address_id`, `quote_id`, `shipping_address_id`, `adjustment_negative`, `adjustment_positive`, `base_adjustment_negative`, `base_adjustment_positive`, `base_shipping_discount_amount`, `base_subtotal_incl_tax`, `base_total_due`, `payment_authorization_amount`, `shipping_discount_amount`, `subtotal_incl_tax`, `total_due`, `weight`, `customer_dob`, `increment_id`, `applied_rule_ids`, `base_currency_code`, `customer_email`, `customer_firstname`, `customer_lastname`, `customer_middlename`, `customer_prefix`, `customer_suffix`, `customer_taxvat`, `discount_description`, `ext_customer_id`, `ext_order_id`, `global_currency_code`, `hold_before_state`, `hold_before_status`, `order_currency_code`, `original_increment_id`, `relation_child_id`, `relation_child_real_id`, `relation_parent_id`, `relation_parent_real_id`, `remote_ip`, `shipping_method`, `store_currency_code`, `store_name`, `x_forwarded_for`, `customer_note`, `created_at`, `updated_at`, `total_item_count`, `customer_gender`, `discount_tax_compensation_amount`, `base_discount_tax_compensation_amount`, `shipping_discount_tax_compensation_amount`, `base_shipping_discount_tax_compensation_amnt`, `discount_tax_compensation_invoiced`, `base_discount_tax_compensation_invoiced`, `discount_tax_compensation_refunded`, `base_discount_tax_compensation_refunded`, `shipping_incl_tax`, `base_shipping_incl_tax`, `coupon_rule_name`, `paypal_ipn_customer_notified`, `gift_message_id`) VALUES
+(1, 'holded', 'holded', NULL, '1493fb', 'Flat Rate - Fixed', 0, 1, 2, '0.0000', NULL, NULL, NULL, '35005.0000', '5.0000', NULL, NULL, NULL, '0.0000', NULL, '35000.0000', NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, '1.0000', '1.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, '35005.0000', '5.0000', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '35000.0000', NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1.0000', NULL, NULL, NULL, 0, 1, 2, 1, NULL, 1, 1, NULL, NULL, NULL, 2, 1, NULL, NULL, NULL, NULL, '0.0000', '35000.0000', '35005.0000', NULL, '0.0000', '35000.0000', '35005.0000', '0.0000', NULL, '000000001', NULL, 'VND', 'admin@gmail.com', 'ntp', 'thao', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'VND', 'new', 'pending', 'VND', NULL, NULL, NULL, NULL, NULL, '::1', 'flatrate_flatrate', 'VND', 'Main Website\r\nMain Website Store', NULL, NULL, '2017-03-16 21:50:50', '2017-03-16 22:03:36', 1, NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, '5.0000', '5.0000', NULL, 0, NULL),
+(2, 'new', 'pending', NULL, '34dbb0', 'Flat Rate - Fixed', 0, 1, NULL, '0.0000', NULL, NULL, NULL, '72015.0000', '15.0000', NULL, NULL, NULL, '0.0000', NULL, '72000.0000', NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, '1.0000', '1.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, '72015.0000', '15.0000', NULL, NULL, NULL, '0.0000', NULL, '0.0000', '0.0000', '72000.0000', NULL, NULL, NULL, '0.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '3.0000', NULL, NULL, NULL, 1, 1, 4, 0, NULL, 1, 1, NULL, NULL, NULL, 3, 3, NULL, NULL, NULL, NULL, '0.0000', '72000.0000', '72015.0000', NULL, '0.0000', '72000.0000', '72015.0000', '0.0000', NULL, '000000002', NULL, 'VND', 'ntpthao@gmail.com', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'VND', NULL, NULL, 'VND', NULL, NULL, NULL, NULL, NULL, '::1', 'flatrate_flatrate', 'VND', 'Main Website\r\nMain Website Store', NULL, NULL, '2017-04-20 07:33:10', '2017-04-20 07:33:41', 1, NULL, '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, '15.0000', '15.0000', NULL, 0, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_address`
 --
 
-CREATE TABLE `sales_order_address` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_order_address`;
+CREATE TABLE IF NOT EXISTS `sales_order_address` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Parent Id',
   `customer_address_id` int(11) DEFAULT NULL COMMENT 'Customer Address Id',
   `quote_address_id` int(11) DEFAULT NULL COMMENT 'Quote Address Id',
@@ -8168,22 +8938,30 @@ CREATE TABLE `sales_order_address` (
   `vat_is_valid` smallint(6) DEFAULT NULL COMMENT 'Vat Is Valid',
   `vat_request_id` text COMMENT 'Vat Request Id',
   `vat_request_date` text COMMENT 'Vat Request Date',
-  `vat_request_success` smallint(6) DEFAULT NULL COMMENT 'Vat Request Success'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Address';
+  `vat_request_success` smallint(6) DEFAULT NULL COMMENT 'Vat Request Success',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_ORDER_ADDRESS_PARENT_ID` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Address';
 
 --
--- Truncate table before insert `sales_order_address`
+-- Dumping data for table `sales_order_address`
 --
 
-TRUNCATE TABLE `sales_order_address`;
+INSERT INTO `sales_order_address` (`entity_id`, `parent_id`, `customer_address_id`, `quote_address_id`, `region_id`, `customer_id`, `fax`, `region`, `postcode`, `lastname`, `street`, `city`, `email`, `telephone`, `country_id`, `firstname`, `address_type`, `prefix`, `middlename`, `suffix`, `company`, `vat_id`, `vat_is_valid`, `vat_request_id`, `vat_request_date`, `vat_request_success`) VALUES
+(1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'thao', 'thủy Nguyên', 'Hải Phòng', 'admin@gmail.com', '34243432', 'VN', 'ntp', 'shipping', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'thao', 'thủy Nguyên', 'Hải Phòng', 'admin@gmail.com', '34243432', 'VN', 'ntp', 'billing', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nguyen', 'sdgd fhfgh', 'fghgf fghgff', 'ntpthao@gmail.com', '095634534543', 'VN', 'Thao', 'shipping', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'nguyen', 'sdgd fhfgh', 'fghgf fghgff', 'ntpthao@gmail.com', '095634534543', 'VN', 'Thao', 'billing', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_aggregated_created`
 --
 
-CREATE TABLE `sales_order_aggregated_created` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_order_aggregated_created`;
+CREATE TABLE IF NOT EXISTS `sales_order_aggregated_created` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
@@ -8202,22 +8980,21 @@ CREATE TABLE `sales_order_aggregated_created` (
   `total_shipping_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Shipping Amount',
   `total_shipping_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Shipping Amount Actual',
   `total_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount',
-  `total_discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount Actual'
+  `total_discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount Actual',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_ORDER_AGGREGATED_CREATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_ORDER_AGGREGATED_CREATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Aggregated Created';
 
---
--- Truncate table before insert `sales_order_aggregated_created`
---
-
-TRUNCATE TABLE `sales_order_aggregated_created`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_aggregated_updated`
 --
 
-CREATE TABLE `sales_order_aggregated_updated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_order_aggregated_updated`;
+CREATE TABLE IF NOT EXISTS `sales_order_aggregated_updated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
@@ -8236,21 +9013,20 @@ CREATE TABLE `sales_order_aggregated_updated` (
   `total_shipping_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Shipping Amount',
   `total_shipping_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Shipping Amount Actual',
   `total_discount_amount` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount',
-  `total_discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount Actual'
+  `total_discount_amount_actual` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Total Discount Amount Actual',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_ORDER_AGGREGATED_UPDATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_ORDER_AGGREGATED_UPDATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Aggregated Updated';
 
---
--- Truncate table before insert `sales_order_aggregated_updated`
---
-
-TRUNCATE TABLE `sales_order_aggregated_updated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_grid`
 --
 
-CREATE TABLE `sales_order_grid` (
+DROP TABLE IF EXISTS `sales_order_grid`;
+CREATE TABLE IF NOT EXISTS `sales_order_grid` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `status` varchar(32) DEFAULT NULL COMMENT 'Status',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
@@ -8276,22 +9052,39 @@ CREATE TABLE `sales_order_grid` (
   `shipping_and_handling` decimal(12,4) DEFAULT NULL COMMENT 'Shipping and handling amount',
   `customer_name` varchar(255) DEFAULT NULL COMMENT 'Customer Name',
   `payment_method` varchar(255) DEFAULT NULL COMMENT 'Payment Method',
-  `total_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Total Refunded'
+  `total_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Total Refunded',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_ORDER_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_ORDER_GRID_STATUS` (`status`),
+  KEY `SALES_ORDER_GRID_STORE_ID` (`store_id`),
+  KEY `SALES_ORDER_GRID_BASE_GRAND_TOTAL` (`base_grand_total`),
+  KEY `SALES_ORDER_GRID_BASE_TOTAL_PAID` (`base_total_paid`),
+  KEY `SALES_ORDER_GRID_GRAND_TOTAL` (`grand_total`),
+  KEY `SALES_ORDER_GRID_TOTAL_PAID` (`total_paid`),
+  KEY `SALES_ORDER_GRID_SHIPPING_NAME` (`shipping_name`),
+  KEY `SALES_ORDER_GRID_BILLING_NAME` (`billing_name`),
+  KEY `SALES_ORDER_GRID_CREATED_AT` (`created_at`),
+  KEY `SALES_ORDER_GRID_CUSTOMER_ID` (`customer_id`),
+  KEY `SALES_ORDER_GRID_UPDATED_AT` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Grid';
 
 --
--- Truncate table before insert `sales_order_grid`
+-- Dumping data for table `sales_order_grid`
 --
 
-TRUNCATE TABLE `sales_order_grid`;
+INSERT INTO `sales_order_grid` (`entity_id`, `status`, `store_id`, `store_name`, `customer_id`, `base_grand_total`, `base_total_paid`, `grand_total`, `total_paid`, `increment_id`, `base_currency_code`, `order_currency_code`, `shipping_name`, `billing_name`, `created_at`, `updated_at`, `billing_address`, `shipping_address`, `shipping_information`, `customer_email`, `customer_group`, `subtotal`, `shipping_and_handling`, `customer_name`, `payment_method`, `total_refunded`) VALUES
+(1, 'holded', 1, 'Main Website\r\nMain Website Store', 2, '35005.0000', NULL, '35005.0000', NULL, '000000001', 'VND', 'VND', 'ntp thao', 'ntp thao', '2017-03-16 21:50:50', '2017-03-16 22:03:36', 'thủy Nguyên Hải Phòng', 'thủy Nguyên Hải Phòng', 'Flat Rate - Fixed', 'admin@gmail.com', '1', '35000.0000', '5.0000', 'ntp thao', 'checkmo', NULL),
+(2, 'pending', 1, 'Main Website\r\nMain Website Store', NULL, '72015.0000', NULL, '72015.0000', NULL, '000000002', 'VND', 'VND', 'Thao nguyen', 'Thao nguyen', '2017-04-20 07:33:10', '2017-04-20 07:33:11', 'sdgd fhfgh fghgf fghgff', 'sdgd fhfgh fghgf fghgff', 'Flat Rate - Fixed', 'ntpthao@gmail.com', '0', '72000.0000', '15.0000', '', 'checkmo', NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_item`
 --
 
-CREATE TABLE `sales_order_item` (
-  `item_id` int(10) UNSIGNED NOT NULL COMMENT 'Item Id',
+DROP TABLE IF EXISTS `sales_order_item`;
+CREATE TABLE IF NOT EXISTS `sales_order_item` (
+  `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id',
   `order_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Id',
   `parent_item_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Parent Item Id',
   `quote_item_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Quote Item Id',
@@ -8370,22 +9163,29 @@ CREATE TABLE `sales_order_item` (
   `base_weee_tax_applied_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Amount',
   `base_weee_tax_applied_row_amnt` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Applied Row Amnt',
   `base_weee_tax_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Disposition',
-  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Item';
+  `base_weee_tax_row_disposition` decimal(12,4) DEFAULT NULL COMMENT 'Base Weee Tax Row Disposition',
+  PRIMARY KEY (`item_id`),
+  KEY `SALES_ORDER_ITEM_ORDER_ID` (`order_id`),
+  KEY `SALES_ORDER_ITEM_STORE_ID` (`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Item';
 
 --
--- Truncate table before insert `sales_order_item`
+-- Dumping data for table `sales_order_item`
 --
 
-TRUNCATE TABLE `sales_order_item`;
+INSERT INTO `sales_order_item` (`item_id`, `order_id`, `parent_item_id`, `quote_item_id`, `store_id`, `created_at`, `updated_at`, `product_id`, `product_type`, `product_options`, `weight`, `is_virtual`, `sku`, `name`, `description`, `applied_rule_ids`, `additional_data`, `is_qty_decimal`, `no_discount`, `qty_backordered`, `qty_canceled`, `qty_invoiced`, `qty_ordered`, `qty_refunded`, `qty_shipped`, `base_cost`, `price`, `base_price`, `original_price`, `base_original_price`, `tax_percent`, `tax_amount`, `base_tax_amount`, `tax_invoiced`, `base_tax_invoiced`, `discount_percent`, `discount_amount`, `base_discount_amount`, `discount_invoiced`, `base_discount_invoiced`, `amount_refunded`, `base_amount_refunded`, `row_total`, `base_row_total`, `row_invoiced`, `base_row_invoiced`, `row_weight`, `base_tax_before_discount`, `tax_before_discount`, `ext_order_item_id`, `locked_do_invoice`, `locked_do_ship`, `price_incl_tax`, `base_price_incl_tax`, `row_total_incl_tax`, `base_row_total_incl_tax`, `discount_tax_compensation_amount`, `base_discount_tax_compensation_amount`, `discount_tax_compensation_invoiced`, `base_discount_tax_compensation_invoiced`, `discount_tax_compensation_refunded`, `base_discount_tax_compensation_refunded`, `tax_canceled`, `discount_tax_compensation_canceled`, `tax_refunded`, `base_tax_refunded`, `discount_refunded`, `base_discount_refunded`, `free_shipping`, `gift_message_id`, `gift_message_available`, `weee_tax_applied`, `weee_tax_applied_amount`, `weee_tax_applied_row_amount`, `weee_tax_disposition`, `weee_tax_row_disposition`, `base_weee_tax_applied_amount`, `base_weee_tax_applied_row_amnt`, `base_weee_tax_disposition`, `base_weee_tax_row_disposition`) VALUES
+(1, 1, NULL, 1, 1, '2017-03-16 21:50:51', '2017-03-16 21:50:51', 2, 'simple', 'a:1:{s:15:\"info_buyRequest\";a:3:{s:4:\"uenc\";s:64:\"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvcmF1LXhhbmgvcmF1LWNhaS5odG1s\";s:7:\"product\";s:1:\"2\";s:3:\"qty\";i:1;}}', NULL, 0, 'Cải tím', 'Cải tím', NULL, NULL, NULL, 0, 0, NULL, '0.0000', '0.0000', '1.0000', '0.0000', '0.0000', NULL, '35000.0000', '35000.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, '35000.0000', '35000.0000', '35000.0000', '35000.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, 2, NULL, 2, 1, '2017-04-20 07:33:11', '2017-04-20 07:33:11', 1, 'simple', 'a:1:{s:15:\"info_buyRequest\";a:5:{s:4:\"uenc\";s:72:\"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvcXVpY2tzaG9wL2luZGV4L3ZpZXcvaWQvMS8,\";s:7:\"product\";s:1:\"1\";s:28:\"selected_configurable_option\";s:0:\"\";s:15:\"related_product\";s:0:\"\";s:3:\"qty\";s:1:\"1\";}}', NULL, 0, 'Cải bắp', 'Cải bắp', NULL, NULL, NULL, 0, 0, NULL, '0.0000', '0.0000', '3.0000', '0.0000', '0.0000', NULL, '24000.0000', '24000.0000', '24000.0000', '24000.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '0.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, '24000.0000', '24000.0000', '72000.0000', '72000.0000', '0.0000', '0.0000', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_payment`
 --
 
-CREATE TABLE `sales_order_payment` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_order_payment`;
+CREATE TABLE IF NOT EXISTS `sales_order_payment` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `base_shipping_captured` decimal(12,4) DEFAULT NULL COMMENT 'Base Shipping Captured',
   `shipping_captured` decimal(12,4) DEFAULT NULL COMMENT 'Shipping Captured',
@@ -8438,35 +9238,37 @@ CREATE TABLE `sales_order_payment` (
   `cc_number_enc` varchar(32) DEFAULT NULL COMMENT 'Cc Number Enc',
   `cc_trans_id` varchar(32) DEFAULT NULL COMMENT 'Cc Trans Id',
   `address_status` varchar(32) DEFAULT NULL COMMENT 'Address Status',
-  `additional_information` text COMMENT 'Additional Information'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Payment';
+  `additional_information` text COMMENT 'Additional Information',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_ORDER_PAYMENT_PARENT_ID` (`parent_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Payment';
 
 --
--- Truncate table before insert `sales_order_payment`
+-- Dumping data for table `sales_order_payment`
 --
 
-TRUNCATE TABLE `sales_order_payment`;
+INSERT INTO `sales_order_payment` (`entity_id`, `parent_id`, `base_shipping_captured`, `shipping_captured`, `amount_refunded`, `base_amount_paid`, `amount_canceled`, `base_amount_authorized`, `base_amount_paid_online`, `base_amount_refunded_online`, `base_shipping_amount`, `shipping_amount`, `amount_paid`, `amount_authorized`, `base_amount_ordered`, `base_shipping_refunded`, `shipping_refunded`, `base_amount_refunded`, `amount_ordered`, `base_amount_canceled`, `quote_payment_id`, `additional_data`, `cc_exp_month`, `cc_ss_start_year`, `echeck_bank_name`, `method`, `cc_debug_request_body`, `cc_secure_verify`, `protection_eligibility`, `cc_approval`, `cc_last_4`, `cc_status_description`, `echeck_type`, `cc_debug_response_serialized`, `cc_ss_start_month`, `echeck_account_type`, `last_trans_id`, `cc_cid_status`, `cc_owner`, `cc_type`, `po_number`, `cc_exp_year`, `cc_status`, `echeck_routing_number`, `account_status`, `anet_trans_method`, `cc_debug_response_body`, `cc_ss_issue`, `echeck_account_name`, `cc_avs_status`, `cc_number_enc`, `cc_trans_id`, `address_status`, `additional_information`) VALUES
+(1, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '5.0000', '5.0000', NULL, NULL, '35005.0000', NULL, NULL, NULL, '35005.0000', NULL, NULL, NULL, NULL, NULL, NULL, 'checkmo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'a:3:{s:12:\"method_title\";s:19:\"Check / Money order\";s:10:\"payable_to\";N;s:15:\"mailing_address\";N;}'),
+(2, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '15.0000', '15.0000', NULL, NULL, '72015.0000', NULL, NULL, NULL, '72015.0000', NULL, NULL, NULL, NULL, NULL, NULL, 'checkmo', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'a:3:{s:12:\"method_title\";s:19:\"Check / Money order\";s:10:\"payable_to\";N;s:15:\"mailing_address\";N;}');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_status`
 --
 
-CREATE TABLE `sales_order_status` (
+DROP TABLE IF EXISTS `sales_order_status`;
+CREATE TABLE IF NOT EXISTS `sales_order_status` (
   `status` varchar(32) NOT NULL COMMENT 'Status',
-  `label` varchar(128) NOT NULL COMMENT 'Label'
+  `label` varchar(128) NOT NULL COMMENT 'Label',
+  PRIMARY KEY (`status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Status Table';
 
---
--- Truncate table before insert `sales_order_status`
---
-
-TRUNCATE TABLE `sales_order_status`;
 --
 -- Dumping data for table `sales_order_status`
 --
 
-INSERT DELAYED IGNORE INTO `sales_order_status` VALUES
+INSERT INTO `sales_order_status` (`status`, `label`) VALUES
 ('canceled', 'Canceled'),
 ('closed', 'Closed'),
 ('complete', 'Complete'),
@@ -8486,62 +9288,56 @@ INSERT DELAYED IGNORE INTO `sales_order_status` VALUES
 -- Table structure for table `sales_order_status_history`
 --
 
-CREATE TABLE `sales_order_status_history` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_order_status_history`;
+CREATE TABLE IF NOT EXISTS `sales_order_status_history` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `is_customer_notified` int(11) DEFAULT NULL COMMENT 'Is Customer Notified',
   `is_visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible On Front',
   `comment` text COMMENT 'Comment',
   `status` varchar(32) DEFAULT NULL COMMENT 'Status',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
-  `entity_name` varchar(32) DEFAULT NULL COMMENT 'Shows what entity history is bind to.'
+  `entity_name` varchar(32) DEFAULT NULL COMMENT 'Shows what entity history is bind to.',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_ORDER_STATUS_HISTORY_PARENT_ID` (`parent_id`),
+  KEY `SALES_ORDER_STATUS_HISTORY_CREATED_AT` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Order Status History';
 
---
--- Truncate table before insert `sales_order_status_history`
---
-
-TRUNCATE TABLE `sales_order_status_history`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_status_label`
 --
 
-CREATE TABLE `sales_order_status_label` (
+DROP TABLE IF EXISTS `sales_order_status_label`;
+CREATE TABLE IF NOT EXISTS `sales_order_status_label` (
   `status` varchar(32) NOT NULL COMMENT 'Status',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `label` varchar(128) NOT NULL COMMENT 'Label'
+  `label` varchar(128) NOT NULL COMMENT 'Label',
+  PRIMARY KEY (`status`,`store_id`),
+  KEY `SALES_ORDER_STATUS_LABEL_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Status Label Table';
 
---
--- Truncate table before insert `sales_order_status_label`
---
-
-TRUNCATE TABLE `sales_order_status_label`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_status_state`
 --
 
-CREATE TABLE `sales_order_status_state` (
+DROP TABLE IF EXISTS `sales_order_status_state`;
+CREATE TABLE IF NOT EXISTS `sales_order_status_state` (
   `status` varchar(32) NOT NULL COMMENT 'Status',
   `state` varchar(32) NOT NULL COMMENT 'Label',
   `is_default` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Default',
-  `visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Visible on front'
+  `visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Visible on front',
+  PRIMARY KEY (`status`,`state`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Status Table';
 
---
--- Truncate table before insert `sales_order_status_state`
---
-
-TRUNCATE TABLE `sales_order_status_state`;
 --
 -- Dumping data for table `sales_order_status_state`
 --
 
-INSERT DELAYED IGNORE INTO `sales_order_status_state` VALUES
+INSERT INTO `sales_order_status_state` (`status`, `state`, `is_default`, `visible_on_front`) VALUES
 ('canceled', 'canceled', 1, 1),
 ('closed', 'closed', 1, 1),
 ('complete', 'complete', 1, 1),
@@ -8559,8 +9355,9 @@ INSERT DELAYED IGNORE INTO `sales_order_status_state` VALUES
 -- Table structure for table `sales_order_tax`
 --
 
-CREATE TABLE `sales_order_tax` (
-  `tax_id` int(10) UNSIGNED NOT NULL COMMENT 'Tax Id',
+DROP TABLE IF EXISTS `sales_order_tax`;
+CREATE TABLE IF NOT EXISTS `sales_order_tax` (
+  `tax_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Tax Id',
   `order_id` int(10) UNSIGNED NOT NULL COMMENT 'Order Id',
   `code` varchar(255) DEFAULT NULL COMMENT 'Code',
   `title` varchar(255) DEFAULT NULL COMMENT 'Title',
@@ -8570,22 +9367,20 @@ CREATE TABLE `sales_order_tax` (
   `position` int(11) NOT NULL COMMENT 'Position',
   `base_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Amount',
   `process` smallint(6) NOT NULL COMMENT 'Process',
-  `base_real_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Real Amount'
+  `base_real_amount` decimal(12,4) DEFAULT NULL COMMENT 'Base Real Amount',
+  PRIMARY KEY (`tax_id`),
+  KEY `SALES_ORDER_TAX_ORDER_ID_PRIORITY_POSITION` (`order_id`,`priority`,`position`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Tax Table';
 
---
--- Truncate table before insert `sales_order_tax`
---
-
-TRUNCATE TABLE `sales_order_tax`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_order_tax_item`
 --
 
-CREATE TABLE `sales_order_tax_item` (
-  `tax_item_id` int(10) UNSIGNED NOT NULL COMMENT 'Tax Item Id',
+DROP TABLE IF EXISTS `sales_order_tax_item`;
+CREATE TABLE IF NOT EXISTS `sales_order_tax_item` (
+  `tax_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Tax Item Id',
   `tax_id` int(10) UNSIGNED NOT NULL COMMENT 'Tax Id',
   `item_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Item Id',
   `tax_percent` decimal(12,4) NOT NULL COMMENT 'Real Tax Percent For Item',
@@ -8594,22 +9389,22 @@ CREATE TABLE `sales_order_tax_item` (
   `real_amount` decimal(12,4) NOT NULL COMMENT 'Real tax amount for the item and tax rate',
   `real_base_amount` decimal(12,4) NOT NULL COMMENT 'Real base tax amount for the item and tax rate',
   `associated_item_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Id of the associated item',
-  `taxable_item_type` varchar(32) NOT NULL COMMENT 'Type of the taxable item'
+  `taxable_item_type` varchar(32) NOT NULL COMMENT 'Type of the taxable item',
+  PRIMARY KEY (`tax_item_id`),
+  UNIQUE KEY `SALES_ORDER_TAX_ITEM_TAX_ID_ITEM_ID` (`tax_id`,`item_id`),
+  KEY `SALES_ORDER_TAX_ITEM_ITEM_ID` (`item_id`),
+  KEY `SALES_ORDER_TAX_ITEM_ASSOCIATED_ITEM_ID_SALES_ORDER_ITEM_ITEM_ID` (`associated_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Order Tax Item';
 
---
--- Truncate table before insert `sales_order_tax_item`
---
-
-TRUNCATE TABLE `sales_order_tax_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_payment_transaction`
 --
 
-CREATE TABLE `sales_payment_transaction` (
-  `transaction_id` int(10) UNSIGNED NOT NULL COMMENT 'Transaction Id',
+DROP TABLE IF EXISTS `sales_payment_transaction`;
+CREATE TABLE IF NOT EXISTS `sales_payment_transaction` (
+  `transaction_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Transaction Id',
   `parent_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'Parent Id',
   `order_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Order Id',
   `payment_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Payment Id',
@@ -8618,81 +9413,76 @@ CREATE TABLE `sales_payment_transaction` (
   `txn_type` varchar(15) DEFAULT NULL COMMENT 'Txn Type',
   `is_closed` smallint(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Is Closed',
   `additional_information` blob COMMENT 'Additional Information',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  PRIMARY KEY (`transaction_id`),
+  UNIQUE KEY `SALES_PAYMENT_TRANSACTION_ORDER_ID_PAYMENT_ID_TXN_ID` (`order_id`,`payment_id`,`txn_id`),
+  KEY `SALES_PAYMENT_TRANSACTION_PARENT_ID` (`parent_id`),
+  KEY `SALES_PAYMENT_TRANSACTION_PAYMENT_ID` (`payment_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Payment Transaction';
 
---
--- Truncate table before insert `sales_payment_transaction`
---
-
-TRUNCATE TABLE `sales_payment_transaction`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_refunded_aggregated`
 --
 
-CREATE TABLE `sales_refunded_aggregated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_refunded_aggregated`;
+CREATE TABLE IF NOT EXISTS `sales_refunded_aggregated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
   `orders_count` int(11) NOT NULL DEFAULT '0' COMMENT 'Orders Count',
   `refunded` decimal(12,4) DEFAULT NULL COMMENT 'Refunded',
   `online_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Online Refunded',
-  `offline_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Offline Refunded'
+  `offline_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Offline Refunded',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_REFUNDED_AGGREGATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_REFUNDED_AGGREGATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Refunded Aggregated';
 
---
--- Truncate table before insert `sales_refunded_aggregated`
---
-
-TRUNCATE TABLE `sales_refunded_aggregated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_refunded_aggregated_order`
 --
 
-CREATE TABLE `sales_refunded_aggregated_order` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_refunded_aggregated_order`;
+CREATE TABLE IF NOT EXISTS `sales_refunded_aggregated_order` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
   `orders_count` int(11) NOT NULL DEFAULT '0' COMMENT 'Orders Count',
   `refunded` decimal(12,4) DEFAULT NULL COMMENT 'Refunded',
   `online_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Online Refunded',
-  `offline_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Offline Refunded'
+  `offline_refunded` decimal(12,4) DEFAULT NULL COMMENT 'Offline Refunded',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_REFUNDED_AGGREGATED_ORDER_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
+  KEY `SALES_REFUNDED_AGGREGATED_ORDER_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Refunded Aggregated Order';
 
---
--- Truncate table before insert `sales_refunded_aggregated_order`
---
-
-TRUNCATE TABLE `sales_refunded_aggregated_order`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_sequence_meta`
 --
 
-CREATE TABLE `sales_sequence_meta` (
-  `meta_id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_sequence_meta`;
+CREATE TABLE IF NOT EXISTS `sales_sequence_meta` (
+  `meta_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `entity_type` varchar(32) NOT NULL COMMENT 'Prefix',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `sequence_table` varchar(32) NOT NULL COMMENT 'table for sequence'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='sales_sequence_meta';
+  `sequence_table` varchar(32) NOT NULL COMMENT 'table for sequence',
+  PRIMARY KEY (`meta_id`),
+  UNIQUE KEY `SALES_SEQUENCE_META_ENTITY_TYPE_STORE_ID` (`entity_type`,`store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='sales_sequence_meta';
 
---
--- Truncate table before insert `sales_sequence_meta`
---
-
-TRUNCATE TABLE `sales_sequence_meta`;
 --
 -- Dumping data for table `sales_sequence_meta`
 --
 
-INSERT DELAYED IGNORE INTO `sales_sequence_meta` VALUES
+INSERT INTO `sales_sequence_meta` (`meta_id`, `entity_type`, `store_id`, `sequence_table`) VALUES
 (1, 'order', 0, 'sequence_order_0'),
 (2, 'invoice', 0, 'sequence_invoice_0'),
 (3, 'creditmemo', 0, 'sequence_creditmemo_0'),
@@ -8708,8 +9498,9 @@ INSERT DELAYED IGNORE INTO `sales_sequence_meta` VALUES
 -- Table structure for table `sales_sequence_profile`
 --
 
-CREATE TABLE `sales_sequence_profile` (
-  `profile_id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_sequence_profile`;
+CREATE TABLE IF NOT EXISTS `sales_sequence_profile` (
+  `profile_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `meta_id` int(10) UNSIGNED NOT NULL COMMENT 'Meta_id',
   `prefix` varchar(32) DEFAULT NULL COMMENT 'Prefix',
   `suffix` varchar(32) DEFAULT NULL COMMENT 'Suffix',
@@ -8717,19 +9508,16 @@ CREATE TABLE `sales_sequence_profile` (
   `step` int(10) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Step for sequence',
   `max_value` int(10) UNSIGNED NOT NULL COMMENT 'MaxValue for sequence',
   `warning_value` int(10) UNSIGNED NOT NULL COMMENT 'WarningValue for sequence',
-  `is_active` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'isActive flag'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='sales_sequence_profile';
+  `is_active` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'isActive flag',
+  PRIMARY KEY (`profile_id`),
+  UNIQUE KEY `SALES_SEQUENCE_PROFILE_META_ID_PREFIX_SUFFIX` (`meta_id`,`prefix`,`suffix`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='sales_sequence_profile';
 
---
--- Truncate table before insert `sales_sequence_profile`
---
-
-TRUNCATE TABLE `sales_sequence_profile`;
 --
 -- Dumping data for table `sales_sequence_profile`
 --
 
-INSERT DELAYED IGNORE INTO `sales_sequence_profile` VALUES
+INSERT INTO `sales_sequence_profile` (`profile_id`, `meta_id`, `prefix`, `suffix`, `start_value`, `step`, `max_value`, `warning_value`, `is_active`) VALUES
 (1, 1, NULL, NULL, 1, 1, 0, 0, 1),
 (2, 2, NULL, NULL, 1, 1, 0, 0, 1),
 (3, 3, NULL, NULL, 1, 1, 0, 0, 1),
@@ -8745,8 +9533,9 @@ INSERT DELAYED IGNORE INTO `sales_sequence_profile` VALUES
 -- Table structure for table `sales_shipment`
 --
 
-CREATE TABLE `sales_shipment` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_shipment`;
+CREATE TABLE IF NOT EXISTS `sales_shipment` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `total_weight` decimal(12,4) DEFAULT NULL COMMENT 'Total Weight',
   `total_qty` decimal(12,4) DEFAULT NULL COMMENT 'Total Qty',
@@ -8763,41 +9552,45 @@ CREATE TABLE `sales_shipment` (
   `packages` text COMMENT 'Packed Products in Packages',
   `shipping_label` mediumblob COMMENT 'Shipping Label Content',
   `customer_note` text COMMENT 'Customer Note',
-  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify'
+  `customer_note_notify` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Customer Note Notify',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_SHIPMENT_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_SHIPMENT_STORE_ID` (`store_id`),
+  KEY `SALES_SHIPMENT_TOTAL_QTY` (`total_qty`),
+  KEY `SALES_SHIPMENT_ORDER_ID` (`order_id`),
+  KEY `SALES_SHIPMENT_CREATED_AT` (`created_at`),
+  KEY `SALES_SHIPMENT_UPDATED_AT` (`updated_at`),
+  KEY `SALES_SHIPMENT_SEND_EMAIL` (`send_email`),
+  KEY `SALES_SHIPMENT_EMAIL_SENT` (`email_sent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Shipment';
 
---
--- Truncate table before insert `sales_shipment`
---
-
-TRUNCATE TABLE `sales_shipment`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipment_comment`
 --
 
-CREATE TABLE `sales_shipment_comment` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_shipment_comment`;
+CREATE TABLE IF NOT EXISTS `sales_shipment_comment` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `is_customer_notified` int(11) DEFAULT NULL COMMENT 'Is Customer Notified',
   `is_visible_on_front` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is Visible On Front',
   `comment` text COMMENT 'Comment',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At'
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_SHIPMENT_COMMENT_CREATED_AT` (`created_at`),
+  KEY `SALES_SHIPMENT_COMMENT_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Shipment Comment';
 
---
--- Truncate table before insert `sales_shipment_comment`
---
-
-TRUNCATE TABLE `sales_shipment_comment`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipment_grid`
 --
 
-CREATE TABLE `sales_shipment_grid` (
+DROP TABLE IF EXISTS `sales_shipment_grid`;
+CREATE TABLE IF NOT EXISTS `sales_shipment_grid` (
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
   `increment_id` varchar(50) DEFAULT NULL COMMENT 'Increment Id',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
@@ -8817,22 +9610,30 @@ CREATE TABLE `sales_shipment_grid` (
   `payment_method` varchar(32) DEFAULT NULL COMMENT 'Payment Method',
   `shipping_information` varchar(255) DEFAULT NULL COMMENT 'Shipping Method Name',
   `created_at` timestamp NULL DEFAULT NULL COMMENT 'Created At',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At'
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`),
+  UNIQUE KEY `SALES_SHIPMENT_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
+  KEY `SALES_SHIPMENT_GRID_STORE_ID` (`store_id`),
+  KEY `SALES_SHIPMENT_GRID_TOTAL_QTY` (`total_qty`),
+  KEY `SALES_SHIPMENT_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
+  KEY `SALES_SHIPMENT_GRID_SHIPMENT_STATUS` (`shipment_status`),
+  KEY `SALES_SHIPMENT_GRID_ORDER_STATUS` (`order_status`),
+  KEY `SALES_SHIPMENT_GRID_CREATED_AT` (`created_at`),
+  KEY `SALES_SHIPMENT_GRID_UPDATED_AT` (`updated_at`),
+  KEY `SALES_SHIPMENT_GRID_ORDER_CREATED_AT` (`order_created_at`),
+  KEY `SALES_SHIPMENT_GRID_SHIPPING_NAME` (`shipping_name`),
+  KEY `SALES_SHIPMENT_GRID_BILLING_NAME` (`billing_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Shipment Grid';
 
---
--- Truncate table before insert `sales_shipment_grid`
---
-
-TRUNCATE TABLE `sales_shipment_grid`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipment_item`
 --
 
-CREATE TABLE `sales_shipment_item` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_shipment_item`;
+CREATE TABLE IF NOT EXISTS `sales_shipment_item` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `row_total` decimal(12,4) DEFAULT NULL COMMENT 'Row Total',
   `price` decimal(12,4) DEFAULT NULL COMMENT 'Price',
@@ -8843,22 +9644,20 @@ CREATE TABLE `sales_shipment_item` (
   `additional_data` text COMMENT 'Additional Data',
   `description` text COMMENT 'Description',
   `name` varchar(255) DEFAULT NULL COMMENT 'Name',
-  `sku` varchar(255) DEFAULT NULL COMMENT 'Sku'
+  `sku` varchar(255) DEFAULT NULL COMMENT 'Sku',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_SHIPMENT_ITEM_PARENT_ID` (`parent_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Shipment Item';
 
---
--- Truncate table before insert `sales_shipment_item`
---
-
-TRUNCATE TABLE `sales_shipment_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipment_track`
 --
 
-CREATE TABLE `sales_shipment_track` (
-  `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity Id',
+DROP TABLE IF EXISTS `sales_shipment_track`;
+CREATE TABLE IF NOT EXISTS `sales_shipment_track` (
+  `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
   `parent_id` int(10) UNSIGNED NOT NULL COMMENT 'Parent Id',
   `weight` decimal(12,4) DEFAULT NULL COMMENT 'Weight',
   `qty` decimal(12,4) DEFAULT NULL COMMENT 'Qty',
@@ -8868,66 +9667,64 @@ CREATE TABLE `sales_shipment_track` (
   `title` varchar(255) DEFAULT NULL COMMENT 'Title',
   `carrier_code` varchar(32) DEFAULT NULL COMMENT 'Carrier Code',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Created At',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At'
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated At',
+  PRIMARY KEY (`entity_id`),
+  KEY `SALES_SHIPMENT_TRACK_PARENT_ID` (`parent_id`),
+  KEY `SALES_SHIPMENT_TRACK_ORDER_ID` (`order_id`),
+  KEY `SALES_SHIPMENT_TRACK_CREATED_AT` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Flat Shipment Track';
 
---
--- Truncate table before insert `sales_shipment_track`
---
-
-TRUNCATE TABLE `sales_shipment_track`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipping_aggregated`
 --
 
-CREATE TABLE `sales_shipping_aggregated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_shipping_aggregated`;
+CREATE TABLE IF NOT EXISTS `sales_shipping_aggregated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
   `shipping_description` varchar(255) DEFAULT NULL COMMENT 'Shipping Description',
   `orders_count` int(11) NOT NULL DEFAULT '0' COMMENT 'Orders Count',
   `total_shipping` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping',
-  `total_shipping_actual` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping Actual'
+  `total_shipping_actual` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping Actual',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `SALES_SHPP_AGGRED_PERIOD_STORE_ID_ORDER_STS_SHPP_DESCRIPTION` (`period`,`store_id`,`order_status`,`shipping_description`),
+  KEY `SALES_SHIPPING_AGGREGATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Shipping Aggregated';
 
---
--- Truncate table before insert `sales_shipping_aggregated`
---
-
-TRUNCATE TABLE `sales_shipping_aggregated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sales_shipping_aggregated_order`
 --
 
-CREATE TABLE `sales_shipping_aggregated_order` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `sales_shipping_aggregated_order`;
+CREATE TABLE IF NOT EXISTS `sales_shipping_aggregated_order` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `order_status` varchar(50) DEFAULT NULL COMMENT 'Order Status',
   `shipping_description` varchar(255) DEFAULT NULL COMMENT 'Shipping Description',
   `orders_count` int(11) NOT NULL DEFAULT '0' COMMENT 'Orders Count',
   `total_shipping` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping',
-  `total_shipping_actual` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping Actual'
+  `total_shipping_actual` decimal(12,4) DEFAULT NULL COMMENT 'Total Shipping Actual',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNQ_C05FAE47282EEA68654D0924E946761F` (`period`,`store_id`,`order_status`,`shipping_description`),
+  KEY `SALES_SHIPPING_AGGREGATED_ORDER_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Sales Shipping Aggregated Order';
 
---
--- Truncate table before insert `sales_shipping_aggregated_order`
---
-
-TRUNCATE TABLE `sales_shipping_aggregated_order`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `search_query`
 --
 
-CREATE TABLE `search_query` (
-  `query_id` int(10) UNSIGNED NOT NULL COMMENT 'Query ID',
+DROP TABLE IF EXISTS `search_query`;
+CREATE TABLE IF NOT EXISTS `search_query` (
+  `query_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Query ID',
   `query_text` varchar(255) DEFAULT NULL COMMENT 'Query text',
   `num_results` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Num results',
   `popularity` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Popularity',
@@ -8937,191 +9734,178 @@ CREATE TABLE `search_query` (
   `display_in_terms` smallint(6) NOT NULL DEFAULT '1' COMMENT 'Display in terms',
   `is_active` smallint(6) DEFAULT '1' COMMENT 'Active status',
   `is_processed` smallint(6) DEFAULT '0' COMMENT 'Processed status',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated at'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Search query table';
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Updated at',
+  PRIMARY KEY (`query_id`),
+  UNIQUE KEY `SEARCH_QUERY_QUERY_TEXT_STORE_ID` (`query_text`,`store_id`),
+  KEY `SEARCH_QUERY_QUERY_TEXT_STORE_ID_POPULARITY` (`query_text`,`store_id`,`popularity`),
+  KEY `SEARCH_QUERY_STORE_ID` (`store_id`),
+  KEY `SEARCH_QUERY_IS_PROCESSED` (`is_processed`),
+  KEY `SEARCH_QUERY_SYNONYM_FOR` (`synonym_for`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Search query table';
 
 --
--- Truncate table before insert `search_query`
+-- Dumping data for table `search_query`
 --
 
-TRUNCATE TABLE `search_query`;
+INSERT INTO `search_query` (`query_id`, `query_text`, `num_results`, `popularity`, `redirect`, `synonym_for`, `store_id`, `display_in_terms`, `is_active`, `is_processed`, `updated_at`) VALUES
+(1, 'cải', 1, 1, NULL, NULL, 1, 1, 1, 0, '2017-03-15 23:56:21'),
+(3, 'bắp', 1, 1, NULL, NULL, 1, 1, 1, 0, '2017-03-15 23:58:57'),
+(4, 'tím', 1, 1, NULL, NULL, 1, 1, 1, 0, '2017-03-16 07:23:56');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sendfriend_log`
 --
 
-CREATE TABLE `sendfriend_log` (
-  `log_id` int(10) UNSIGNED NOT NULL COMMENT 'Log ID',
+DROP TABLE IF EXISTS `sendfriend_log`;
+CREATE TABLE IF NOT EXISTS `sendfriend_log` (
+  `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Log ID',
   `ip` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer IP address',
   `time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Log time',
-  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website ID'
+  `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website ID',
+  PRIMARY KEY (`log_id`),
+  KEY `SENDFRIEND_LOG_IP` (`ip`),
+  KEY `SENDFRIEND_LOG_TIME` (`time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Send to friend function log storage table';
 
---
--- Truncate table before insert `sendfriend_log`
---
-
-TRUNCATE TABLE `sendfriend_log`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_creditmemo_0`
 --
 
-CREATE TABLE `sequence_creditmemo_0` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_creditmemo_0`;
+CREATE TABLE IF NOT EXISTS `sequence_creditmemo_0` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_creditmemo_0`
---
-
-TRUNCATE TABLE `sequence_creditmemo_0`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_creditmemo_1`
 --
 
-CREATE TABLE `sequence_creditmemo_1` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_creditmemo_1`;
+CREATE TABLE IF NOT EXISTS `sequence_creditmemo_1` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_creditmemo_1`
---
-
-TRUNCATE TABLE `sequence_creditmemo_1`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_invoice_0`
 --
 
-CREATE TABLE `sequence_invoice_0` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_invoice_0`;
+CREATE TABLE IF NOT EXISTS `sequence_invoice_0` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_invoice_0`
---
-
-TRUNCATE TABLE `sequence_invoice_0`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_invoice_1`
 --
 
-CREATE TABLE `sequence_invoice_1` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_invoice_1`;
+CREATE TABLE IF NOT EXISTS `sequence_invoice_1` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_invoice_1`
---
-
-TRUNCATE TABLE `sequence_invoice_1`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_order_0`
 --
 
-CREATE TABLE `sequence_order_0` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_order_0`;
+CREATE TABLE IF NOT EXISTS `sequence_order_0` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_order_0`
---
-
-TRUNCATE TABLE `sequence_order_0`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_order_1`
 --
 
-CREATE TABLE `sequence_order_1` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+DROP TABLE IF EXISTS `sequence_order_1`;
+CREATE TABLE IF NOT EXISTS `sequence_order_1` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Truncate table before insert `sequence_order_1`
+-- Dumping data for table `sequence_order_1`
 --
 
-TRUNCATE TABLE `sequence_order_1`;
+INSERT INTO `sequence_order_1` (`sequence_value`) VALUES
+(1),
+(2);
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_shipment_0`
 --
 
-CREATE TABLE `sequence_shipment_0` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_shipment_0`;
+CREATE TABLE IF NOT EXISTS `sequence_shipment_0` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_shipment_0`
---
-
-TRUNCATE TABLE `sequence_shipment_0`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sequence_shipment_1`
 --
 
-CREATE TABLE `sequence_shipment_1` (
-  `sequence_value` int(10) UNSIGNED NOT NULL
+DROP TABLE IF EXISTS `sequence_shipment_1`;
+CREATE TABLE IF NOT EXISTS `sequence_shipment_1` (
+  `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`sequence_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Truncate table before insert `sequence_shipment_1`
---
-
-TRUNCATE TABLE `sequence_shipment_1`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `session`
 --
 
-CREATE TABLE `session` (
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE IF NOT EXISTS `session` (
   `session_id` varchar(255) NOT NULL COMMENT 'Session Id',
   `session_expires` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Date of Session Expiration',
-  `session_data` mediumblob NOT NULL COMMENT 'Session Data'
+  `session_data` mediumblob NOT NULL COMMENT 'Session Data',
+  PRIMARY KEY (`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Database Sessions Storage';
 
---
--- Truncate table before insert `session`
---
-
-TRUNCATE TABLE `session`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `setup_module`
 --
 
-CREATE TABLE `setup_module` (
+DROP TABLE IF EXISTS `setup_module`;
+CREATE TABLE IF NOT EXISTS `setup_module` (
   `module` varchar(50) NOT NULL COMMENT 'Module',
   `schema_version` varchar(50) DEFAULT NULL COMMENT 'Schema Version',
-  `data_version` varchar(50) DEFAULT NULL COMMENT 'Data Version'
+  `data_version` varchar(50) DEFAULT NULL COMMENT 'Data Version',
+  PRIMARY KEY (`module`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Module versions registry';
 
---
--- Truncate table before insert `setup_module`
---
-
-TRUNCATE TABLE `setup_module`;
 --
 -- Dumping data for table `setup_module`
 --
 
-INSERT DELAYED IGNORE INTO `setup_module` VALUES
+INSERT INTO `setup_module` (`module`, `schema_version`, `data_version`) VALUES
 ('Emthemes_Em0146settings', '2.0.0', '2.0.0'),
 ('Emthemes_FilterProduct', '2.0.0', '2.0.0'),
 ('Emthemes_QuickShop', '0.0.1', '0.0.1'),
@@ -9232,8 +10016,9 @@ INSERT DELAYED IGNORE INTO `setup_module` VALUES
 -- Table structure for table `shipping_tablerate`
 --
 
-CREATE TABLE `shipping_tablerate` (
-  `pk` int(10) UNSIGNED NOT NULL COMMENT 'Primary key',
+DROP TABLE IF EXISTS `shipping_tablerate`;
+CREATE TABLE IF NOT EXISTS `shipping_tablerate` (
+  `pk` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key',
   `website_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Website Id',
   `dest_country_id` varchar(4) NOT NULL DEFAULT '0' COMMENT 'Destination coutry ISO/2 or ISO/3 code',
   `dest_region_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Destination Region Id',
@@ -9241,60 +10026,56 @@ CREATE TABLE `shipping_tablerate` (
   `condition_name` varchar(20) NOT NULL COMMENT 'Rate Condition name',
   `condition_value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Rate condition value',
   `price` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Price',
-  `cost` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Cost'
+  `cost` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Cost',
+  PRIMARY KEY (`pk`),
+  UNIQUE KEY `UNQ_D60821CDB2AFACEE1566CFC02D0D4CAA` (`website_id`,`dest_country_id`,`dest_region_id`,`dest_zip`,`condition_name`,`condition_value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Shipping Tablerate';
 
---
--- Truncate table before insert `shipping_tablerate`
---
-
-TRUNCATE TABLE `shipping_tablerate`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `sitemap`
 --
 
-CREATE TABLE `sitemap` (
-  `sitemap_id` int(10) UNSIGNED NOT NULL COMMENT 'Sitemap Id',
+DROP TABLE IF EXISTS `sitemap`;
+CREATE TABLE IF NOT EXISTS `sitemap` (
+  `sitemap_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Sitemap Id',
   `sitemap_type` varchar(32) DEFAULT NULL COMMENT 'Sitemap Type',
   `sitemap_filename` varchar(32) DEFAULT NULL COMMENT 'Sitemap Filename',
   `sitemap_path` varchar(255) DEFAULT NULL COMMENT 'Sitemap Path',
   `sitemap_time` timestamp NULL DEFAULT NULL COMMENT 'Sitemap Time',
-  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id'
+  `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store id',
+  PRIMARY KEY (`sitemap_id`),
+  KEY `SITEMAP_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='XML Sitemap';
 
---
--- Truncate table before insert `sitemap`
---
-
-TRUNCATE TABLE `sitemap`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `store`
 --
 
-CREATE TABLE `store` (
-  `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
+DROP TABLE IF EXISTS `store`;
+CREATE TABLE IF NOT EXISTS `store` (
+  `store_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Store Id',
   `code` varchar(32) DEFAULT NULL COMMENT 'Code',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id',
   `group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Group Id',
   `name` varchar(255) NOT NULL COMMENT 'Store Name',
   `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Sort Order',
-  `is_active` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Activity'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores';
+  `is_active` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Activity',
+  PRIMARY KEY (`store_id`),
+  UNIQUE KEY `STORE_CODE` (`code`),
+  KEY `STORE_WEBSITE_ID` (`website_id`),
+  KEY `STORE_IS_ACTIVE_SORT_ORDER` (`is_active`,`sort_order`),
+  KEY `STORE_GROUP_ID` (`group_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Stores';
 
---
--- Truncate table before insert `store`
---
-
-TRUNCATE TABLE `store`;
 --
 -- Dumping data for table `store`
 --
 
-INSERT DELAYED IGNORE INTO `store` VALUES
+INSERT INTO `store` (`store_id`, `code`, `website_id`, `group_id`, `name`, `sort_order`, `is_active`) VALUES
 (0, 'admin', 0, 0, 'Admin', 0, 1),
 (1, 'default', 1, 1, 'Default Store View', 0, 1);
 
@@ -9304,24 +10085,23 @@ INSERT DELAYED IGNORE INTO `store` VALUES
 -- Table structure for table `store_group`
 --
 
-CREATE TABLE `store_group` (
-  `group_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Group Id',
+DROP TABLE IF EXISTS `store_group`;
+CREATE TABLE IF NOT EXISTS `store_group` (
+  `group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Group Id',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id',
   `name` varchar(255) NOT NULL COMMENT 'Store Group Name',
   `root_category_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Root Category Id',
-  `default_store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Default Store Id'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Store Groups';
+  `default_store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Default Store Id',
+  PRIMARY KEY (`group_id`),
+  KEY `STORE_GROUP_WEBSITE_ID` (`website_id`),
+  KEY `STORE_GROUP_DEFAULT_STORE_ID` (`default_store_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Store Groups';
 
---
--- Truncate table before insert `store_group`
---
-
-TRUNCATE TABLE `store_group`;
 --
 -- Dumping data for table `store_group`
 --
 
-INSERT DELAYED IGNORE INTO `store_group` VALUES
+INSERT INTO `store_group` (`group_id`, `website_id`, `name`, `root_category_id`, `default_store_id`) VALUES
 (0, 0, 'Default', 0, 0),
 (1, 1, 'Main Website Store', 2, 1);
 
@@ -9331,25 +10111,25 @@ INSERT DELAYED IGNORE INTO `store_group` VALUES
 -- Table structure for table `store_website`
 --
 
-CREATE TABLE `store_website` (
-  `website_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Website Id',
+DROP TABLE IF EXISTS `store_website`;
+CREATE TABLE IF NOT EXISTS `store_website` (
+  `website_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Website Id',
   `code` varchar(32) DEFAULT NULL COMMENT 'Code',
   `name` varchar(64) DEFAULT NULL COMMENT 'Website Name',
   `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
   `default_group_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Default Group Id',
-  `is_default` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Defines Is Website Default'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Websites';
+  `is_default` smallint(5) UNSIGNED DEFAULT '0' COMMENT 'Defines Is Website Default',
+  PRIMARY KEY (`website_id`),
+  UNIQUE KEY `STORE_WEBSITE_CODE` (`code`),
+  KEY `STORE_WEBSITE_SORT_ORDER` (`sort_order`),
+  KEY `STORE_WEBSITE_DEFAULT_GROUP_ID` (`default_group_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Websites';
 
---
--- Truncate table before insert `store_website`
---
-
-TRUNCATE TABLE `store_website`;
 --
 -- Dumping data for table `store_website`
 --
 
-INSERT DELAYED IGNORE INTO `store_website` VALUES
+INSERT INTO `store_website` (`website_id`, `code`, `name`, `sort_order`, `default_group_id`, `is_default`) VALUES
 (0, 'admin', 'Admin', 0, 0, 0),
 (1, 'base', 'Main Website', 0, 1, 1);
 
@@ -9359,27 +10139,29 @@ INSERT DELAYED IGNORE INTO `store_website` VALUES
 -- Table structure for table `tax_calculation`
 --
 
-CREATE TABLE `tax_calculation` (
-  `tax_calculation_id` int(11) NOT NULL COMMENT 'Tax Calculation Id',
+DROP TABLE IF EXISTS `tax_calculation`;
+CREATE TABLE IF NOT EXISTS `tax_calculation` (
+  `tax_calculation_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Id',
   `tax_calculation_rate_id` int(11) NOT NULL COMMENT 'Tax Calculation Rate Id',
   `tax_calculation_rule_id` int(11) NOT NULL COMMENT 'Tax Calculation Rule Id',
   `customer_tax_class_id` smallint(6) NOT NULL COMMENT 'Customer Tax Class Id',
-  `product_tax_class_id` smallint(6) NOT NULL COMMENT 'Product Tax Class Id'
+  `product_tax_class_id` smallint(6) NOT NULL COMMENT 'Product Tax Class Id',
+  PRIMARY KEY (`tax_calculation_id`),
+  KEY `TAX_CALCULATION_TAX_CALCULATION_RULE_ID` (`tax_calculation_rule_id`),
+  KEY `TAX_CALCULATION_CUSTOMER_TAX_CLASS_ID` (`customer_tax_class_id`),
+  KEY `TAX_CALCULATION_PRODUCT_TAX_CLASS_ID` (`product_tax_class_id`),
+  KEY `TAX_CALC_TAX_CALC_RATE_ID_CSTR_TAX_CLASS_ID_PRD_TAX_CLASS_ID` (`tax_calculation_rate_id`,`customer_tax_class_id`,`product_tax_class_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Calculation';
 
---
--- Truncate table before insert `tax_calculation`
---
-
-TRUNCATE TABLE `tax_calculation`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tax_calculation_rate`
 --
 
-CREATE TABLE `tax_calculation_rate` (
-  `tax_calculation_rate_id` int(11) NOT NULL COMMENT 'Tax Calculation Rate Id',
+DROP TABLE IF EXISTS `tax_calculation_rate`;
+CREATE TABLE IF NOT EXISTS `tax_calculation_rate` (
+  `tax_calculation_rate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rate Id',
   `tax_country_id` varchar(2) NOT NULL COMMENT 'Tax Country Id',
   `tax_region_id` int(11) NOT NULL COMMENT 'Tax Region Id',
   `tax_postcode` varchar(21) DEFAULT NULL COMMENT 'Tax Postcode',
@@ -9387,19 +10169,18 @@ CREATE TABLE `tax_calculation_rate` (
   `rate` decimal(12,4) NOT NULL COMMENT 'Rate',
   `zip_is_range` smallint(6) DEFAULT NULL COMMENT 'Zip Is Range',
   `zip_from` int(10) UNSIGNED DEFAULT NULL COMMENT 'Zip From',
-  `zip_to` int(10) UNSIGNED DEFAULT NULL COMMENT 'Zip To'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Calculation Rate';
+  `zip_to` int(10) UNSIGNED DEFAULT NULL COMMENT 'Zip To',
+  PRIMARY KEY (`tax_calculation_rate_id`),
+  KEY `TAX_CALCULATION_RATE_TAX_COUNTRY_ID_TAX_REGION_ID_TAX_POSTCODE` (`tax_country_id`,`tax_region_id`,`tax_postcode`),
+  KEY `TAX_CALCULATION_RATE_CODE` (`code`),
+  KEY `IDX_CA799F1E2CB843495F601E56C84A626D` (`tax_calculation_rate_id`,`tax_country_id`,`tax_region_id`,`zip_is_range`,`tax_postcode`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Tax Calculation Rate';
 
---
--- Truncate table before insert `tax_calculation_rate`
---
-
-TRUNCATE TABLE `tax_calculation_rate`;
 --
 -- Dumping data for table `tax_calculation_rate`
 --
 
-INSERT DELAYED IGNORE INTO `tax_calculation_rate` VALUES
+INSERT INTO `tax_calculation_rate` (`tax_calculation_rate_id`, `tax_country_id`, `tax_region_id`, `tax_postcode`, `code`, `rate`, `zip_is_range`, `zip_from`, `zip_to`) VALUES
 (1, 'US', 12, '*', 'US-CA-*-Rate 1', '8.2500', NULL, NULL, NULL),
 (2, 'US', 43, '*', 'US-NY-*-Rate 1', '8.3750', NULL, NULL, NULL);
 
@@ -9409,59 +10190,54 @@ INSERT DELAYED IGNORE INTO `tax_calculation_rate` VALUES
 -- Table structure for table `tax_calculation_rate_title`
 --
 
-CREATE TABLE `tax_calculation_rate_title` (
-  `tax_calculation_rate_title_id` int(11) NOT NULL COMMENT 'Tax Calculation Rate Title Id',
+DROP TABLE IF EXISTS `tax_calculation_rate_title`;
+CREATE TABLE IF NOT EXISTS `tax_calculation_rate_title` (
+  `tax_calculation_rate_title_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rate Title Id',
   `tax_calculation_rate_id` int(11) NOT NULL COMMENT 'Tax Calculation Rate Id',
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
-  `value` varchar(255) NOT NULL COMMENT 'Value'
+  `value` varchar(255) NOT NULL COMMENT 'Value',
+  PRIMARY KEY (`tax_calculation_rate_title_id`),
+  KEY `TAX_CALCULATION_RATE_TITLE_TAX_CALCULATION_RATE_ID_STORE_ID` (`tax_calculation_rate_id`,`store_id`),
+  KEY `TAX_CALCULATION_RATE_TITLE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Calculation Rate Title';
 
---
--- Truncate table before insert `tax_calculation_rate_title`
---
-
-TRUNCATE TABLE `tax_calculation_rate_title`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tax_calculation_rule`
 --
 
-CREATE TABLE `tax_calculation_rule` (
-  `tax_calculation_rule_id` int(11) NOT NULL COMMENT 'Tax Calculation Rule Id',
+DROP TABLE IF EXISTS `tax_calculation_rule`;
+CREATE TABLE IF NOT EXISTS `tax_calculation_rule` (
+  `tax_calculation_rule_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rule Id',
   `code` varchar(255) NOT NULL COMMENT 'Code',
   `priority` int(11) NOT NULL COMMENT 'Priority',
   `position` int(11) NOT NULL COMMENT 'Position',
-  `calculate_subtotal` int(11) NOT NULL COMMENT 'Calculate off subtotal option'
+  `calculate_subtotal` int(11) NOT NULL COMMENT 'Calculate off subtotal option',
+  PRIMARY KEY (`tax_calculation_rule_id`),
+  KEY `TAX_CALCULATION_RULE_PRIORITY_POSITION` (`priority`,`position`),
+  KEY `TAX_CALCULATION_RULE_CODE` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Calculation Rule';
 
---
--- Truncate table before insert `tax_calculation_rule`
---
-
-TRUNCATE TABLE `tax_calculation_rule`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tax_class`
 --
 
-CREATE TABLE `tax_class` (
-  `class_id` smallint(6) NOT NULL COMMENT 'Class Id',
+DROP TABLE IF EXISTS `tax_class`;
+CREATE TABLE IF NOT EXISTS `tax_class` (
+  `class_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Class Id',
   `class_name` varchar(255) NOT NULL COMMENT 'Class Name',
-  `class_type` varchar(8) NOT NULL DEFAULT 'CUSTOMER' COMMENT 'Class Type'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Class';
+  `class_type` varchar(8) NOT NULL DEFAULT 'CUSTOMER' COMMENT 'Class Type',
+  PRIMARY KEY (`class_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Tax Class';
 
---
--- Truncate table before insert `tax_class`
---
-
-TRUNCATE TABLE `tax_class`;
 --
 -- Dumping data for table `tax_class`
 --
 
-INSERT DELAYED IGNORE INTO `tax_class` VALUES
+INSERT INTO `tax_class` (`class_id`, `class_name`, `class_type`) VALUES
 (2, 'Taxable Goods', 'PRODUCT'),
 (3, 'Retail Customer', 'CUSTOMER');
 
@@ -9471,52 +10247,51 @@ INSERT DELAYED IGNORE INTO `tax_class` VALUES
 -- Table structure for table `tax_order_aggregated_created`
 --
 
-CREATE TABLE `tax_order_aggregated_created` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `tax_order_aggregated_created`;
+CREATE TABLE IF NOT EXISTS `tax_order_aggregated_created` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `code` varchar(255) NOT NULL COMMENT 'Code',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
   `percent` float DEFAULT NULL COMMENT 'Percent',
   `orders_count` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Orders Count',
-  `tax_base_amount_sum` float DEFAULT NULL COMMENT 'Tax Base Amount Sum'
+  `tax_base_amount_sum` float DEFAULT NULL COMMENT 'Tax Base Amount Sum',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `TAX_ORDER_AGGRED_CREATED_PERIOD_STORE_ID_CODE_PERCENT_ORDER_STS` (`period`,`store_id`,`code`,`percent`,`order_status`),
+  KEY `TAX_ORDER_AGGREGATED_CREATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Order Aggregation';
 
---
--- Truncate table before insert `tax_order_aggregated_created`
---
-
-TRUNCATE TABLE `tax_order_aggregated_created`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `tax_order_aggregated_updated`
 --
 
-CREATE TABLE `tax_order_aggregated_updated` (
-  `id` int(10) UNSIGNED NOT NULL COMMENT 'Id',
+DROP TABLE IF EXISTS `tax_order_aggregated_updated`;
+CREATE TABLE IF NOT EXISTS `tax_order_aggregated_updated` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id',
   `period` date DEFAULT NULL COMMENT 'Period',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store Id',
   `code` varchar(255) NOT NULL COMMENT 'Code',
   `order_status` varchar(50) NOT NULL COMMENT 'Order Status',
   `percent` float DEFAULT NULL COMMENT 'Percent',
   `orders_count` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Orders Count',
-  `tax_base_amount_sum` float DEFAULT NULL COMMENT 'Tax Base Amount Sum'
+  `tax_base_amount_sum` float DEFAULT NULL COMMENT 'Tax Base Amount Sum',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `TAX_ORDER_AGGRED_UPDATED_PERIOD_STORE_ID_CODE_PERCENT_ORDER_STS` (`period`,`store_id`,`code`,`percent`,`order_status`),
+  KEY `TAX_ORDER_AGGREGATED_UPDATED_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Tax Order Aggregated Updated';
 
---
--- Truncate table before insert `tax_order_aggregated_updated`
---
-
-TRUNCATE TABLE `tax_order_aggregated_updated`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `theme`
 --
 
-CREATE TABLE `theme` (
-  `theme_id` int(10) UNSIGNED NOT NULL COMMENT 'Theme identifier',
+DROP TABLE IF EXISTS `theme`;
+CREATE TABLE IF NOT EXISTS `theme` (
+  `theme_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Theme identifier',
   `parent_id` int(11) DEFAULT NULL COMMENT 'Parent Id',
   `theme_path` varchar(255) DEFAULT NULL COMMENT 'Theme Path',
   `theme_title` varchar(255) NOT NULL COMMENT 'Theme Title',
@@ -9524,23 +10299,19 @@ CREATE TABLE `theme` (
   `is_featured` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is Theme Featured',
   `area` varchar(255) NOT NULL COMMENT 'Theme Area',
   `type` smallint(6) NOT NULL COMMENT 'Theme type: 0:physical, 1:virtual, 2:staging',
-  `code` text COMMENT 'Full theme code, including package'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Core theme';
+  `code` text COMMENT 'Full theme code, including package',
+  PRIMARY KEY (`theme_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='Core theme';
 
---
--- Truncate table before insert `theme`
---
-
-TRUNCATE TABLE `theme`;
 --
 -- Dumping data for table `theme`
 --
 
-INSERT DELAYED IGNORE INTO `theme` VALUES
-(1, NULL, 'Magento/blank', 'Magento Blank', 'preview_image_58fc31b9c47ab.jpeg', 0, 'frontend', 0, 'Magento/blank'),
-(2, 1, 'Magento/luma', 'Magento Luma', 'preview_image_58fc31ba0704a.jpeg', 0, 'frontend', 0, 'Magento/luma'),
+INSERT INTO `theme` (`theme_id`, `parent_id`, `theme_path`, `theme_title`, `preview_image`, `is_featured`, `area`, `type`, `code`) VALUES
+(1, NULL, 'Magento/blank', 'Magento Blank', 'preview_image_58c9584e9dd57.jpeg', 0, 'frontend', 0, 'Magento/blank'),
+(2, 1, 'Magento/luma', 'Magento Luma', 'preview_image_58c9584ee6367.jpeg', 0, 'frontend', 0, 'Magento/luma'),
 (3, NULL, 'Magento/backend', 'Magento 2 backend', NULL, 0, 'adminhtml', 0, 'Magento/backend'),
-(4, 1, 'Emthemes/necessary_default', 'EMThemes Necessary', 'preview_image_58fc4c2a6ebb7.jpeg', 0, 'frontend', 0, 'Emthemes/necessary_default');
+(4, 1, 'Emthemes/necessary_default', 'EMThemes Necessary', 'preview_image_58c95c1242e6b.jpeg', 0, 'frontend', 0, 'Emthemes/necessary_default');
 
 -- --------------------------------------------------------
 
@@ -9548,49 +10319,46 @@ INSERT DELAYED IGNORE INTO `theme` VALUES
 -- Table structure for table `theme_file`
 --
 
-CREATE TABLE `theme_file` (
-  `theme_files_id` int(10) UNSIGNED NOT NULL COMMENT 'Theme files identifier',
+DROP TABLE IF EXISTS `theme_file`;
+CREATE TABLE IF NOT EXISTS `theme_file` (
+  `theme_files_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Theme files identifier',
   `theme_id` int(10) UNSIGNED NOT NULL COMMENT 'Theme Id',
   `file_path` varchar(255) DEFAULT NULL COMMENT 'Relative path to file',
   `file_type` varchar(32) NOT NULL COMMENT 'File Type',
   `content` longtext NOT NULL COMMENT 'File Content',
   `sort_order` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Sort Order',
-  `is_temporary` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is Temporary File'
+  `is_temporary` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Is Temporary File',
+  PRIMARY KEY (`theme_files_id`),
+  KEY `THEME_FILE_THEME_ID_THEME_THEME_ID` (`theme_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Core theme files';
 
---
--- Truncate table before insert `theme_file`
---
-
-TRUNCATE TABLE `theme_file`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `translation`
 --
 
-CREATE TABLE `translation` (
-  `key_id` int(10) UNSIGNED NOT NULL COMMENT 'Key Id of Translation',
+DROP TABLE IF EXISTS `translation`;
+CREATE TABLE IF NOT EXISTS `translation` (
+  `key_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Key Id of Translation',
   `string` varchar(255) NOT NULL DEFAULT 'Translate String' COMMENT 'Translation String',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `translate` varchar(255) DEFAULT NULL COMMENT 'Translate',
   `locale` varchar(20) NOT NULL DEFAULT 'en_US' COMMENT 'Locale',
-  `crc_string` bigint(20) NOT NULL DEFAULT '1591228201' COMMENT 'Translation String CRC32 Hash'
+  `crc_string` bigint(20) NOT NULL DEFAULT '1591228201' COMMENT 'Translation String CRC32 Hash',
+  PRIMARY KEY (`key_id`),
+  UNIQUE KEY `TRANSLATION_STORE_ID_LOCALE_CRC_STRING_STRING` (`store_id`,`locale`,`crc_string`,`string`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Translations';
 
---
--- Truncate table before insert `translation`
---
-
-TRUNCATE TABLE `translation`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `ui_bookmark`
 --
 
-CREATE TABLE `ui_bookmark` (
-  `bookmark_id` int(10) UNSIGNED NOT NULL COMMENT 'Bookmark identifier',
+DROP TABLE IF EXISTS `ui_bookmark`;
+CREATE TABLE IF NOT EXISTS `ui_bookmark` (
+  `bookmark_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Bookmark identifier',
   `user_id` int(10) UNSIGNED NOT NULL COMMENT 'User Id',
   `namespace` varchar(255) NOT NULL COMMENT 'Bookmark namespace',
   `identifier` varchar(255) NOT NULL COMMENT 'Bookmark Identifier',
@@ -9598,23 +10366,36 @@ CREATE TABLE `ui_bookmark` (
   `title` varchar(255) DEFAULT NULL COMMENT 'Bookmark title',
   `config` longtext COMMENT 'Bookmark config',
   `created_at` datetime NOT NULL COMMENT 'Bookmark created at',
-  `updated_at` datetime NOT NULL COMMENT 'Bookmark updated at'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Bookmark';
+  `updated_at` datetime NOT NULL COMMENT 'Bookmark updated at',
+  PRIMARY KEY (`bookmark_id`),
+  KEY `UI_BOOKMARK_USER_ID_NAMESPACE_IDENTIFIER` (`user_id`,`namespace`,`identifier`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COMMENT='Bookmark';
 
---
--- Truncate table before insert `ui_bookmark`
---
-
-TRUNCATE TABLE `ui_bookmark`;
 --
 -- Dumping data for table `ui_bookmark`
 --
 
-INSERT DELAYED IGNORE INTO `ui_bookmark` VALUES
-(1, 1, 'product_listing', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"entity_id\":{\"visible\":true,\"sorting\":\"asc\"},\"name\":{\"visible\":true,\"sorting\":false},\"sku\":{\"visible\":true,\"sorting\":false},\"price\":{\"visible\":true,\"sorting\":false},\"qty\":{\"visible\":true,\"sorting\":false},\"short_description\":{\"visible\":false,\"sorting\":false},\"special_price\":{\"visible\":false,\"sorting\":false},\"cost\":{\"visible\":false,\"sorting\":false},\"weight\":{\"visible\":false,\"sorting\":false},\"meta_title\":{\"visible\":false,\"sorting\":false},\"meta_keyword\":{\"visible\":false,\"sorting\":false},\"meta_description\":{\"visible\":false,\"sorting\":false},\"url_key\":{\"visible\":false,\"sorting\":false},\"msrp\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"type_id\":{\"visible\":true,\"sorting\":false},\"attribute_set_id\":{\"visible\":true,\"sorting\":false},\"visibility\":{\"visible\":true,\"sorting\":false},\"status\":{\"visible\":true,\"sorting\":false},\"websites\":{\"visible\":true,\"sorting\":false},\"custom_design\":{\"visible\":false,\"sorting\":false},\"page_layout\":{\"visible\":false,\"sorting\":false},\"country_of_manufacture\":{\"visible\":false,\"sorting\":false},\"tax_class_id\":{\"visible\":false,\"sorting\":false},\"gift_message_available\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"thumbnail\":{\"visible\":true,\"sorting\":false},\"special_from_date\":{\"visible\":false,\"sorting\":false},\"special_to_date\":{\"visible\":false,\"sorting\":false},\"news_from_date\":{\"visible\":false,\"sorting\":false},\"news_to_date\":{\"visible\":false,\"sorting\":false},\"custom_design_from\":{\"visible\":false,\"sorting\":false},\"custom_design_to\":{\"visible\":false,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"entity_id\":1,\"thumbnail\":2,\"name\":3,\"type_id\":4,\"attribute_set_id\":5,\"sku\":6,\"price\":7,\"qty\":8,\"visibility\":9,\"status\":10,\"websites\":11,\"short_description\":12,\"special_price\":13,\"special_from_date\":14,\"special_to_date\":15,\"cost\":16,\"weight\":17,\"meta_title\":18,\"meta_keyword\":19,\"meta_description\":20,\"news_from_date\":21,\"news_to_date\":22,\"custom_design\":23,\"custom_design_from\":24,\"custom_design_to\":25,\"page_layout\":26,\"country_of_manufacture\":27,\"url_key\":28,\"msrp\":29,\"tax_class_id\":30,\"gift_message_available\":31,\"actions\":32}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
-(2, 1, 'product_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
-(3, 1, 'product_attributes_listing', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"attribute_code\":{\"visible\":true,\"sorting\":\"asc\"},\"frontend_label\":{\"visible\":true,\"sorting\":false},\"is_filterable\":{\"visible\":true,\"sorting\":false},\"is_required\":{\"visible\":true,\"sorting\":false},\"is_user_defined\":{\"visible\":true,\"sorting\":false},\"is_visible\":{\"visible\":true,\"sorting\":false},\"is_global\":{\"visible\":true,\"sorting\":false},\"is_searchable\":{\"visible\":true,\"sorting\":false},\"is_comparable\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false}},\"positions\":{\"ids\":0,\"is_filterable\":1,\"attribute_code\":2,\"frontend_label\":3,\"is_required\":4,\"is_user_defined\":5,\"is_visible\":6,\"is_global\":7,\"is_searchable\":8,\"is_comparable\":9},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
-(4, 1, 'product_attributes_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"attribute_code\":{\"visible\":true,\"sorting\":\"asc\"},\"frontend_label\":{\"visible\":true,\"sorting\":false},\"is_filterable\":{\"visible\":true,\"sorting\":false},\"is_required\":{\"visible\":true,\"sorting\":false},\"is_user_defined\":{\"visible\":true,\"sorting\":false},\"is_visible\":{\"visible\":true,\"sorting\":false},\"is_global\":{\"visible\":true,\"sorting\":false},\"is_searchable\":{\"visible\":true,\"sorting\":false},\"is_comparable\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false}},\"positions\":{\"ids\":0,\"is_filterable\":1,\"attribute_code\":2,\"frontend_label\":3,\"is_required\":4,\"is_user_defined\":5,\"is_visible\":6,\"is_global\":7,\"is_searchable\":8,\"is_comparable\":9},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00');
+INSERT INTO `ui_bookmark` (`bookmark_id`, `user_id`, `namespace`, `identifier`, `current`, `title`, `config`, `created_at`, `updated_at`) VALUES
+(1, 1, 'cms_block_listing', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"search\":{\"value\":\"\"},\"columns\":{\"block_id\":{\"visible\":true,\"sorting\":\"asc\"},\"title\":{\"visible\":true,\"sorting\":false},\"identifier\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":true,\"sorting\":false},\"is_active\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"creation_time\":{\"visible\":true,\"sorting\":false},\"update_time\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"block_id\":1,\"title\":2,\"identifier\":3,\"store_id\":4,\"is_active\":5,\"creation_time\":6,\"update_time\":7,\"actions\":8}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(2, 1, 'cms_block_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"search\":{\"value\":\"\"},\"columns\":{\"block_id\":{\"visible\":true,\"sorting\":\"asc\"},\"title\":{\"visible\":true,\"sorting\":false},\"identifier\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":true,\"sorting\":false},\"is_active\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"creation_time\":{\"visible\":true,\"sorting\":false},\"update_time\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"block_id\":1,\"title\":2,\"identifier\":3,\"store_id\":4,\"is_active\":5,\"creation_time\":6,\"update_time\":7,\"actions\":8}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(3, 1, 'product_listing', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"entity_id\":{\"visible\":true,\"sorting\":\"asc\"},\"name\":{\"visible\":true,\"sorting\":false},\"sku\":{\"visible\":true,\"sorting\":false},\"price\":{\"visible\":true,\"sorting\":false},\"qty\":{\"visible\":true,\"sorting\":false},\"short_description\":{\"visible\":false,\"sorting\":false},\"special_price\":{\"visible\":false,\"sorting\":false},\"cost\":{\"visible\":false,\"sorting\":false},\"weight\":{\"visible\":false,\"sorting\":false},\"meta_title\":{\"visible\":false,\"sorting\":false},\"meta_keyword\":{\"visible\":false,\"sorting\":false},\"meta_description\":{\"visible\":false,\"sorting\":false},\"url_key\":{\"visible\":false,\"sorting\":false},\"msrp\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"type_id\":{\"visible\":true,\"sorting\":false},\"attribute_set_id\":{\"visible\":true,\"sorting\":false},\"visibility\":{\"visible\":true,\"sorting\":false},\"status\":{\"visible\":true,\"sorting\":false},\"websites\":{\"visible\":true,\"sorting\":false},\"custom_design\":{\"visible\":false,\"sorting\":false},\"page_layout\":{\"visible\":false,\"sorting\":false},\"country_of_manufacture\":{\"visible\":false,\"sorting\":false},\"tax_class_id\":{\"visible\":false,\"sorting\":false},\"gift_message_available\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"special_from_date\":{\"visible\":false,\"sorting\":false},\"special_to_date\":{\"visible\":false,\"sorting\":false},\"news_from_date\":{\"visible\":false,\"sorting\":false},\"news_to_date\":{\"visible\":false,\"sorting\":false},\"custom_design_from\":{\"visible\":false,\"sorting\":false},\"custom_design_to\":{\"visible\":false,\"sorting\":false},\"thumbnail\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"entity_id\":1,\"thumbnail\":2,\"name\":3,\"type_id\":4,\"attribute_set_id\":5,\"sku\":6,\"price\":7,\"qty\":8,\"visibility\":9,\"status\":10,\"websites\":11,\"short_description\":12,\"special_price\":13,\"special_from_date\":14,\"special_to_date\":15,\"cost\":16,\"weight\":17,\"meta_title\":18,\"meta_keyword\":19,\"meta_description\":20,\"news_from_date\":21,\"news_to_date\":22,\"custom_design\":23,\"custom_design_from\":24,\"custom_design_to\":25,\"page_layout\":26,\"country_of_manufacture\":27,\"url_key\":28,\"msrp\":29,\"tax_class_id\":30,\"gift_message_available\":31,\"actions\":32}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(4, 1, 'product_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"entity_id\":{\"visible\":true,\"sorting\":\"asc\"},\"name\":{\"visible\":true,\"sorting\":false},\"sku\":{\"visible\":true,\"sorting\":false},\"price\":{\"visible\":true,\"sorting\":false},\"qty\":{\"visible\":true,\"sorting\":false},\"short_description\":{\"visible\":false,\"sorting\":false},\"special_price\":{\"visible\":false,\"sorting\":false},\"cost\":{\"visible\":false,\"sorting\":false},\"weight\":{\"visible\":false,\"sorting\":false},\"meta_title\":{\"visible\":false,\"sorting\":false},\"meta_keyword\":{\"visible\":false,\"sorting\":false},\"meta_description\":{\"visible\":false,\"sorting\":false},\"url_key\":{\"visible\":false,\"sorting\":false},\"msrp\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"type_id\":{\"visible\":true,\"sorting\":false},\"attribute_set_id\":{\"visible\":true,\"sorting\":false},\"visibility\":{\"visible\":true,\"sorting\":false},\"status\":{\"visible\":true,\"sorting\":false},\"websites\":{\"visible\":true,\"sorting\":false},\"custom_design\":{\"visible\":false,\"sorting\":false},\"page_layout\":{\"visible\":false,\"sorting\":false},\"country_of_manufacture\":{\"visible\":false,\"sorting\":false},\"tax_class_id\":{\"visible\":false,\"sorting\":false},\"gift_message_available\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"special_from_date\":{\"visible\":false,\"sorting\":false},\"special_to_date\":{\"visible\":false,\"sorting\":false},\"news_from_date\":{\"visible\":false,\"sorting\":false},\"news_to_date\":{\"visible\":false,\"sorting\":false},\"custom_design_from\":{\"visible\":false,\"sorting\":false},\"custom_design_to\":{\"visible\":false,\"sorting\":false},\"thumbnail\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"entity_id\":1,\"thumbnail\":2,\"name\":3,\"type_id\":4,\"attribute_set_id\":5,\"sku\":6,\"price\":7,\"qty\":8,\"visibility\":9,\"status\":10,\"websites\":11,\"short_description\":12,\"special_price\":13,\"special_from_date\":14,\"special_to_date\":15,\"cost\":16,\"weight\":17,\"meta_title\":18,\"meta_keyword\":19,\"meta_description\":20,\"news_from_date\":21,\"news_to_date\":22,\"custom_design\":23,\"custom_design_from\":24,\"custom_design_to\":25,\"page_layout\":26,\"country_of_manufacture\":27,\"url_key\":28,\"msrp\":29,\"tax_class_id\":30,\"gift_message_available\":31,\"actions\":32}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(5, 1, 'product_attributes_listing', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"attribute_code\":{\"visible\":true,\"sorting\":\"asc\"},\"frontend_label\":{\"visible\":true,\"sorting\":false},\"is_filterable\":{\"visible\":true,\"sorting\":false},\"is_required\":{\"visible\":true,\"sorting\":false},\"is_user_defined\":{\"visible\":true,\"sorting\":false},\"is_visible\":{\"visible\":true,\"sorting\":false},\"is_global\":{\"visible\":true,\"sorting\":false},\"is_searchable\":{\"visible\":true,\"sorting\":false},\"is_comparable\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false}},\"positions\":{\"ids\":0,\"is_filterable\":1,\"attribute_code\":2,\"frontend_label\":3,\"is_required\":4,\"is_user_defined\":5,\"is_visible\":6,\"is_global\":7,\"is_searchable\":8,\"is_comparable\":9},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(6, 1, 'product_attributes_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"attribute_code\":{\"visible\":true,\"sorting\":\"asc\"},\"frontend_label\":{\"visible\":true,\"sorting\":false},\"is_filterable\":{\"visible\":true,\"sorting\":false},\"is_required\":{\"visible\":true,\"sorting\":false},\"is_user_defined\":{\"visible\":true,\"sorting\":false},\"is_visible\":{\"visible\":true,\"sorting\":false},\"is_global\":{\"visible\":true,\"sorting\":false},\"is_searchable\":{\"visible\":true,\"sorting\":false},\"is_comparable\":{\"visible\":true,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false}},\"positions\":{\"ids\":0,\"is_filterable\":1,\"attribute_code\":2,\"frontend_label\":3,\"is_required\":4,\"is_user_defined\":5,\"is_visible\":6,\"is_global\":7,\"is_searchable\":8,\"is_comparable\":9},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(7, 1, 'cms_page_listing', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"page_id\":{\"visible\":true,\"sorting\":\"asc\"},\"title\":{\"visible\":true,\"sorting\":false},\"identifier\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":true,\"sorting\":false},\"meta_keywords\":{\"visible\":false,\"sorting\":false},\"meta_description\":{\"visible\":false,\"sorting\":false},\"page_layout\":{\"visible\":true,\"sorting\":false},\"is_active\":{\"visible\":true,\"sorting\":false},\"custom_theme\":{\"visible\":false,\"sorting\":false},\"custom_root_template\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"creation_time\":{\"visible\":true,\"sorting\":false},\"update_time\":{\"visible\":true,\"sorting\":false},\"custom_theme_from\":{\"visible\":false,\"sorting\":false},\"custom_theme_to\":{\"visible\":false,\"sorting\":false}},\"positions\":{\"ids\":0,\"page_id\":1,\"title\":2,\"identifier\":3,\"page_layout\":4,\"store_id\":5,\"is_active\":6,\"creation_time\":7,\"update_time\":8,\"custom_theme_from\":9,\"custom_theme_to\":10,\"custom_theme\":11,\"custom_root_template\":12,\"meta_keywords\":13,\"meta_description\":14,\"actions\":15},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(8, 1, 'cms_page_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"page_id\":{\"visible\":true,\"sorting\":\"asc\"},\"title\":{\"visible\":true,\"sorting\":false},\"identifier\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":true,\"sorting\":false},\"meta_keywords\":{\"visible\":false,\"sorting\":false},\"meta_description\":{\"visible\":false,\"sorting\":false},\"page_layout\":{\"visible\":true,\"sorting\":false},\"is_active\":{\"visible\":true,\"sorting\":false},\"custom_theme\":{\"visible\":false,\"sorting\":false},\"custom_root_template\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"creation_time\":{\"visible\":true,\"sorting\":false},\"update_time\":{\"visible\":true,\"sorting\":false},\"custom_theme_from\":{\"visible\":false,\"sorting\":false},\"custom_theme_to\":{\"visible\":false,\"sorting\":false}},\"positions\":{\"ids\":0,\"page_id\":1,\"title\":2,\"identifier\":3,\"page_layout\":4,\"store_id\":5,\"is_active\":6,\"creation_time\":7,\"update_time\":8,\"custom_theme_from\":9,\"custom_theme_to\":10,\"custom_theme\":11,\"custom_root_template\":12,\"meta_keywords\":13,\"meta_description\":14,\"actions\":15},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(9, 1, 'customer_listing', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"entity_id\":{\"visible\":true,\"sorting\":\"asc\"},\"name\":{\"visible\":true,\"sorting\":false},\"email\":{\"visible\":true,\"sorting\":false},\"billing_telephone\":{\"visible\":true,\"sorting\":false},\"billing_postcode\":{\"visible\":true,\"sorting\":false},\"billing_region\":{\"visible\":true,\"sorting\":false},\"confirmation\":{\"visible\":true,\"sorting\":false},\"created_in\":{\"visible\":true,\"sorting\":false},\"billing_full\":{\"visible\":false,\"sorting\":false},\"shipping_full\":{\"visible\":false,\"sorting\":false},\"taxvat\":{\"visible\":true,\"sorting\":false},\"billing_street\":{\"visible\":false,\"sorting\":false},\"billing_city\":{\"visible\":false,\"sorting\":false},\"billing_fax\":{\"visible\":false,\"sorting\":false},\"billing_vat_id\":{\"visible\":false,\"sorting\":false},\"billing_company\":{\"visible\":false,\"sorting\":false},\"billing_firstname\":{\"visible\":false,\"sorting\":false},\"billing_lastname\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"group_id\":{\"visible\":true,\"sorting\":false},\"billing_country_id\":{\"visible\":true,\"sorting\":false},\"website_id\":{\"visible\":true,\"sorting\":false},\"gender\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"last_visit_at\":{\"visible\":false,\"sorting\":false},\"dob\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"entity_id\":1,\"name\":2,\"email\":3,\"group_id\":4,\"billing_telephone\":5,\"billing_postcode\":6,\"billing_country_id\":7,\"billing_region\":8,\"created_at\":9,\"website_id\":10,\"last_visit_at\":11,\"confirmation\":12,\"created_in\":13,\"billing_full\":14,\"shipping_full\":15,\"dob\":16,\"taxvat\":17,\"gender\":18,\"billing_street\":19,\"billing_city\":20,\"billing_fax\":21,\"billing_vat_id\":22,\"billing_company\":23,\"billing_firstname\":24,\"billing_lastname\":25,\"actions\":26}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(10, 1, 'customer_listing', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"entity_id\":{\"visible\":true,\"sorting\":\"asc\"},\"name\":{\"visible\":true,\"sorting\":false},\"email\":{\"visible\":true,\"sorting\":false},\"billing_telephone\":{\"visible\":true,\"sorting\":false},\"billing_postcode\":{\"visible\":true,\"sorting\":false},\"billing_region\":{\"visible\":true,\"sorting\":false},\"confirmation\":{\"visible\":true,\"sorting\":false},\"created_in\":{\"visible\":true,\"sorting\":false},\"billing_full\":{\"visible\":false,\"sorting\":false},\"shipping_full\":{\"visible\":false,\"sorting\":false},\"taxvat\":{\"visible\":true,\"sorting\":false},\"billing_street\":{\"visible\":false,\"sorting\":false},\"billing_city\":{\"visible\":false,\"sorting\":false},\"billing_fax\":{\"visible\":false,\"sorting\":false},\"billing_vat_id\":{\"visible\":false,\"sorting\":false},\"billing_company\":{\"visible\":false,\"sorting\":false},\"billing_firstname\":{\"visible\":false,\"sorting\":false},\"billing_lastname\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"group_id\":{\"visible\":true,\"sorting\":false},\"billing_country_id\":{\"visible\":true,\"sorting\":false},\"website_id\":{\"visible\":true,\"sorting\":false},\"gender\":{\"visible\":true,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"last_visit_at\":{\"visible\":false,\"sorting\":false},\"dob\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"entity_id\":1,\"name\":2,\"email\":3,\"group_id\":4,\"billing_telephone\":5,\"billing_postcode\":6,\"billing_country_id\":7,\"billing_region\":8,\"created_at\":9,\"website_id\":10,\"last_visit_at\":11,\"confirmation\":12,\"created_in\":13,\"billing_full\":14,\"shipping_full\":15,\"dob\":16,\"taxvat\":17,\"gender\":18,\"billing_street\":19,\"billing_city\":20,\"billing_fax\":21,\"billing_vat_id\":22,\"billing_company\":23,\"billing_firstname\":24,\"billing_lastname\":25,\"actions\":26}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(11, 1, 'customer_online_grid', 'current', 0, NULL, '{\"current\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"customer_id\":{\"visible\":true,\"sorting\":\"asc\"},\"firstname\":{\"visible\":true,\"sorting\":false},\"lastname\":{\"visible\":true,\"sorting\":false},\"email\":{\"visible\":true,\"sorting\":false},\"visitor_type\":{\"visible\":true,\"sorting\":false},\"last_visit_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"customer_id\":0,\"firstname\":1,\"lastname\":2,\"email\":3,\"last_visit_at\":4,\"visitor_type\":5}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(12, 1, 'customer_online_grid', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"customer_id\":{\"visible\":true,\"sorting\":\"asc\"},\"firstname\":{\"visible\":true,\"sorting\":false},\"lastname\":{\"visible\":true,\"sorting\":false},\"email\":{\"visible\":true,\"sorting\":false},\"visitor_type\":{\"visible\":true,\"sorting\":false},\"last_visit_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"customer_id\":0,\"firstname\":1,\"lastname\":2,\"email\":3,\"last_visit_at\":4,\"visitor_type\":5}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(13, 1, 'sales_order_grid', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"desc\"},\"store_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"shipping_name\":{\"visible\":true,\"sorting\":false},\"base_grand_total\":{\"visible\":true,\"sorting\":false},\"grand_total\":{\"visible\":true,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"total_refunded\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"status\":{\"visible\":true,\"sorting\":false},\"customer_group\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"store_id\":2,\"created_at\":3,\"billing_name\":4,\"shipping_name\":5,\"base_grand_total\":6,\"grand_total\":7,\"status\":8,\"billing_address\":9,\"shipping_address\":10,\"shipping_information\":11,\"customer_email\":12,\"customer_group\":13,\"subtotal\":14,\"shipping_and_handling\":15,\"customer_name\":16,\"payment_method\":17,\"total_refunded\":18,\"actions\":19}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(14, 1, 'sales_order_grid', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"desc\"},\"store_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"shipping_name\":{\"visible\":true,\"sorting\":false},\"base_grand_total\":{\"visible\":true,\"sorting\":false},\"grand_total\":{\"visible\":true,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"total_refunded\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"status\":{\"visible\":true,\"sorting\":false},\"customer_group\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"store_id\":2,\"created_at\":3,\"billing_name\":4,\"shipping_name\":5,\"base_grand_total\":6,\"grand_total\":7,\"status\":8,\"billing_address\":9,\"shipping_address\":10,\"shipping_information\":11,\"customer_email\":12,\"customer_group\":13,\"subtotal\":14,\"shipping_and_handling\":15,\"customer_name\":16,\"payment_method\":17,\"total_refunded\":18,\"actions\":19}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(15, 1, 'sales_order_view_invoice_grid', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"asc\"},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"grand_total\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"state\":{\"visible\":true,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"billing_name\":5,\"state\":6,\"grand_total\":7,\"store_id\":8,\"billing_address\":9,\"shipping_address\":10,\"customer_name\":11,\"customer_email\":12,\"customer_group_id\":13,\"payment_method\":14,\"shipping_information\":15,\"subtotal\":16,\"shipping_and_handling\":17,\"actions\":18}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(16, 1, 'sales_order_view_creditmemo_grid', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":false},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"base_grand_total\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"adjustment_positive\":{\"visible\":false,\"sorting\":false},\"adjustment_negative\":{\"visible\":false,\"sorting\":false},\"order_base_grand_total\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"state\":{\"visible\":true,\"sorting\":false},\"order_status\":{\"visible\":false,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"billing_name\":5,\"state\":6,\"base_grand_total\":7,\"order_status\":8,\"store_id\":9,\"billing_address\":10,\"shipping_address\":11,\"customer_name\":12,\"customer_email\":13,\"customer_group_id\":14,\"payment_method\":15,\"shipping_information\":16,\"subtotal\":17,\"shipping_and_handling\":18,\"adjustment_positive\":19,\"adjustment_negative\":20,\"order_base_grand_total\":21,\"actions\":22}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(17, 1, 'sales_order_view_creditmemo_grid', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":false},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"base_grand_total\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"adjustment_positive\":{\"visible\":false,\"sorting\":false},\"adjustment_negative\":{\"visible\":false,\"sorting\":false},\"order_base_grand_total\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"state\":{\"visible\":true,\"sorting\":false},\"order_status\":{\"visible\":false,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"billing_name\":5,\"state\":6,\"base_grand_total\":7,\"order_status\":8,\"store_id\":9,\"billing_address\":10,\"shipping_address\":11,\"customer_name\":12,\"customer_email\":13,\"customer_group_id\":14,\"payment_method\":15,\"shipping_information\":16,\"subtotal\":17,\"shipping_and_handling\":18,\"adjustment_positive\":19,\"adjustment_negative\":20,\"order_base_grand_total\":21,\"actions\":22}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(18, 1, 'sales_order_view_shipment_grid', 'current', 0, NULL, '{\"current\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"asc\"},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"shipping_name\":{\"visible\":true,\"sorting\":false},\"total_qty\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"order_status\":{\"visible\":false,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"shipping_name\":5,\"total_qty\":6,\"order_status\":7,\"store_id\":8,\"customer_name\":9,\"customer_email\":10,\"customer_group_id\":11,\"billing_address\":12,\"shipping_address\":13,\"payment_method\":14,\"shipping_information\":15,\"actions\":16}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(19, 1, 'sales_order_view_invoice_grid', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"asc\"},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"billing_name\":{\"visible\":true,\"sorting\":false},\"grand_total\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"subtotal\":{\"visible\":false,\"sorting\":false},\"shipping_and_handling\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"state\":{\"visible\":true,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"billing_name\":5,\"state\":6,\"grand_total\":7,\"store_id\":8,\"billing_address\":9,\"shipping_address\":10,\"customer_name\":11,\"customer_email\":12,\"customer_group_id\":13,\"payment_method\":14,\"shipping_information\":15,\"subtotal\":16,\"shipping_and_handling\":17,\"actions\":18}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00'),
+(20, 1, 'sales_order_view_shipment_grid', 'default', 1, 'Default View', '{\"views\":{\"default\":{\"label\":\"Default View\",\"index\":\"default\",\"editable\":false,\"data\":{\"search\":{\"value\":\"\"},\"filters\":{\"applied\":{\"placeholder\":true}},\"columns\":{\"increment_id\":{\"visible\":true,\"sorting\":\"asc\"},\"order_increment_id\":{\"visible\":true,\"sorting\":false},\"shipping_name\":{\"visible\":true,\"sorting\":false},\"total_qty\":{\"visible\":true,\"sorting\":false},\"store_id\":{\"visible\":false,\"sorting\":false},\"customer_name\":{\"visible\":false,\"sorting\":false},\"customer_email\":{\"visible\":false,\"sorting\":false},\"billing_address\":{\"visible\":false,\"sorting\":false},\"shipping_address\":{\"visible\":false,\"sorting\":false},\"shipping_information\":{\"visible\":false,\"sorting\":false},\"ids\":{\"visible\":true,\"sorting\":false},\"order_status\":{\"visible\":false,\"sorting\":false},\"customer_group_id\":{\"visible\":false,\"sorting\":false},\"payment_method\":{\"visible\":false,\"sorting\":false},\"actions\":{\"visible\":true,\"sorting\":false},\"created_at\":{\"visible\":true,\"sorting\":false},\"order_created_at\":{\"visible\":true,\"sorting\":false}},\"paging\":{\"options\":{\"20\":{\"value\":20,\"label\":20},\"30\":{\"value\":30,\"label\":30},\"50\":{\"value\":50,\"label\":50},\"100\":{\"value\":100,\"label\":100},\"200\":{\"value\":200,\"label\":200}},\"value\":20},\"positions\":{\"ids\":0,\"increment_id\":1,\"created_at\":2,\"order_increment_id\":3,\"order_created_at\":4,\"shipping_name\":5,\"total_qty\":6,\"order_status\":7,\"store_id\":8,\"customer_name\":9,\"customer_email\":10,\"customer_group_id\":11,\"billing_address\":12,\"shipping_address\":13,\"payment_method\":14,\"shipping_information\":15,\"actions\":16}},\"value\":\"Default View\"}}}', '1970-01-01 00:00:00', '1970-01-01 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -9622,8 +10403,9 @@ INSERT DELAYED IGNORE INTO `ui_bookmark` VALUES
 -- Table structure for table `url_rewrite`
 --
 
-CREATE TABLE `url_rewrite` (
-  `url_rewrite_id` int(10) UNSIGNED NOT NULL COMMENT 'Rewrite Id',
+DROP TABLE IF EXISTS `url_rewrite`;
+CREATE TABLE IF NOT EXISTS `url_rewrite` (
+  `url_rewrite_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rewrite Id',
   `entity_type` varchar(32) NOT NULL COMMENT 'Entity type code',
   `entity_id` int(10) UNSIGNED NOT NULL COMMENT 'Entity ID',
   `request_path` varchar(255) DEFAULT NULL COMMENT 'Request Path',
@@ -9632,29 +10414,50 @@ CREATE TABLE `url_rewrite` (
   `store_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Store Id',
   `description` varchar(255) DEFAULT NULL COMMENT 'Description',
   `is_autogenerated` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is rewrite generated automatically flag',
-  `metadata` varchar(255) DEFAULT NULL COMMENT 'Meta data for url rewrite'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Url Rewrites';
+  `metadata` varchar(255) DEFAULT NULL COMMENT 'Meta data for url rewrite',
+  PRIMARY KEY (`url_rewrite_id`),
+  UNIQUE KEY `URL_REWRITE_REQUEST_PATH_STORE_ID` (`request_path`,`store_id`),
+  KEY `URL_REWRITE_TARGET_PATH` (`target_path`),
+  KEY `URL_REWRITE_STORE_ID_ENTITY_ID` (`store_id`,`entity_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='Url Rewrites';
 
---
--- Truncate table before insert `url_rewrite`
---
-
-TRUNCATE TABLE `url_rewrite`;
 --
 -- Dumping data for table `url_rewrite`
 --
 
-INSERT DELAYED IGNORE INTO `url_rewrite` VALUES
+INSERT INTO `url_rewrite` (`url_rewrite_id`, `entity_type`, `entity_id`, `request_path`, `target_path`, `redirect_type`, `store_id`, `description`, `is_autogenerated`, `metadata`) VALUES
 (1, 'cms-page', 1, 'no-route', 'cms/page/view/page_id/1', 0, 1, NULL, 1, NULL),
 (2, 'cms-page', 2, 'home', 'cms/page/view/page_id/2', 0, 1, NULL, 1, NULL),
 (3, 'cms-page', 3, 'enable-cookies', 'cms/page/view/page_id/3', 0, 1, NULL, 1, NULL),
 (4, 'cms-page', 4, 'privacy-policy-cookie-restriction-mode', 'cms/page/view/page_id/4', 0, 1, NULL, 1, NULL),
-(5, 'category', 3, 'rauxanh.html', 'catalog/category/view/id/3', 0, 1, NULL, 1, NULL),
-(6, 'category', 4, 'traicay.html', 'catalog/category/view/id/4', 0, 1, NULL, 1, NULL),
-(7, 'category', 5, 'raugiavi.html', 'catalog/category/view/id/5', 0, 1, NULL, 1, NULL),
-(8, 'category', 6, 'hatgiong.html', 'catalog/category/view/id/6', 0, 1, NULL, 1, NULL),
-(9, 'category', 7, 'monngon.html', 'catalog/category/view/id/7', 0, 1, NULL, 1, NULL),
-(10, 'category', 8, 'rauxanh/raucai.html', 'catalog/category/view/id/8', 0, 1, NULL, 1, NULL);
+(5, 'category', 3, 'rau-xanh.html', 'catalog/category/view/id/3', 0, 1, NULL, 1, NULL),
+(6, 'category', 4, 'trai-cay.html', 'catalog/category/view/id/4', 0, 1, NULL, 1, NULL),
+(7, 'category', 5, 'rau-gia-vi.html', 'catalog/category/view/id/5', 0, 1, NULL, 1, NULL),
+(8, 'category', 6, 'hat-giong.html', 'catalog/category/view/id/6', 0, 1, NULL, 1, NULL),
+(9, 'category', 7, 'rau-xanh/rau-cai.html', 'catalog/category/view/id/7', 0, 1, NULL, 1, NULL),
+(10, 'category', 8, 'rau-xanh/rau-muong.html', 'catalog/category/view/id/8', 0, 1, NULL, 1, NULL),
+(11, 'product', 1, 'cai-bap.html', 'catalog/product/view/id/1', 0, 1, NULL, 1, NULL),
+(12, 'product', 1, 'rau-xanh/rau-cai/cai-bap.html', 'catalog/product/view/id/1/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(13, 'product', 2, 'ci-tim.html', 'catalog/product/view/id/2', 0, 1, NULL, 1, NULL),
+(14, 'product', 2, 'rau-xanh/rau-cai/ci-tim.html', 'catalog/product/view/id/2/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(17, 'product', 4, 'bo.html', 'catalog/product/view/id/4', 0, 1, NULL, 1, NULL),
+(18, 'product', 4, 'rau-xanh/rau-cai/bo.html', 'catalog/product/view/id/4/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(19, 'product', 3, 'chanh-da-lt.html', 'catalog/product/view/id/3', 0, 1, NULL, 1, NULL),
+(20, 'product', 3, 'rau-xanh/rau-cai/chanh-da-lt.html', 'catalog/product/view/id/3/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(21, 'product', 5, 'chui.html', 'catalog/product/view/id/5', 0, 1, NULL, 1, NULL),
+(22, 'product', 5, 'rau-xanh/rau-cai/chui.html', 'catalog/product/view/id/5/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(24, 'product', 6, 'tao.html', 'catalog/product/view/id/6', 0, 1, NULL, 1, NULL),
+(25, 'product', 6, 'rau-xanh/rau-cai/tao.html', 'catalog/product/view/id/6/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(26, 'product', 7, 'ca-chua.html', 'catalog/product/view/id/7', 0, 1, NULL, 1, NULL),
+(27, 'product', 7, 'rau-xanh/rau-cai/ca-chua.html', 'catalog/product/view/id/7/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(28, 'product', 8, 'khoai-tay.html', 'catalog/product/view/id/8', 0, 1, NULL, 1, NULL),
+(29, 'product', 8, 'rau-xanh/rau-cai/khoai-tay.html', 'catalog/product/view/id/8/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(30, 'product', 9, 'xa-lach.html', 'catalog/product/view/id/9', 0, 1, NULL, 1, NULL),
+(31, 'product', 9, 'rau-xanh/rau-cai/xa-lach.html', 'catalog/product/view/id/9/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(32, 'product', 10, 'dau-tay.html', 'catalog/product/view/id/10', 0, 1, NULL, 1, NULL),
+(33, 'product', 10, 'rau-xanh/rau-cai/dau-tay.html', 'catalog/product/view/id/10/category/7', 0, 1, NULL, 1, 'a:1:{s:11:\"category_id\";s:1:\"7\";}'),
+(34, 'category', 9, 'mon-ngon.html', 'catalog/category/view/id/9', 0, 1, NULL, 1, NULL),
+(35, 'category', 10, 'trai-cay/tao.html', 'catalog/category/view/id/10', 0, 1, NULL, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -9662,101 +10465,95 @@ INSERT DELAYED IGNORE INTO `url_rewrite` VALUES
 -- Table structure for table `variable`
 --
 
-CREATE TABLE `variable` (
-  `variable_id` int(10) UNSIGNED NOT NULL COMMENT 'Variable Id',
+DROP TABLE IF EXISTS `variable`;
+CREATE TABLE IF NOT EXISTS `variable` (
+  `variable_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Variable Id',
   `code` varchar(255) DEFAULT NULL COMMENT 'Variable Code',
-  `name` varchar(255) DEFAULT NULL COMMENT 'Variable Name'
+  `name` varchar(255) DEFAULT NULL COMMENT 'Variable Name',
+  PRIMARY KEY (`variable_id`),
+  UNIQUE KEY `VARIABLE_CODE` (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Variables';
 
---
--- Truncate table before insert `variable`
---
-
-TRUNCATE TABLE `variable`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `variable_value`
 --
 
-CREATE TABLE `variable_value` (
-  `value_id` int(10) UNSIGNED NOT NULL COMMENT 'Variable Value Id',
+DROP TABLE IF EXISTS `variable_value`;
+CREATE TABLE IF NOT EXISTS `variable_value` (
+  `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Variable Value Id',
   `variable_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Variable Id',
   `store_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Store Id',
   `plain_value` text COMMENT 'Plain Text Value',
-  `html_value` text COMMENT 'Html Value'
+  `html_value` text COMMENT 'Html Value',
+  PRIMARY KEY (`value_id`),
+  UNIQUE KEY `VARIABLE_VALUE_VARIABLE_ID_STORE_ID` (`variable_id`,`store_id`),
+  KEY `VARIABLE_VALUE_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Variable Value';
 
---
--- Truncate table before insert `variable_value`
---
-
-TRUNCATE TABLE `variable_value`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `weee_tax`
 --
 
-CREATE TABLE `weee_tax` (
-  `value_id` int(11) NOT NULL COMMENT 'Value Id',
+DROP TABLE IF EXISTS `weee_tax`;
+CREATE TABLE IF NOT EXISTS `weee_tax` (
+  `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id',
   `website_id` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Website Id',
   `entity_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Entity Id',
   `country` varchar(2) DEFAULT NULL COMMENT 'Country',
   `value` decimal(12,4) NOT NULL DEFAULT '0.0000' COMMENT 'Value',
   `state` int(11) NOT NULL DEFAULT '0' COMMENT 'State',
-  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id'
+  `attribute_id` smallint(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+  PRIMARY KEY (`value_id`),
+  KEY `WEEE_TAX_WEBSITE_ID` (`website_id`),
+  KEY `WEEE_TAX_ENTITY_ID` (`entity_id`),
+  KEY `WEEE_TAX_COUNTRY` (`country`),
+  KEY `WEEE_TAX_ATTRIBUTE_ID` (`attribute_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Weee Tax';
 
---
--- Truncate table before insert `weee_tax`
---
-
-TRUNCATE TABLE `weee_tax`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `widget`
 --
 
-CREATE TABLE `widget` (
-  `widget_id` int(10) UNSIGNED NOT NULL COMMENT 'Widget Id',
+DROP TABLE IF EXISTS `widget`;
+CREATE TABLE IF NOT EXISTS `widget` (
+  `widget_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Widget Id',
   `widget_code` varchar(255) DEFAULT NULL COMMENT 'Widget code for template directive',
   `widget_type` varchar(255) DEFAULT NULL COMMENT 'Widget Type',
-  `parameters` text COMMENT 'Parameters'
+  `parameters` text COMMENT 'Parameters',
+  PRIMARY KEY (`widget_id`),
+  KEY `WIDGET_WIDGET_CODE` (`widget_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Preconfigured Widgets';
 
---
--- Truncate table before insert `widget`
---
-
-TRUNCATE TABLE `widget`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `widget_instance`
 --
 
-CREATE TABLE `widget_instance` (
-  `instance_id` int(10) UNSIGNED NOT NULL COMMENT 'Instance Id',
+DROP TABLE IF EXISTS `widget_instance`;
+CREATE TABLE IF NOT EXISTS `widget_instance` (
+  `instance_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Instance Id',
   `instance_type` varchar(255) DEFAULT NULL COMMENT 'Instance Type',
   `theme_id` int(10) UNSIGNED NOT NULL COMMENT 'Theme id',
   `title` varchar(255) DEFAULT NULL COMMENT 'Widget Title',
   `store_ids` varchar(255) NOT NULL DEFAULT '0' COMMENT 'Store ids',
   `widget_parameters` text COMMENT 'Widget parameters',
-  `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort order'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Instances of Widget for Package Theme';
+  `sort_order` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort order',
+  PRIMARY KEY (`instance_id`),
+  KEY `WIDGET_INSTANCE_THEME_ID_THEME_THEME_ID` (`theme_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8 COMMENT='Instances of Widget for Package Theme';
 
---
--- Truncate table before insert `widget_instance`
---
-
-TRUNCATE TABLE `widget_instance`;
 --
 -- Dumping data for table `widget_instance`
 --
 
-INSERT DELAYED IGNORE INTO `widget_instance` VALUES
+INSERT INTO `widget_instance` (`instance_id`, `instance_type`, `theme_id`, `title`, `store_ids`, `widget_parameters`, `sort_order`) VALUES
 (1, 'Magento\\Cms\\Block\\Widget\\Block', 2, 'Contact us info', '0', 'a:1:{s:8:\"block_id\";s:1:\"2\";}', 0),
 (2, 'Magento\\Cms\\Block\\Widget\\Block', 2, 'Footer Links', '0', 'a:1:{s:8:\"block_id\";s:1:\"1\";}', 0),
 (3, 'Magento\\Cms\\Block\\Widget\\Block', 2, 'Sale Left Menu', '0', 'a:1:{s:8:\"block_id\";s:1:\"3\";}', 0),
@@ -9801,27 +10598,25 @@ INSERT DELAYED IGNORE INTO `widget_instance` VALUES
 -- Table structure for table `widget_instance_page`
 --
 
-CREATE TABLE `widget_instance_page` (
-  `page_id` int(10) UNSIGNED NOT NULL COMMENT 'Page Id',
+DROP TABLE IF EXISTS `widget_instance_page`;
+CREATE TABLE IF NOT EXISTS `widget_instance_page` (
+  `page_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Page Id',
   `instance_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Instance Id',
   `page_group` varchar(25) DEFAULT NULL COMMENT 'Block Group Type',
   `layout_handle` varchar(255) DEFAULT NULL COMMENT 'Layout Handle',
   `block_reference` varchar(255) DEFAULT NULL COMMENT 'Container',
   `page_for` varchar(25) DEFAULT NULL COMMENT 'For instance entities',
   `entities` text COMMENT 'Catalog entities (comma separated)',
-  `page_template` varchar(255) DEFAULT NULL COMMENT 'Path to widget template'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Instance of Widget on Page';
+  `page_template` varchar(255) DEFAULT NULL COMMENT 'Path to widget template',
+  PRIMARY KEY (`page_id`),
+  KEY `WIDGET_INSTANCE_PAGE_INSTANCE_ID` (`instance_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8 COMMENT='Instance of Widget on Page';
 
---
--- Truncate table before insert `widget_instance_page`
---
-
-TRUNCATE TABLE `widget_instance_page`;
 --
 -- Dumping data for table `widget_instance_page`
 --
 
-INSERT DELAYED IGNORE INTO `widget_instance_page` VALUES
+INSERT INTO `widget_instance_page` (`page_id`, `instance_id`, `page_group`, `layout_handle`, `block_reference`, `page_for`, `entities`, `page_template`) VALUES
 (1, 1, 'pages', 'contact_index_index', 'content.top', 'all', '', 'widget/static_block/default.phtml'),
 (2, 2, 'all_pages', 'default', 'cms_footer_links_container', 'all', '', 'widget/static_block/default.phtml'),
 (3, 3, 'anchor_categories', 'catalog_category_view_type_layered', 'sidebar.main', 'specific', '', 'widget/static_block/default.phtml'),
@@ -9867,21 +10662,19 @@ INSERT DELAYED IGNORE INTO `widget_instance_page` VALUES
 -- Table structure for table `widget_instance_page_layout`
 --
 
-CREATE TABLE `widget_instance_page_layout` (
+DROP TABLE IF EXISTS `widget_instance_page_layout`;
+CREATE TABLE IF NOT EXISTS `widget_instance_page_layout` (
   `page_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Page Id',
-  `layout_update_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Layout Update Id'
+  `layout_update_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Layout Update Id',
+  UNIQUE KEY `WIDGET_INSTANCE_PAGE_LAYOUT_LAYOUT_UPDATE_ID_PAGE_ID` (`layout_update_id`,`page_id`),
+  KEY `WIDGET_INSTANCE_PAGE_LAYOUT_PAGE_ID` (`page_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Layout updates';
 
---
--- Truncate table before insert `widget_instance_page_layout`
---
-
-TRUNCATE TABLE `widget_instance_page_layout`;
 --
 -- Dumping data for table `widget_instance_page_layout`
 --
 
-INSERT DELAYED IGNORE INTO `widget_instance_page_layout` VALUES
+INSERT INTO `widget_instance_page_layout` (`page_id`, `layout_update_id`) VALUES
 (1, 1),
 (2, 2),
 (3, 3),
@@ -9927,3674 +10720,108 @@ INSERT DELAYED IGNORE INTO `widget_instance_page_layout` VALUES
 -- Table structure for table `wishlist`
 --
 
-CREATE TABLE `wishlist` (
-  `wishlist_id` int(10) UNSIGNED NOT NULL COMMENT 'Wishlist ID',
+DROP TABLE IF EXISTS `wishlist`;
+CREATE TABLE IF NOT EXISTS `wishlist` (
+  `wishlist_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Wishlist ID',
   `customer_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Customer ID',
   `shared` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sharing flag (0 or 1)',
   `sharing_code` varchar(32) DEFAULT NULL COMMENT 'Sharing encrypted code',
-  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Last updated date'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Wishlist main Table';
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Last updated date',
+  PRIMARY KEY (`wishlist_id`),
+  UNIQUE KEY `WISHLIST_CUSTOMER_ID` (`customer_id`),
+  KEY `WISHLIST_SHARED` (`shared`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='Wishlist main Table';
 
 --
--- Truncate table before insert `wishlist`
+-- Dumping data for table `wishlist`
 --
 
-TRUNCATE TABLE `wishlist`;
+INSERT INTO `wishlist` (`wishlist_id`, `customer_id`, `shared`, `sharing_code`, `updated_at`) VALUES
+(1, 1, 0, '94c08695235291c0737d4d6f71bc538d', '2017-03-15 23:49:03'),
+(2, 2, 0, 'c008c49254f8e1ca36a77615d34a2bc4', '2017-03-16 21:38:54');
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `wishlist_item`
 --
 
-CREATE TABLE `wishlist_item` (
-  `wishlist_item_id` int(10) UNSIGNED NOT NULL COMMENT 'Wishlist item ID',
+DROP TABLE IF EXISTS `wishlist_item`;
+CREATE TABLE IF NOT EXISTS `wishlist_item` (
+  `wishlist_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Wishlist item ID',
   `wishlist_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Wishlist ID',
   `product_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Product ID',
   `store_id` smallint(5) UNSIGNED DEFAULT NULL COMMENT 'Store ID',
   `added_at` timestamp NULL DEFAULT NULL COMMENT 'Add date and time',
   `description` text COMMENT 'Short description of wish list item',
-  `qty` decimal(12,4) NOT NULL COMMENT 'Qty'
+  `qty` decimal(12,4) NOT NULL COMMENT 'Qty',
+  PRIMARY KEY (`wishlist_item_id`),
+  KEY `WISHLIST_ITEM_WISHLIST_ID` (`wishlist_id`),
+  KEY `WISHLIST_ITEM_PRODUCT_ID` (`product_id`),
+  KEY `WISHLIST_ITEM_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Wishlist items';
 
---
--- Truncate table before insert `wishlist_item`
---
-
-TRUNCATE TABLE `wishlist_item`;
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `wishlist_item_option`
 --
 
-CREATE TABLE `wishlist_item_option` (
-  `option_id` int(10) UNSIGNED NOT NULL COMMENT 'Option Id',
+DROP TABLE IF EXISTS `wishlist_item_option`;
+CREATE TABLE IF NOT EXISTS `wishlist_item_option` (
+  `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id',
   `wishlist_item_id` int(10) UNSIGNED NOT NULL COMMENT 'Wishlist Item Id',
   `product_id` int(10) UNSIGNED NOT NULL COMMENT 'Product Id',
   `code` varchar(255) NOT NULL COMMENT 'Code',
-  `value` text COMMENT 'Value'
+  `value` text COMMENT 'Value',
+  PRIMARY KEY (`option_id`),
+  KEY `FK_A014B30B04B72DD0EAB3EECD779728D6` (`wishlist_item_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Wishlist Item Option Table';
 
---
--- Truncate table before insert `wishlist_item_option`
---
-
-TRUNCATE TABLE `wishlist_item_option`;
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `adminnotification_inbox`
---
-ALTER TABLE `adminnotification_inbox`
-  ADD PRIMARY KEY (`notification_id`),
-  ADD KEY `ADMINNOTIFICATION_INBOX_SEVERITY` (`severity`),
-  ADD KEY `ADMINNOTIFICATION_INBOX_IS_READ` (`is_read`),
-  ADD KEY `ADMINNOTIFICATION_INBOX_IS_REMOVE` (`is_remove`);
-
---
--- Indexes for table `admin_passwords`
---
-ALTER TABLE `admin_passwords`
-  ADD PRIMARY KEY (`password_id`),
-  ADD KEY `ADMIN_PASSWORDS_USER_ID` (`user_id`);
-
---
--- Indexes for table `admin_system_messages`
---
-ALTER TABLE `admin_system_messages`
-  ADD PRIMARY KEY (`identity`);
-
---
--- Indexes for table `admin_user`
---
-ALTER TABLE `admin_user`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `ADMIN_USER_USERNAME` (`username`);
-
---
--- Indexes for table `authorization_role`
---
-ALTER TABLE `authorization_role`
-  ADD PRIMARY KEY (`role_id`),
-  ADD KEY `AUTHORIZATION_ROLE_PARENT_ID_SORT_ORDER` (`parent_id`,`sort_order`),
-  ADD KEY `AUTHORIZATION_ROLE_TREE_LEVEL` (`tree_level`);
-
---
--- Indexes for table `authorization_rule`
---
-ALTER TABLE `authorization_rule`
-  ADD PRIMARY KEY (`rule_id`),
-  ADD KEY `AUTHORIZATION_RULE_RESOURCE_ID_ROLE_ID` (`resource_id`,`role_id`),
-  ADD KEY `AUTHORIZATION_RULE_ROLE_ID_RESOURCE_ID` (`role_id`,`resource_id`);
-
---
--- Indexes for table `cache`
---
-ALTER TABLE `cache`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `CACHE_EXPIRE_TIME` (`expire_time`);
-
---
--- Indexes for table `cache_tag`
---
-ALTER TABLE `cache_tag`
-  ADD PRIMARY KEY (`tag`,`cache_id`),
-  ADD KEY `CACHE_TAG_CACHE_ID` (`cache_id`);
-
---
--- Indexes for table `captcha_log`
---
-ALTER TABLE `captcha_log`
-  ADD PRIMARY KEY (`type`,`value`);
-
---
--- Indexes for table `cataloginventory_stock`
---
-ALTER TABLE `cataloginventory_stock`
-  ADD PRIMARY KEY (`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `cataloginventory_stock_item`
---
-ALTER TABLE `cataloginventory_stock_item`
-  ADD PRIMARY KEY (`item_id`),
-  ADD UNIQUE KEY `CATALOGINVENTORY_STOCK_ITEM_PRODUCT_ID_WEBSITE_ID` (`product_id`,`website_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_ITEM_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_ITEM_STOCK_ID` (`stock_id`);
-
---
--- Indexes for table `cataloginventory_stock_status`
---
-ALTER TABLE `cataloginventory_stock_status`
-  ADD PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_STOCK_ID` (`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `cataloginventory_stock_status_idx`
---
-ALTER TABLE `cataloginventory_stock_status_idx`
-  ADD PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_IDX_STOCK_ID` (`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_IDX_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `cataloginventory_stock_status_tmp`
---
-ALTER TABLE `cataloginventory_stock_status_tmp`
-  ADD PRIMARY KEY (`product_id`,`website_id`,`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_TMP_STOCK_ID` (`stock_id`),
-  ADD KEY `CATALOGINVENTORY_STOCK_STATUS_TMP_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalogrule`
---
-ALTER TABLE `catalogrule`
-  ADD PRIMARY KEY (`rule_id`),
-  ADD KEY `CATALOGRULE_IS_ACTIVE_SORT_ORDER_TO_DATE_FROM_DATE` (`is_active`,`sort_order`,`to_date`,`from_date`);
-
---
--- Indexes for table `catalogrule_customer_group`
---
-ALTER TABLE `catalogrule_customer_group`
-  ADD PRIMARY KEY (`rule_id`,`customer_group_id`),
-  ADD KEY `CATALOGRULE_CUSTOMER_GROUP_CUSTOMER_GROUP_ID` (`customer_group_id`);
-
---
--- Indexes for table `catalogrule_group_website`
---
-ALTER TABLE `catalogrule_group_website`
-  ADD PRIMARY KEY (`rule_id`,`customer_group_id`,`website_id`),
-  ADD KEY `CATALOGRULE_GROUP_WEBSITE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOGRULE_GROUP_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalogrule_product`
---
-ALTER TABLE `catalogrule_product`
-  ADD PRIMARY KEY (`rule_product_id`),
-  ADD UNIQUE KEY `IDX_EAA51B56FF092A0DCB795D1CEF812B7B` (`rule_id`,`from_time`,`to_time`,`website_id`,`customer_group_id`,`product_id`,`sort_order`),
-  ADD KEY `CATALOGRULE_PRODUCT_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOGRULE_PRODUCT_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOGRULE_PRODUCT_FROM_TIME` (`from_time`),
-  ADD KEY `CATALOGRULE_PRODUCT_TO_TIME` (`to_time`),
-  ADD KEY `CATALOGRULE_PRODUCT_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `catalogrule_product_price`
---
-ALTER TABLE `catalogrule_product_price`
-  ADD PRIMARY KEY (`rule_product_price_id`),
-  ADD UNIQUE KEY `CATRULE_PRD_PRICE_RULE_DATE_WS_ID_CSTR_GROUP_ID_PRD_ID` (`rule_date`,`website_id`,`customer_group_id`,`product_id`),
-  ADD KEY `CATALOGRULE_PRODUCT_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOGRULE_PRODUCT_PRICE_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOGRULE_PRODUCT_PRICE_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `catalogrule_website`
---
-ALTER TABLE `catalogrule_website`
-  ADD PRIMARY KEY (`rule_id`,`website_id`),
-  ADD KEY `CATALOGRULE_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
 -- Indexes for table `catalogsearch_fulltext_scope1`
 --
-ALTER TABLE `catalogsearch_fulltext_scope1`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`);
 ALTER TABLE `catalogsearch_fulltext_scope1` ADD FULLTEXT KEY `FTI_FULLTEXT_DATA_INDEX` (`data_index`);
-
---
--- Indexes for table `catalog_category_entity`
---
-ALTER TABLE `catalog_category_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_LEVEL` (`level`);
-
---
--- Indexes for table `catalog_category_entity_datetime`
---
-ALTER TABLE `catalog_category_entity_datetime`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DATETIME_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_category_entity_decimal`
---
-ALTER TABLE `catalog_category_entity_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_DECIMAL_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_category_entity_int`
---
-ALTER TABLE `catalog_category_entity_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_CATEGORY_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_INT_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_INT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_category_entity_text`
---
-ALTER TABLE `catalog_category_entity_text`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_CATEGORY_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_TEXT_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_TEXT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_category_entity_varchar`
---
-ALTER TABLE `catalog_category_entity_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_CATEGORY_ENTITY_VARCHAR_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_category_product`
---
-ALTER TABLE `catalog_category_product`
-  ADD PRIMARY KEY (`category_id`,`product_id`),
-  ADD KEY `CATALOG_CATEGORY_PRODUCT_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `catalog_category_product_index`
---
-ALTER TABLE `catalog_category_product_index`
-  ADD PRIMARY KEY (`category_id`,`product_id`,`store_id`),
-  ADD KEY `CAT_CTGR_PRD_IDX_PRD_ID_STORE_ID_CTGR_ID_VISIBILITY` (`product_id`,`store_id`,`category_id`,`visibility`),
-  ADD KEY `CAT_CTGR_PRD_IDX_STORE_ID_CTGR_ID_VISIBILITY_IS_PARENT_POSITION` (`store_id`,`category_id`,`visibility`,`is_parent`,`position`);
-
---
--- Indexes for table `catalog_category_product_index_tmp`
---
-ALTER TABLE `catalog_category_product_index_tmp`
-  ADD KEY `CAT_CTGR_PRD_IDX_TMP_PRD_ID_CTGR_ID_STORE_ID` (`product_id`,`category_id`,`store_id`);
-
---
--- Indexes for table `catalog_compare_item`
---
-ALTER TABLE `catalog_compare_item`
-  ADD PRIMARY KEY (`catalog_compare_item_id`),
-  ADD KEY `CATALOG_COMPARE_ITEM_PRODUCT_ID` (`product_id`),
-  ADD KEY `CATALOG_COMPARE_ITEM_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
-  ADD KEY `CATALOG_COMPARE_ITEM_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
-  ADD KEY `CATALOG_COMPARE_ITEM_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_eav_attribute`
---
-ALTER TABLE `catalog_eav_attribute`
-  ADD PRIMARY KEY (`attribute_id`),
-  ADD KEY `CATALOG_EAV_ATTRIBUTE_USED_FOR_SORT_BY` (`used_for_sort_by`),
-  ADD KEY `CATALOG_EAV_ATTRIBUTE_USED_IN_PRODUCT_LISTING` (`used_in_product_listing`);
-
---
--- Indexes for table `catalog_product_bundle_option`
---
-ALTER TABLE `catalog_product_bundle_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_OPTION_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `catalog_product_bundle_option_value`
---
-ALTER TABLE `catalog_product_bundle_option_value`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_BUNDLE_OPTION_VALUE_OPTION_ID_STORE_ID` (`option_id`,`store_id`);
-
---
--- Indexes for table `catalog_product_bundle_price_index`
---
-ALTER TABLE `catalog_product_bundle_price_index`
-  ADD PRIMARY KEY (`entity_id`,`website_id`,`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_PRICE_INDEX_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_PRICE_INDEX_CUSTOMER_GROUP_ID` (`customer_group_id`);
-
---
--- Indexes for table `catalog_product_bundle_selection`
---
-ALTER TABLE `catalog_product_bundle_selection`
-  ADD PRIMARY KEY (`selection_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_OPTION_ID` (`option_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `catalog_product_bundle_selection_price`
---
-ALTER TABLE `catalog_product_bundle_selection_price`
-  ADD PRIMARY KEY (`selection_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_BUNDLE_SELECTION_PRICE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalog_product_bundle_stock_index`
---
-ALTER TABLE `catalog_product_bundle_stock_index`
-  ADD PRIMARY KEY (`entity_id`,`website_id`,`stock_id`,`option_id`);
-
---
--- Indexes for table `catalog_product_entity`
---
-ALTER TABLE `catalog_product_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_ATTRIBUTE_SET_ID` (`attribute_set_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_SKU` (`sku`);
-
---
--- Indexes for table `catalog_product_entity_datetime`
---
-ALTER TABLE `catalog_product_entity_datetime`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_DATETIME_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_entity_decimal`
---
-ALTER TABLE `catalog_product_entity_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `catalog_product_entity_gallery`
---
-ALTER TABLE `catalog_product_entity_gallery`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_GALLERY_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_GALLERY_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_entity_int`
---
-ALTER TABLE `catalog_product_entity_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_INT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_entity_media_gallery`
---
-ALTER TABLE `catalog_product_entity_media_gallery`
-  ADD PRIMARY KEY (`value_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `catalog_product_entity_media_gallery_value`
---
-ALTER TABLE `catalog_product_entity_media_gallery_value`
-  ADD PRIMARY KEY (`record_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_ENTITY_ID` (`entity_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_MEDIA_GALLERY_VALUE_VALUE_ID` (`value_id`);
-
---
--- Indexes for table `catalog_product_entity_media_gallery_value_to_entity`
---
-ALTER TABLE `catalog_product_entity_media_gallery_value_to_entity`
-  ADD UNIQUE KEY `CAT_PRD_ENTT_MDA_GLR_VAL_TO_ENTT_VAL_ID_ENTT_ID` (`value_id`,`entity_id`),
-  ADD KEY `CAT_PRD_ENTT_MDA_GLR_VAL_TO_ENTT_ENTT_ID_CAT_PRD_ENTT_ENTT_ID` (`entity_id`);
-
---
--- Indexes for table `catalog_product_entity_media_gallery_value_video`
---
-ALTER TABLE `catalog_product_entity_media_gallery_value_video`
-  ADD UNIQUE KEY `CAT_PRD_ENTT_MDA_GLR_VAL_VIDEO_VAL_ID_STORE_ID` (`value_id`,`store_id`),
-  ADD KEY `CAT_PRD_ENTT_MDA_GLR_VAL_VIDEO_STORE_ID_STORE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_entity_text`
---
-ALTER TABLE `catalog_product_entity_text`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_TEXT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_entity_tier_price`
---
-ALTER TABLE `catalog_product_entity_tier_price`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `UNQ_E8AB433B9ACB00343ABB312AD2FAB087` (`entity_id`,`all_groups`,`customer_group_id`,`qty`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_TIER_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_TIER_PRICE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalog_product_entity_varchar`
---
-ALTER TABLE `catalog_product_entity_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_ENTITY_VARCHAR_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_index_eav`
---
-ALTER TABLE `catalog_product_index_eav`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_eav_decimal`
---
-ALTER TABLE `catalog_product_index_eav_decimal`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_eav_decimal_idx`
---
-ALTER TABLE `catalog_product_index_eav_decimal_idx`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_IDX_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_eav_decimal_tmp`
---
-ALTER TABLE `catalog_product_index_eav_decimal_tmp`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_DECIMAL_TMP_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_eav_idx`
---
-ALTER TABLE `catalog_product_index_eav_idx`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_IDX_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_eav_tmp`
---
-ALTER TABLE `catalog_product_index_eav_tmp`
-  ADD PRIMARY KEY (`entity_id`,`attribute_id`,`store_id`,`value`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_STORE_ID` (`store_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_EAV_TMP_VALUE` (`value`);
-
---
--- Indexes for table `catalog_product_index_price`
---
-ALTER TABLE `catalog_product_index_price`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_MIN_PRICE` (`min_price`),
-  ADD KEY `CAT_PRD_IDX_PRICE_WS_ID_CSTR_GROUP_ID_MIN_PRICE` (`website_id`,`customer_group_id`,`min_price`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_idx`
---
-ALTER TABLE `catalog_product_index_price_bundle_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_opt_idx`
---
-ALTER TABLE `catalog_product_index_price_bundle_opt_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_opt_tmp`
---
-ALTER TABLE `catalog_product_index_price_bundle_opt_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_sel_idx`
---
-ALTER TABLE `catalog_product_index_price_bundle_sel_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`,`selection_id`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_sel_tmp`
---
-ALTER TABLE `catalog_product_index_price_bundle_sel_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`,`selection_id`);
-
---
--- Indexes for table `catalog_product_index_price_bundle_tmp`
---
-ALTER TABLE `catalog_product_index_price_bundle_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_cfg_opt_agr_idx`
---
-ALTER TABLE `catalog_product_index_price_cfg_opt_agr_idx`
-  ADD PRIMARY KEY (`parent_id`,`child_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_cfg_opt_agr_tmp`
---
-ALTER TABLE `catalog_product_index_price_cfg_opt_agr_tmp`
-  ADD PRIMARY KEY (`parent_id`,`child_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_cfg_opt_idx`
---
-ALTER TABLE `catalog_product_index_price_cfg_opt_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_cfg_opt_tmp`
---
-ALTER TABLE `catalog_product_index_price_cfg_opt_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_downlod_idx`
---
-ALTER TABLE `catalog_product_index_price_downlod_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_downlod_tmp`
---
-ALTER TABLE `catalog_product_index_price_downlod_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_final_idx`
---
-ALTER TABLE `catalog_product_index_price_final_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_final_tmp`
---
-ALTER TABLE `catalog_product_index_price_final_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_idx`
---
-ALTER TABLE `catalog_product_index_price_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_IDX_MIN_PRICE` (`min_price`);
-
---
--- Indexes for table `catalog_product_index_price_opt_agr_idx`
---
-ALTER TABLE `catalog_product_index_price_opt_agr_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`);
-
---
--- Indexes for table `catalog_product_index_price_opt_agr_tmp`
---
-ALTER TABLE `catalog_product_index_price_opt_agr_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`,`option_id`);
-
---
--- Indexes for table `catalog_product_index_price_opt_idx`
---
-ALTER TABLE `catalog_product_index_price_opt_idx`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_opt_tmp`
---
-ALTER TABLE `catalog_product_index_price_opt_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`);
-
---
--- Indexes for table `catalog_product_index_price_tmp`
---
-ALTER TABLE `catalog_product_index_price_tmp`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_WEBSITE_ID` (`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_PRICE_TMP_MIN_PRICE` (`min_price`);
-
---
--- Indexes for table `catalog_product_index_tier_price`
---
-ALTER TABLE `catalog_product_index_tier_price`
-  ADD PRIMARY KEY (`entity_id`,`customer_group_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_TIER_PRICE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_TIER_PRICE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalog_product_index_website`
---
-ALTER TABLE `catalog_product_index_website`
-  ADD PRIMARY KEY (`website_id`),
-  ADD KEY `CATALOG_PRODUCT_INDEX_WEBSITE_WEBSITE_DATE` (`website_date`);
-
---
--- Indexes for table `catalog_product_link`
---
-ALTER TABLE `catalog_product_link`
-  ADD PRIMARY KEY (`link_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_LINK_LINK_TYPE_ID_PRODUCT_ID_LINKED_PRODUCT_ID` (`link_type_id`,`product_id`,`linked_product_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_PRODUCT_ID` (`product_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_LINKED_PRODUCT_ID` (`linked_product_id`);
-
---
--- Indexes for table `catalog_product_link_attribute`
---
-ALTER TABLE `catalog_product_link_attribute`
-  ADD PRIMARY KEY (`product_link_attribute_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_LINK_TYPE_ID` (`link_type_id`);
-
---
--- Indexes for table `catalog_product_link_attribute_decimal`
---
-ALTER TABLE `catalog_product_link_attribute_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CAT_PRD_LNK_ATTR_DEC_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_DECIMAL_LINK_ID` (`link_id`);
-
---
--- Indexes for table `catalog_product_link_attribute_int`
---
-ALTER TABLE `catalog_product_link_attribute_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CAT_PRD_LNK_ATTR_INT_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_INT_LINK_ID` (`link_id`);
-
---
--- Indexes for table `catalog_product_link_attribute_varchar`
---
-ALTER TABLE `catalog_product_link_attribute_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CAT_PRD_LNK_ATTR_VCHR_PRD_LNK_ATTR_ID_LNK_ID` (`product_link_attribute_id`,`link_id`),
-  ADD KEY `CATALOG_PRODUCT_LINK_ATTRIBUTE_VARCHAR_LINK_ID` (`link_id`);
-
---
--- Indexes for table `catalog_product_link_type`
---
-ALTER TABLE `catalog_product_link_type`
-  ADD PRIMARY KEY (`link_type_id`);
-
---
--- Indexes for table `catalog_product_option`
---
-ALTER TABLE `catalog_product_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `catalog_product_option_price`
---
-ALTER TABLE `catalog_product_option_price`
-  ADD PRIMARY KEY (`option_price_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_OPTION_PRICE_OPTION_ID_STORE_ID` (`option_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_PRICE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_option_title`
---
-ALTER TABLE `catalog_product_option_title`
-  ADD PRIMARY KEY (`option_title_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_OPTION_TITLE_OPTION_ID_STORE_ID` (`option_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_option_type_price`
---
-ALTER TABLE `catalog_product_option_type_price`
-  ADD PRIMARY KEY (`option_type_price_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_OPTION_TYPE_ID_STORE_ID` (`option_type_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_TYPE_PRICE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_option_type_title`
---
-ALTER TABLE `catalog_product_option_type_title`
-  ADD PRIMARY KEY (`option_type_title_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_OPTION_TYPE_TITLE_OPTION_TYPE_ID_STORE_ID` (`option_type_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_TYPE_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_option_type_value`
---
-ALTER TABLE `catalog_product_option_type_value`
-  ADD PRIMARY KEY (`option_type_id`),
-  ADD KEY `CATALOG_PRODUCT_OPTION_TYPE_VALUE_OPTION_ID` (`option_id`);
-
---
--- Indexes for table `catalog_product_relation`
---
-ALTER TABLE `catalog_product_relation`
-  ADD PRIMARY KEY (`parent_id`,`child_id`),
-  ADD KEY `CATALOG_PRODUCT_RELATION_CHILD_ID` (`child_id`);
-
---
--- Indexes for table `catalog_product_super_attribute`
---
-ALTER TABLE `catalog_product_super_attribute`
-  ADD PRIMARY KEY (`product_super_attribute_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_SUPER_ATTRIBUTE_PRODUCT_ID_ATTRIBUTE_ID` (`product_id`,`attribute_id`);
-
---
--- Indexes for table `catalog_product_super_attribute_label`
---
-ALTER TABLE `catalog_product_super_attribute_label`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CAT_PRD_SPR_ATTR_LBL_PRD_SPR_ATTR_ID_STORE_ID` (`product_super_attribute_id`,`store_id`),
-  ADD KEY `CATALOG_PRODUCT_SUPER_ATTRIBUTE_LABEL_STORE_ID` (`store_id`);
-
---
--- Indexes for table `catalog_product_super_link`
---
-ALTER TABLE `catalog_product_super_link`
-  ADD PRIMARY KEY (`link_id`),
-  ADD UNIQUE KEY `CATALOG_PRODUCT_SUPER_LINK_PRODUCT_ID_PARENT_ID` (`product_id`,`parent_id`),
-  ADD KEY `CATALOG_PRODUCT_SUPER_LINK_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `catalog_product_website`
---
-ALTER TABLE `catalog_product_website`
-  ADD PRIMARY KEY (`product_id`,`website_id`),
-  ADD KEY `CATALOG_PRODUCT_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `catalog_url_rewrite_product_category`
---
-ALTER TABLE `catalog_url_rewrite_product_category`
-  ADD KEY `CATALOG_URL_REWRITE_PRODUCT_CATEGORY_CATEGORY_ID_PRODUCT_ID` (`category_id`,`product_id`),
-  ADD KEY `CAT_URL_REWRITE_PRD_CTGR_PRD_ID_CAT_PRD_ENTT_ENTT_ID` (`product_id`),
-  ADD KEY `FK_BB79E64705D7F17FE181F23144528FC8` (`url_rewrite_id`);
-
---
--- Indexes for table `checkout_agreement`
---
-ALTER TABLE `checkout_agreement`
-  ADD PRIMARY KEY (`agreement_id`);
-
---
--- Indexes for table `checkout_agreement_store`
---
-ALTER TABLE `checkout_agreement_store`
-  ADD PRIMARY KEY (`agreement_id`,`store_id`),
-  ADD KEY `CHECKOUT_AGREEMENT_STORE_STORE_ID_STORE_STORE_ID` (`store_id`);
 
 --
 -- Indexes for table `cms_block`
 --
-ALTER TABLE `cms_block`
-  ADD PRIMARY KEY (`block_id`);
 ALTER TABLE `cms_block` ADD FULLTEXT KEY `CMS_BLOCK_TITLE_IDENTIFIER_CONTENT` (`title`,`identifier`,`content`);
-
---
--- Indexes for table `cms_block_store`
---
-ALTER TABLE `cms_block_store`
-  ADD PRIMARY KEY (`block_id`,`store_id`),
-  ADD KEY `CMS_BLOCK_STORE_STORE_ID` (`store_id`);
 
 --
 -- Indexes for table `cms_page`
 --
-ALTER TABLE `cms_page`
-  ADD PRIMARY KEY (`page_id`),
-  ADD KEY `CMS_PAGE_IDENTIFIER` (`identifier`);
 ALTER TABLE `cms_page` ADD FULLTEXT KEY `CMS_PAGE_TITLE_META_KEYWORDS_META_DESCRIPTION_IDENTIFIER_CONTENT` (`title`,`meta_keywords`,`meta_description`,`identifier`,`content`);
-
---
--- Indexes for table `cms_page_store`
---
-ALTER TABLE `cms_page_store`
-  ADD PRIMARY KEY (`page_id`,`store_id`),
-  ADD KEY `CMS_PAGE_STORE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `core_config_data`
---
-ALTER TABLE `core_config_data`
-  ADD PRIMARY KEY (`config_id`),
-  ADD UNIQUE KEY `CORE_CONFIG_DATA_SCOPE_SCOPE_ID_PATH` (`scope`,`scope_id`,`path`);
-
---
--- Indexes for table `cron_schedule`
---
-ALTER TABLE `cron_schedule`
-  ADD PRIMARY KEY (`schedule_id`),
-  ADD KEY `CRON_SCHEDULE_JOB_CODE` (`job_code`),
-  ADD KEY `CRON_SCHEDULE_SCHEDULED_AT_STATUS` (`scheduled_at`,`status`);
-
---
--- Indexes for table `customer_address_entity`
---
-ALTER TABLE `customer_address_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `customer_address_entity_datetime`
---
-ALTER TABLE `customer_address_entity_datetime`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_address_entity_decimal`
---
-ALTER TABLE `customer_address_entity_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_address_entity_int`
---
-ALTER TABLE `customer_address_entity_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_address_entity_text`
---
-ALTER TABLE `customer_address_entity_text`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `customer_address_entity_varchar`
---
-ALTER TABLE `customer_address_entity_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ADDRESS_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_eav_attribute`
---
-ALTER TABLE `customer_eav_attribute`
-  ADD PRIMARY KEY (`attribute_id`);
-
---
--- Indexes for table `customer_eav_attribute_website`
---
-ALTER TABLE `customer_eav_attribute_website`
-  ADD PRIMARY KEY (`attribute_id`,`website_id`),
-  ADD KEY `CUSTOMER_EAV_ATTRIBUTE_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `customer_entity`
---
-ALTER TABLE `customer_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_EMAIL_WEBSITE_ID` (`email`,`website_id`),
-  ADD KEY `CUSTOMER_ENTITY_STORE_ID` (`store_id`),
-  ADD KEY `CUSTOMER_ENTITY_WEBSITE_ID` (`website_id`),
-  ADD KEY `CUSTOMER_ENTITY_FIRSTNAME` (`firstname`),
-  ADD KEY `CUSTOMER_ENTITY_LASTNAME` (`lastname`);
-
---
--- Indexes for table `customer_entity_datetime`
---
-ALTER TABLE `customer_entity_datetime`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_DATETIME_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_entity_decimal`
---
-ALTER TABLE `customer_entity_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_DECIMAL_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_entity_int`
---
-ALTER TABLE `customer_entity_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_INT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_entity_text`
---
-ALTER TABLE `customer_entity_text`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `customer_entity_varchar`
---
-ALTER TABLE `customer_entity_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `CUSTOMER_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID` (`entity_id`,`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `CUSTOMER_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_VALUE` (`entity_id`,`attribute_id`,`value`);
-
---
--- Indexes for table `customer_form_attribute`
---
-ALTER TABLE `customer_form_attribute`
-  ADD PRIMARY KEY (`form_code`,`attribute_id`),
-  ADD KEY `CUSTOMER_FORM_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`);
 
 --
 -- Indexes for table `customer_grid_flat`
 --
-ALTER TABLE `customer_grid_flat`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `CUSTOMER_GRID_FLAT_GROUP_ID` (`group_id`),
-  ADD KEY `CUSTOMER_GRID_FLAT_CREATED_AT` (`created_at`),
-  ADD KEY `CUSTOMER_GRID_FLAT_WEBSITE_ID` (`website_id`),
-  ADD KEY `CUSTOMER_GRID_FLAT_CONFIRMATION` (`confirmation`),
-  ADD KEY `CUSTOMER_GRID_FLAT_DOB` (`dob`),
-  ADD KEY `CUSTOMER_GRID_FLAT_GENDER` (`gender`),
-  ADD KEY `CUSTOMER_GRID_FLAT_LAST_VISIT_AT` (`last_visit_at`),
-  ADD KEY `CUSTOMER_GRID_FLAT_BILLING_COUNTRY_ID` (`billing_country_id`);
 ALTER TABLE `customer_grid_flat` ADD FULLTEXT KEY `FTI_B691CA777399890C71AC8A4CDFB8EA99` (`name`,`email`,`created_in`,`taxvat`,`billing_full`,`billing_firstname`,`billing_lastname`,`billing_telephone`,`billing_postcode`,`billing_region`,`billing_city`,`billing_fax`,`billing_company`,`shipping_full`);
-
---
--- Indexes for table `customer_group`
---
-ALTER TABLE `customer_group`
-  ADD PRIMARY KEY (`customer_group_id`);
-
---
--- Indexes for table `customer_log`
---
-ALTER TABLE `customer_log`
-  ADD PRIMARY KEY (`log_id`),
-  ADD UNIQUE KEY `CUSTOMER_LOG_CUSTOMER_ID` (`customer_id`);
-
---
--- Indexes for table `customer_visitor`
---
-ALTER TABLE `customer_visitor`
-  ADD PRIMARY KEY (`visitor_id`),
-  ADD KEY `CUSTOMER_VISITOR_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `CUSTOMER_VISITOR_LAST_VISIT_AT` (`last_visit_at`);
-
---
--- Indexes for table `design_change`
---
-ALTER TABLE `design_change`
-  ADD PRIMARY KEY (`design_change_id`),
-  ADD KEY `DESIGN_CHANGE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `directory_country`
---
-ALTER TABLE `directory_country`
-  ADD PRIMARY KEY (`country_id`);
-
---
--- Indexes for table `directory_country_format`
---
-ALTER TABLE `directory_country_format`
-  ADD PRIMARY KEY (`country_format_id`),
-  ADD UNIQUE KEY `DIRECTORY_COUNTRY_FORMAT_COUNTRY_ID_TYPE` (`country_id`,`type`);
-
---
--- Indexes for table `directory_country_region`
---
-ALTER TABLE `directory_country_region`
-  ADD PRIMARY KEY (`region_id`),
-  ADD KEY `DIRECTORY_COUNTRY_REGION_COUNTRY_ID` (`country_id`);
-
---
--- Indexes for table `directory_country_region_name`
---
-ALTER TABLE `directory_country_region_name`
-  ADD PRIMARY KEY (`locale`,`region_id`),
-  ADD KEY `DIRECTORY_COUNTRY_REGION_NAME_REGION_ID` (`region_id`);
-
---
--- Indexes for table `directory_currency_rate`
---
-ALTER TABLE `directory_currency_rate`
-  ADD PRIMARY KEY (`currency_from`,`currency_to`),
-  ADD KEY `DIRECTORY_CURRENCY_RATE_CURRENCY_TO` (`currency_to`);
-
---
--- Indexes for table `downloadable_link`
---
-ALTER TABLE `downloadable_link`
-  ADD PRIMARY KEY (`link_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PRODUCT_ID_SORT_ORDER` (`product_id`,`sort_order`);
-
---
--- Indexes for table `downloadable_link_price`
---
-ALTER TABLE `downloadable_link_price`
-  ADD PRIMARY KEY (`price_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PRICE_LINK_ID` (`link_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PRICE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `downloadable_link_purchased`
---
-ALTER TABLE `downloadable_link_purchased`
-  ADD PRIMARY KEY (`purchased_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_ORDER_ID` (`order_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_ORDER_ITEM_ID` (`order_item_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_CUSTOMER_ID` (`customer_id`);
-
---
--- Indexes for table `downloadable_link_purchased_item`
---
-ALTER TABLE `downloadable_link_purchased_item`
-  ADD PRIMARY KEY (`item_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_LINK_HASH` (`link_hash`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_ORDER_ITEM_ID` (`order_item_id`),
-  ADD KEY `DOWNLOADABLE_LINK_PURCHASED_ITEM_PURCHASED_ID` (`purchased_id`);
-
---
--- Indexes for table `downloadable_link_title`
---
-ALTER TABLE `downloadable_link_title`
-  ADD PRIMARY KEY (`title_id`),
-  ADD UNIQUE KEY `DOWNLOADABLE_LINK_TITLE_LINK_ID_STORE_ID` (`link_id`,`store_id`),
-  ADD KEY `DOWNLOADABLE_LINK_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `downloadable_sample`
---
-ALTER TABLE `downloadable_sample`
-  ADD PRIMARY KEY (`sample_id`),
-  ADD KEY `DOWNLOADABLE_SAMPLE_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `downloadable_sample_title`
---
-ALTER TABLE `downloadable_sample_title`
-  ADD PRIMARY KEY (`title_id`),
-  ADD UNIQUE KEY `DOWNLOADABLE_SAMPLE_TITLE_SAMPLE_ID_STORE_ID` (`sample_id`,`store_id`),
-  ADD KEY `DOWNLOADABLE_SAMPLE_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_attribute`
---
-ALTER TABLE `eav_attribute`
-  ADD PRIMARY KEY (`attribute_id`),
-  ADD UNIQUE KEY `EAV_ATTRIBUTE_ENTITY_TYPE_ID_ATTRIBUTE_CODE` (`entity_type_id`,`attribute_code`);
-
---
--- Indexes for table `eav_attribute_group`
---
-ALTER TABLE `eav_attribute_group`
-  ADD PRIMARY KEY (`attribute_group_id`),
-  ADD UNIQUE KEY `EAV_ATTRIBUTE_GROUP_ATTRIBUTE_SET_ID_ATTRIBUTE_GROUP_NAME` (`attribute_set_id`,`attribute_group_name`),
-  ADD KEY `EAV_ATTRIBUTE_GROUP_ATTRIBUTE_SET_ID_SORT_ORDER` (`attribute_set_id`,`sort_order`);
-
---
--- Indexes for table `eav_attribute_label`
---
-ALTER TABLE `eav_attribute_label`
-  ADD PRIMARY KEY (`attribute_label_id`),
-  ADD KEY `EAV_ATTRIBUTE_LABEL_STORE_ID` (`store_id`),
-  ADD KEY `EAV_ATTRIBUTE_LABEL_ATTRIBUTE_ID_STORE_ID` (`attribute_id`,`store_id`);
-
---
--- Indexes for table `eav_attribute_option`
---
-ALTER TABLE `eav_attribute_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `EAV_ATTRIBUTE_OPTION_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `eav_attribute_option_swatch`
---
-ALTER TABLE `eav_attribute_option_swatch`
-  ADD PRIMARY KEY (`swatch_id`),
-  ADD UNIQUE KEY `EAV_ATTRIBUTE_OPTION_SWATCH_STORE_ID_OPTION_ID` (`store_id`,`option_id`),
-  ADD KEY `EAV_ATTRIBUTE_OPTION_SWATCH_SWATCH_ID` (`swatch_id`),
-  ADD KEY `EAV_ATTR_OPT_SWATCH_OPT_ID_EAV_ATTR_OPT_OPT_ID` (`option_id`);
-
---
--- Indexes for table `eav_attribute_option_value`
---
-ALTER TABLE `eav_attribute_option_value`
-  ADD PRIMARY KEY (`value_id`),
-  ADD KEY `EAV_ATTRIBUTE_OPTION_VALUE_OPTION_ID` (`option_id`),
-  ADD KEY `EAV_ATTRIBUTE_OPTION_VALUE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_attribute_set`
---
-ALTER TABLE `eav_attribute_set`
-  ADD PRIMARY KEY (`attribute_set_id`),
-  ADD UNIQUE KEY `EAV_ATTRIBUTE_SET_ENTITY_TYPE_ID_ATTRIBUTE_SET_NAME` (`entity_type_id`,`attribute_set_name`),
-  ADD KEY `EAV_ATTRIBUTE_SET_ENTITY_TYPE_ID_SORT_ORDER` (`entity_type_id`,`sort_order`);
-
---
--- Indexes for table `eav_entity`
---
-ALTER TABLE `eav_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `EAV_ENTITY_ENTITY_TYPE_ID` (`entity_type_id`),
-  ADD KEY `EAV_ENTITY_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_entity_attribute`
---
-ALTER TABLE `eav_entity_attribute`
-  ADD PRIMARY KEY (`entity_attribute_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_SET_ID_ATTRIBUTE_ID` (`attribute_set_id`,`attribute_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_GROUP_ID_ATTRIBUTE_ID` (`attribute_group_id`,`attribute_id`),
-  ADD KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_SET_ID_SORT_ORDER` (`attribute_set_id`,`sort_order`),
-  ADD KEY `EAV_ENTITY_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `eav_entity_datetime`
---
-ALTER TABLE `eav_entity_datetime`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_DATETIME_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `EAV_ENTITY_DATETIME_STORE_ID` (`store_id`),
-  ADD KEY `EAV_ENTITY_DATETIME_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
-  ADD KEY `EAV_ENTITY_DATETIME_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`);
-
---
--- Indexes for table `eav_entity_decimal`
---
-ALTER TABLE `eav_entity_decimal`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_DECIMAL_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `EAV_ENTITY_DECIMAL_STORE_ID` (`store_id`),
-  ADD KEY `EAV_ENTITY_DECIMAL_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
-  ADD KEY `EAV_ENTITY_DECIMAL_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`);
-
---
--- Indexes for table `eav_entity_int`
---
-ALTER TABLE `eav_entity_int`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_INT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `EAV_ENTITY_INT_STORE_ID` (`store_id`),
-  ADD KEY `EAV_ENTITY_INT_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
-  ADD KEY `EAV_ENTITY_INT_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`);
-
---
--- Indexes for table `eav_entity_store`
---
-ALTER TABLE `eav_entity_store`
-  ADD PRIMARY KEY (`entity_store_id`),
-  ADD KEY `EAV_ENTITY_STORE_ENTITY_TYPE_ID` (`entity_type_id`),
-  ADD KEY `EAV_ENTITY_STORE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_entity_text`
---
-ALTER TABLE `eav_entity_text`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_TEXT_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `EAV_ENTITY_TEXT_ENTITY_TYPE_ID` (`entity_type_id`),
-  ADD KEY `EAV_ENTITY_TEXT_ATTRIBUTE_ID` (`attribute_id`),
-  ADD KEY `EAV_ENTITY_TEXT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_entity_type`
---
-ALTER TABLE `eav_entity_type`
-  ADD PRIMARY KEY (`entity_type_id`),
-  ADD KEY `EAV_ENTITY_TYPE_ENTITY_TYPE_CODE` (`entity_type_code`);
-
---
--- Indexes for table `eav_entity_varchar`
---
-ALTER TABLE `eav_entity_varchar`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `EAV_ENTITY_VARCHAR_ENTITY_ID_ATTRIBUTE_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  ADD KEY `EAV_ENTITY_VARCHAR_STORE_ID` (`store_id`),
-  ADD KEY `EAV_ENTITY_VARCHAR_ATTRIBUTE_ID_VALUE` (`attribute_id`,`value`),
-  ADD KEY `EAV_ENTITY_VARCHAR_ENTITY_TYPE_ID_VALUE` (`entity_type_id`,`value`);
-
---
--- Indexes for table `eav_form_element`
---
-ALTER TABLE `eav_form_element`
-  ADD PRIMARY KEY (`element_id`),
-  ADD UNIQUE KEY `EAV_FORM_ELEMENT_TYPE_ID_ATTRIBUTE_ID` (`type_id`,`attribute_id`),
-  ADD KEY `EAV_FORM_ELEMENT_FIELDSET_ID` (`fieldset_id`),
-  ADD KEY `EAV_FORM_ELEMENT_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `eav_form_fieldset`
---
-ALTER TABLE `eav_form_fieldset`
-  ADD PRIMARY KEY (`fieldset_id`),
-  ADD UNIQUE KEY `EAV_FORM_FIELDSET_TYPE_ID_CODE` (`type_id`,`code`);
-
---
--- Indexes for table `eav_form_fieldset_label`
---
-ALTER TABLE `eav_form_fieldset_label`
-  ADD PRIMARY KEY (`fieldset_id`,`store_id`),
-  ADD KEY `EAV_FORM_FIELDSET_LABEL_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_form_type`
---
-ALTER TABLE `eav_form_type`
-  ADD PRIMARY KEY (`type_id`),
-  ADD UNIQUE KEY `EAV_FORM_TYPE_CODE_THEME_STORE_ID` (`code`,`theme`,`store_id`),
-  ADD KEY `EAV_FORM_TYPE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `eav_form_type_entity`
---
-ALTER TABLE `eav_form_type_entity`
-  ADD PRIMARY KEY (`type_id`,`entity_type_id`),
-  ADD KEY `EAV_FORM_TYPE_ENTITY_ENTITY_TYPE_ID` (`entity_type_id`);
-
---
--- Indexes for table `email_template`
---
-ALTER TABLE `email_template`
-  ADD PRIMARY KEY (`template_id`),
-  ADD UNIQUE KEY `EMAIL_TEMPLATE_TEMPLATE_CODE` (`template_code`),
-  ADD KEY `EMAIL_TEMPLATE_ADDED_AT` (`added_at`),
-  ADD KEY `EMAIL_TEMPLATE_MODIFIED_AT` (`modified_at`);
-
---
--- Indexes for table `emthemes_config_data`
---
-ALTER TABLE `emthemes_config_data`
-  ADD PRIMARY KEY (`config_id`),
-  ADD UNIQUE KEY `EMTHEMES_CONFIG_DATA_SCOPE_SCOPE_ID_PATH_THEME_ID` (`scope`,`scope_id`,`path`,`theme_id`);
-
---
--- Indexes for table `flag`
---
-ALTER TABLE `flag`
-  ADD PRIMARY KEY (`flag_id`),
-  ADD KEY `FLAG_LAST_UPDATE` (`last_update`);
-
---
--- Indexes for table `gift_message`
---
-ALTER TABLE `gift_message`
-  ADD PRIMARY KEY (`gift_message_id`);
-
---
--- Indexes for table `googleoptimizer_code`
---
-ALTER TABLE `googleoptimizer_code`
-  ADD PRIMARY KEY (`code_id`),
-  ADD UNIQUE KEY `GOOGLEOPTIMIZER_CODE_STORE_ID_ENTITY_ID_ENTITY_TYPE` (`store_id`,`entity_id`,`entity_type`);
-
---
--- Indexes for table `importexport_importdata`
---
-ALTER TABLE `importexport_importdata`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `import_history`
---
-ALTER TABLE `import_history`
-  ADD PRIMARY KEY (`history_id`);
-
---
--- Indexes for table `indexer_state`
---
-ALTER TABLE `indexer_state`
-  ADD PRIMARY KEY (`state_id`),
-  ADD KEY `INDEXER_STATE_INDEXER_ID` (`indexer_id`);
-
---
--- Indexes for table `integration`
---
-ALTER TABLE `integration`
-  ADD PRIMARY KEY (`integration_id`),
-  ADD UNIQUE KEY `INTEGRATION_NAME` (`name`),
-  ADD UNIQUE KEY `INTEGRATION_CONSUMER_ID` (`consumer_id`);
-
---
--- Indexes for table `layout_link`
---
-ALTER TABLE `layout_link`
-  ADD PRIMARY KEY (`layout_link_id`),
-  ADD KEY `LAYOUT_LINK_LAYOUT_UPDATE_ID` (`layout_update_id`),
-  ADD KEY `LAYOUT_LINK_STORE_ID_THEME_ID_LAYOUT_UPDATE_ID_IS_TEMPORARY` (`store_id`,`theme_id`,`layout_update_id`,`is_temporary`),
-  ADD KEY `LAYOUT_LINK_THEME_ID_THEME_THEME_ID` (`theme_id`);
-
---
--- Indexes for table `layout_update`
---
-ALTER TABLE `layout_update`
-  ADD PRIMARY KEY (`layout_update_id`),
-  ADD KEY `LAYOUT_UPDATE_HANDLE` (`handle`);
-
---
--- Indexes for table `mview_state`
---
-ALTER TABLE `mview_state`
-  ADD PRIMARY KEY (`state_id`),
-  ADD KEY `MVIEW_STATE_VIEW_ID` (`view_id`),
-  ADD KEY `MVIEW_STATE_MODE` (`mode`);
-
---
--- Indexes for table `newsletter_problem`
---
-ALTER TABLE `newsletter_problem`
-  ADD PRIMARY KEY (`problem_id`),
-  ADD KEY `NEWSLETTER_PROBLEM_SUBSCRIBER_ID` (`subscriber_id`),
-  ADD KEY `NEWSLETTER_PROBLEM_QUEUE_ID` (`queue_id`);
-
---
--- Indexes for table `newsletter_queue`
---
-ALTER TABLE `newsletter_queue`
-  ADD PRIMARY KEY (`queue_id`),
-  ADD KEY `NEWSLETTER_QUEUE_TEMPLATE_ID` (`template_id`);
-
---
--- Indexes for table `newsletter_queue_link`
---
-ALTER TABLE `newsletter_queue_link`
-  ADD PRIMARY KEY (`queue_link_id`),
-  ADD KEY `NEWSLETTER_QUEUE_LINK_SUBSCRIBER_ID` (`subscriber_id`),
-  ADD KEY `NEWSLETTER_QUEUE_LINK_QUEUE_ID_LETTER_SENT_AT` (`queue_id`,`letter_sent_at`);
-
---
--- Indexes for table `newsletter_queue_store_link`
---
-ALTER TABLE `newsletter_queue_store_link`
-  ADD PRIMARY KEY (`queue_id`,`store_id`),
-  ADD KEY `NEWSLETTER_QUEUE_STORE_LINK_STORE_ID` (`store_id`);
-
---
--- Indexes for table `newsletter_subscriber`
---
-ALTER TABLE `newsletter_subscriber`
-  ADD PRIMARY KEY (`subscriber_id`),
-  ADD KEY `NEWSLETTER_SUBSCRIBER_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `NEWSLETTER_SUBSCRIBER_STORE_ID` (`store_id`);
-
---
--- Indexes for table `newsletter_template`
---
-ALTER TABLE `newsletter_template`
-  ADD PRIMARY KEY (`template_id`),
-  ADD KEY `NEWSLETTER_TEMPLATE_TEMPLATE_ACTUAL` (`template_actual`),
-  ADD KEY `NEWSLETTER_TEMPLATE_ADDED_AT` (`added_at`),
-  ADD KEY `NEWSLETTER_TEMPLATE_MODIFIED_AT` (`modified_at`);
-
---
--- Indexes for table `oauth_consumer`
---
-ALTER TABLE `oauth_consumer`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `OAUTH_CONSUMER_KEY` (`key`),
-  ADD UNIQUE KEY `OAUTH_CONSUMER_SECRET` (`secret`),
-  ADD KEY `OAUTH_CONSUMER_CREATED_AT` (`created_at`),
-  ADD KEY `OAUTH_CONSUMER_UPDATED_AT` (`updated_at`);
-
---
--- Indexes for table `oauth_nonce`
---
-ALTER TABLE `oauth_nonce`
-  ADD UNIQUE KEY `OAUTH_NONCE_NONCE_CONSUMER_ID` (`nonce`,`consumer_id`),
-  ADD KEY `OAUTH_NONCE_CONSUMER_ID_OAUTH_CONSUMER_ENTITY_ID` (`consumer_id`);
-
---
--- Indexes for table `oauth_token`
---
-ALTER TABLE `oauth_token`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `OAUTH_TOKEN_TOKEN` (`token`),
-  ADD KEY `OAUTH_TOKEN_CONSUMER_ID` (`consumer_id`),
-  ADD KEY `OAUTH_TOKEN_ADMIN_ID_ADMIN_USER_USER_ID` (`admin_id`),
-  ADD KEY `OAUTH_TOKEN_CUSTOMER_ID_CUSTOMER_ENTITY_ENTITY_ID` (`customer_id`);
-
---
--- Indexes for table `oauth_token_request_log`
---
-ALTER TABLE `oauth_token_request_log`
-  ADD PRIMARY KEY (`log_id`),
-  ADD UNIQUE KEY `OAUTH_TOKEN_REQUEST_LOG_USER_NAME_USER_TYPE` (`user_name`,`user_type`);
-
---
--- Indexes for table `paypal_billing_agreement`
---
-ALTER TABLE `paypal_billing_agreement`
-  ADD PRIMARY KEY (`agreement_id`),
-  ADD KEY `PAYPAL_BILLING_AGREEMENT_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `PAYPAL_BILLING_AGREEMENT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `paypal_billing_agreement_order`
---
-ALTER TABLE `paypal_billing_agreement_order`
-  ADD PRIMARY KEY (`agreement_id`,`order_id`),
-  ADD KEY `PAYPAL_BILLING_AGREEMENT_ORDER_ORDER_ID` (`order_id`);
-
---
--- Indexes for table `paypal_cert`
---
-ALTER TABLE `paypal_cert`
-  ADD PRIMARY KEY (`cert_id`),
-  ADD KEY `PAYPAL_CERT_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `paypal_payment_transaction`
---
-ALTER TABLE `paypal_payment_transaction`
-  ADD PRIMARY KEY (`transaction_id`),
-  ADD UNIQUE KEY `PAYPAL_PAYMENT_TRANSACTION_TXN_ID` (`txn_id`);
-
---
--- Indexes for table `paypal_settlement_report`
---
-ALTER TABLE `paypal_settlement_report`
-  ADD PRIMARY KEY (`report_id`),
-  ADD UNIQUE KEY `PAYPAL_SETTLEMENT_REPORT_REPORT_DATE_ACCOUNT_ID` (`report_date`,`account_id`);
-
---
--- Indexes for table `paypal_settlement_report_row`
---
-ALTER TABLE `paypal_settlement_report_row`
-  ADD PRIMARY KEY (`row_id`),
-  ADD KEY `PAYPAL_SETTLEMENT_REPORT_ROW_REPORT_ID` (`report_id`);
-
---
--- Indexes for table `persistent_session`
---
-ALTER TABLE `persistent_session`
-  ADD PRIMARY KEY (`persistent_id`),
-  ADD UNIQUE KEY `PERSISTENT_SESSION_KEY` (`key`),
-  ADD UNIQUE KEY `PERSISTENT_SESSION_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `PERSISTENT_SESSION_UPDATED_AT` (`updated_at`),
-  ADD KEY `PERSISTENT_SESSION_WEBSITE_ID_STORE_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `product_alert_price`
---
-ALTER TABLE `product_alert_price`
-  ADD PRIMARY KEY (`alert_price_id`),
-  ADD KEY `PRODUCT_ALERT_PRICE_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `PRODUCT_ALERT_PRICE_PRODUCT_ID` (`product_id`),
-  ADD KEY `PRODUCT_ALERT_PRICE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `product_alert_stock`
---
-ALTER TABLE `product_alert_stock`
-  ADD PRIMARY KEY (`alert_stock_id`),
-  ADD KEY `PRODUCT_ALERT_STOCK_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `PRODUCT_ALERT_STOCK_PRODUCT_ID` (`product_id`),
-  ADD KEY `PRODUCT_ALERT_STOCK_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `quote`
---
-ALTER TABLE `quote`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `QUOTE_CUSTOMER_ID_STORE_ID_IS_ACTIVE` (`customer_id`,`store_id`,`is_active`),
-  ADD KEY `QUOTE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `quote_address`
---
-ALTER TABLE `quote_address`
-  ADD PRIMARY KEY (`address_id`),
-  ADD KEY `QUOTE_ADDRESS_QUOTE_ID` (`quote_id`);
-
---
--- Indexes for table `quote_address_item`
---
-ALTER TABLE `quote_address_item`
-  ADD PRIMARY KEY (`address_item_id`),
-  ADD KEY `QUOTE_ADDRESS_ITEM_QUOTE_ADDRESS_ID` (`quote_address_id`),
-  ADD KEY `QUOTE_ADDRESS_ITEM_PARENT_ITEM_ID` (`parent_item_id`),
-  ADD KEY `QUOTE_ADDRESS_ITEM_QUOTE_ITEM_ID` (`quote_item_id`);
-
---
--- Indexes for table `quote_id_mask`
---
-ALTER TABLE `quote_id_mask`
-  ADD PRIMARY KEY (`entity_id`,`quote_id`),
-  ADD KEY `QUOTE_ID_MASK_QUOTE_ID` (`quote_id`),
-  ADD KEY `QUOTE_ID_MASK_MASKED_ID` (`masked_id`);
-
---
--- Indexes for table `quote_item`
---
-ALTER TABLE `quote_item`
-  ADD PRIMARY KEY (`item_id`),
-  ADD KEY `QUOTE_ITEM_PARENT_ITEM_ID` (`parent_item_id`),
-  ADD KEY `QUOTE_ITEM_PRODUCT_ID` (`product_id`),
-  ADD KEY `QUOTE_ITEM_QUOTE_ID` (`quote_id`),
-  ADD KEY `QUOTE_ITEM_STORE_ID` (`store_id`);
-
---
--- Indexes for table `quote_item_option`
---
-ALTER TABLE `quote_item_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `QUOTE_ITEM_OPTION_ITEM_ID` (`item_id`);
-
---
--- Indexes for table `quote_payment`
---
-ALTER TABLE `quote_payment`
-  ADD PRIMARY KEY (`payment_id`),
-  ADD KEY `QUOTE_PAYMENT_QUOTE_ID` (`quote_id`);
-
---
--- Indexes for table `quote_shipping_rate`
---
-ALTER TABLE `quote_shipping_rate`
-  ADD PRIMARY KEY (`rate_id`),
-  ADD KEY `QUOTE_SHIPPING_RATE_ADDRESS_ID` (`address_id`);
-
---
--- Indexes for table `rating`
---
-ALTER TABLE `rating`
-  ADD PRIMARY KEY (`rating_id`),
-  ADD UNIQUE KEY `RATING_RATING_CODE` (`rating_code`),
-  ADD KEY `RATING_ENTITY_ID` (`entity_id`);
-
---
--- Indexes for table `rating_entity`
---
-ALTER TABLE `rating_entity`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `RATING_ENTITY_ENTITY_CODE` (`entity_code`);
-
---
--- Indexes for table `rating_option`
---
-ALTER TABLE `rating_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `RATING_OPTION_RATING_ID` (`rating_id`);
-
---
--- Indexes for table `rating_option_vote`
---
-ALTER TABLE `rating_option_vote`
-  ADD PRIMARY KEY (`vote_id`),
-  ADD KEY `RATING_OPTION_VOTE_OPTION_ID` (`option_id`),
-  ADD KEY `RATING_OPTION_VOTE_REVIEW_ID_REVIEW_REVIEW_ID` (`review_id`);
-
---
--- Indexes for table `rating_option_vote_aggregated`
---
-ALTER TABLE `rating_option_vote_aggregated`
-  ADD PRIMARY KEY (`primary_id`),
-  ADD KEY `RATING_OPTION_VOTE_AGGREGATED_RATING_ID` (`rating_id`),
-  ADD KEY `RATING_OPTION_VOTE_AGGREGATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `rating_store`
---
-ALTER TABLE `rating_store`
-  ADD PRIMARY KEY (`rating_id`,`store_id`),
-  ADD KEY `RATING_STORE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `rating_title`
---
-ALTER TABLE `rating_title`
-  ADD PRIMARY KEY (`rating_id`,`store_id`),
-  ADD KEY `RATING_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `reporting_counts`
---
-ALTER TABLE `reporting_counts`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `reporting_module_status`
---
-ALTER TABLE `reporting_module_status`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `reporting_orders`
---
-ALTER TABLE `reporting_orders`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `reporting_system_updates`
---
-ALTER TABLE `reporting_system_updates`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `reporting_users`
---
-ALTER TABLE `reporting_users`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `report_compared_product_index`
---
-ALTER TABLE `report_compared_product_index`
-  ADD PRIMARY KEY (`index_id`),
-  ADD UNIQUE KEY `REPORT_COMPARED_PRODUCT_INDEX_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
-  ADD UNIQUE KEY `REPORT_COMPARED_PRODUCT_INDEX_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
-  ADD KEY `REPORT_COMPARED_PRODUCT_INDEX_STORE_ID` (`store_id`),
-  ADD KEY `REPORT_COMPARED_PRODUCT_INDEX_ADDED_AT` (`added_at`),
-  ADD KEY `REPORT_COMPARED_PRODUCT_INDEX_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `report_event`
---
-ALTER TABLE `report_event`
-  ADD PRIMARY KEY (`event_id`),
-  ADD KEY `REPORT_EVENT_EVENT_TYPE_ID` (`event_type_id`),
-  ADD KEY `REPORT_EVENT_SUBJECT_ID` (`subject_id`),
-  ADD KEY `REPORT_EVENT_OBJECT_ID` (`object_id`),
-  ADD KEY `REPORT_EVENT_SUBTYPE` (`subtype`),
-  ADD KEY `REPORT_EVENT_STORE_ID` (`store_id`);
-
---
--- Indexes for table `report_event_types`
---
-ALTER TABLE `report_event_types`
-  ADD PRIMARY KEY (`event_type_id`);
-
---
--- Indexes for table `report_viewed_product_aggregated_daily`
---
-ALTER TABLE `report_viewed_product_aggregated_daily`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_DAILY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_DAILY_STORE_ID` (`store_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_DAILY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `report_viewed_product_aggregated_monthly`
---
-ALTER TABLE `report_viewed_product_aggregated_monthly`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_MONTHLY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_MONTHLY_STORE_ID` (`store_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_MONTHLY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `report_viewed_product_aggregated_yearly`
---
-ALTER TABLE `report_viewed_product_aggregated_yearly`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `REPORT_VIEWED_PRD_AGGRED_YEARLY_PERIOD_STORE_ID_PRD_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_YEARLY_STORE_ID` (`store_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_AGGREGATED_YEARLY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `report_viewed_product_index`
---
-ALTER TABLE `report_viewed_product_index`
-  ADD PRIMARY KEY (`index_id`),
-  ADD UNIQUE KEY `REPORT_VIEWED_PRODUCT_INDEX_VISITOR_ID_PRODUCT_ID` (`visitor_id`,`product_id`),
-  ADD UNIQUE KEY `REPORT_VIEWED_PRODUCT_INDEX_CUSTOMER_ID_PRODUCT_ID` (`customer_id`,`product_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_INDEX_STORE_ID` (`store_id`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_INDEX_ADDED_AT` (`added_at`),
-  ADD KEY `REPORT_VIEWED_PRODUCT_INDEX_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `review`
---
-ALTER TABLE `review`
-  ADD PRIMARY KEY (`review_id`),
-  ADD KEY `REVIEW_ENTITY_ID` (`entity_id`),
-  ADD KEY `REVIEW_STATUS_ID` (`status_id`),
-  ADD KEY `REVIEW_ENTITY_PK_VALUE` (`entity_pk_value`);
-
---
--- Indexes for table `review_detail`
---
-ALTER TABLE `review_detail`
-  ADD PRIMARY KEY (`detail_id`),
-  ADD KEY `REVIEW_DETAIL_REVIEW_ID` (`review_id`),
-  ADD KEY `REVIEW_DETAIL_STORE_ID` (`store_id`),
-  ADD KEY `REVIEW_DETAIL_CUSTOMER_ID` (`customer_id`);
-
---
--- Indexes for table `review_entity`
---
-ALTER TABLE `review_entity`
-  ADD PRIMARY KEY (`entity_id`);
-
---
--- Indexes for table `review_entity_summary`
---
-ALTER TABLE `review_entity_summary`
-  ADD PRIMARY KEY (`primary_id`),
-  ADD KEY `REVIEW_ENTITY_SUMMARY_STORE_ID` (`store_id`);
-
---
--- Indexes for table `review_status`
---
-ALTER TABLE `review_status`
-  ADD PRIMARY KEY (`status_id`);
-
---
--- Indexes for table `review_store`
---
-ALTER TABLE `review_store`
-  ADD PRIMARY KEY (`review_id`,`store_id`),
-  ADD KEY `REVIEW_STORE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `salesrule`
---
-ALTER TABLE `salesrule`
-  ADD PRIMARY KEY (`rule_id`),
-  ADD KEY `SALESRULE_IS_ACTIVE_SORT_ORDER_TO_DATE_FROM_DATE` (`is_active`,`sort_order`,`to_date`,`from_date`);
-
---
--- Indexes for table `salesrule_coupon`
---
-ALTER TABLE `salesrule_coupon`
-  ADD PRIMARY KEY (`coupon_id`),
-  ADD UNIQUE KEY `SALESRULE_COUPON_CODE` (`code`),
-  ADD UNIQUE KEY `SALESRULE_COUPON_RULE_ID_IS_PRIMARY` (`rule_id`,`is_primary`),
-  ADD KEY `SALESRULE_COUPON_RULE_ID` (`rule_id`);
-
---
--- Indexes for table `salesrule_coupon_aggregated`
---
-ALTER TABLE `salesrule_coupon_aggregated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALESRULE_COUPON_AGGRED_PERIOD_STORE_ID_ORDER_STS_COUPON_CODE` (`period`,`store_id`,`order_status`,`coupon_code`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_STORE_ID` (`store_id`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_RULE_NAME` (`rule_name`);
-
---
--- Indexes for table `salesrule_coupon_aggregated_order`
---
-ALTER TABLE `salesrule_coupon_aggregated_order`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNQ_1094D1FBBCBB11704A29DEF3ACC37D2B` (`period`,`store_id`,`order_status`,`coupon_code`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_ORDER_STORE_ID` (`store_id`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_ORDER_RULE_NAME` (`rule_name`);
-
---
--- Indexes for table `salesrule_coupon_aggregated_updated`
---
-ALTER TABLE `salesrule_coupon_aggregated_updated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNQ_7196FA120A4F0F84E1B66605E87E213E` (`period`,`store_id`,`order_status`,`coupon_code`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_UPDATED_STORE_ID` (`store_id`),
-  ADD KEY `SALESRULE_COUPON_AGGREGATED_UPDATED_RULE_NAME` (`rule_name`);
-
---
--- Indexes for table `salesrule_coupon_usage`
---
-ALTER TABLE `salesrule_coupon_usage`
-  ADD PRIMARY KEY (`coupon_id`,`customer_id`),
-  ADD KEY `SALESRULE_COUPON_USAGE_CUSTOMER_ID` (`customer_id`);
-
---
--- Indexes for table `salesrule_customer`
---
-ALTER TABLE `salesrule_customer`
-  ADD PRIMARY KEY (`rule_customer_id`),
-  ADD KEY `SALESRULE_CUSTOMER_RULE_ID_CUSTOMER_ID` (`rule_id`,`customer_id`),
-  ADD KEY `SALESRULE_CUSTOMER_CUSTOMER_ID_RULE_ID` (`customer_id`,`rule_id`);
-
---
--- Indexes for table `salesrule_customer_group`
---
-ALTER TABLE `salesrule_customer_group`
-  ADD PRIMARY KEY (`rule_id`,`customer_group_id`),
-  ADD KEY `SALESRULE_CUSTOMER_GROUP_CUSTOMER_GROUP_ID` (`customer_group_id`);
-
---
--- Indexes for table `salesrule_label`
---
-ALTER TABLE `salesrule_label`
-  ADD PRIMARY KEY (`label_id`),
-  ADD UNIQUE KEY `SALESRULE_LABEL_RULE_ID_STORE_ID` (`rule_id`,`store_id`),
-  ADD KEY `SALESRULE_LABEL_STORE_ID` (`store_id`);
-
---
--- Indexes for table `salesrule_product_attribute`
---
-ALTER TABLE `salesrule_product_attribute`
-  ADD PRIMARY KEY (`rule_id`,`website_id`,`customer_group_id`,`attribute_id`),
-  ADD KEY `SALESRULE_PRODUCT_ATTRIBUTE_WEBSITE_ID` (`website_id`),
-  ADD KEY `SALESRULE_PRODUCT_ATTRIBUTE_CUSTOMER_GROUP_ID` (`customer_group_id`),
-  ADD KEY `SALESRULE_PRODUCT_ATTRIBUTE_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `salesrule_website`
---
-ALTER TABLE `salesrule_website`
-  ADD PRIMARY KEY (`rule_id`,`website_id`),
-  ADD KEY `SALESRULE_WEBSITE_WEBSITE_ID` (`website_id`);
-
---
--- Indexes for table `sales_bestsellers_aggregated_daily`
---
-ALTER TABLE `sales_bestsellers_aggregated_daily`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_STORE_ID` (`store_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_DAILY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `sales_bestsellers_aggregated_monthly`
---
-ALTER TABLE `sales_bestsellers_aggregated_monthly`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_STORE_ID` (`store_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_MONTHLY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `sales_bestsellers_aggregated_yearly`
---
-ALTER TABLE `sales_bestsellers_aggregated_yearly`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_PERIOD_STORE_ID_PRODUCT_ID` (`period`,`store_id`,`product_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_STORE_ID` (`store_id`),
-  ADD KEY `SALES_BESTSELLERS_AGGREGATED_YEARLY_PRODUCT_ID` (`product_id`);
-
---
--- Indexes for table `sales_creditmemo`
---
-ALTER TABLE `sales_creditmemo`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_CREDITMEMO_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_CREDITMEMO_STORE_ID` (`store_id`),
-  ADD KEY `SALES_CREDITMEMO_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_CREDITMEMO_CREDITMEMO_STATUS` (`creditmemo_status`),
-  ADD KEY `SALES_CREDITMEMO_STATE` (`state`),
-  ADD KEY `SALES_CREDITMEMO_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_CREDITMEMO_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_CREDITMEMO_SEND_EMAIL` (`send_email`),
-  ADD KEY `SALES_CREDITMEMO_EMAIL_SENT` (`email_sent`);
-
---
--- Indexes for table `sales_creditmemo_comment`
---
-ALTER TABLE `sales_creditmemo_comment`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_CREDITMEMO_COMMENT_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_CREDITMEMO_COMMENT_PARENT_ID` (`parent_id`);
 
 --
 -- Indexes for table `sales_creditmemo_grid`
 --
-ALTER TABLE `sales_creditmemo_grid`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_CREDITMEMO_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_CREDITMEMO_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
-  ADD KEY `SALES_CREDITMEMO_GRID_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_CREDITMEMO_GRID_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_CREDITMEMO_GRID_ORDER_CREATED_AT` (`order_created_at`),
-  ADD KEY `SALES_CREDITMEMO_GRID_STATE` (`state`),
-  ADD KEY `SALES_CREDITMEMO_GRID_BILLING_NAME` (`billing_name`),
-  ADD KEY `SALES_CREDITMEMO_GRID_ORDER_STATUS` (`order_status`),
-  ADD KEY `SALES_CREDITMEMO_GRID_BASE_GRAND_TOTAL` (`base_grand_total`),
-  ADD KEY `SALES_CREDITMEMO_GRID_STORE_ID` (`store_id`),
-  ADD KEY `SALES_CREDITMEMO_GRID_ORDER_BASE_GRAND_TOTAL` (`order_base_grand_total`),
-  ADD KEY `SALES_CREDITMEMO_GRID_ORDER_ID` (`order_id`);
 ALTER TABLE `sales_creditmemo_grid` ADD FULLTEXT KEY `FTI_32B7BA885941A8254EE84AE650ABDC86` (`increment_id`,`order_increment_id`,`billing_name`,`billing_address`,`shipping_address`,`customer_name`,`customer_email`);
-
---
--- Indexes for table `sales_creditmemo_item`
---
-ALTER TABLE `sales_creditmemo_item`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_CREDITMEMO_ITEM_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `sales_invoice`
---
-ALTER TABLE `sales_invoice`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_INVOICE_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_INVOICE_STORE_ID` (`store_id`),
-  ADD KEY `SALES_INVOICE_GRAND_TOTAL` (`grand_total`),
-  ADD KEY `SALES_INVOICE_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_INVOICE_STATE` (`state`),
-  ADD KEY `SALES_INVOICE_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_INVOICE_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_INVOICE_SEND_EMAIL` (`send_email`),
-  ADD KEY `SALES_INVOICE_EMAIL_SENT` (`email_sent`);
-
---
--- Indexes for table `sales_invoiced_aggregated`
---
-ALTER TABLE `sales_invoiced_aggregated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_INVOICED_AGGREGATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_INVOICED_AGGREGATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_invoiced_aggregated_order`
---
-ALTER TABLE `sales_invoiced_aggregated_order`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_INVOICED_AGGREGATED_ORDER_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_INVOICED_AGGREGATED_ORDER_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_invoice_comment`
---
-ALTER TABLE `sales_invoice_comment`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_INVOICE_COMMENT_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_INVOICE_COMMENT_PARENT_ID` (`parent_id`);
 
 --
 -- Indexes for table `sales_invoice_grid`
 --
-ALTER TABLE `sales_invoice_grid`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_INVOICE_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_INVOICE_GRID_STORE_ID` (`store_id`),
-  ADD KEY `SALES_INVOICE_GRID_GRAND_TOTAL` (`grand_total`),
-  ADD KEY `SALES_INVOICE_GRID_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_INVOICE_GRID_STATE` (`state`),
-  ADD KEY `SALES_INVOICE_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
-  ADD KEY `SALES_INVOICE_GRID_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_INVOICE_GRID_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_INVOICE_GRID_ORDER_CREATED_AT` (`order_created_at`),
-  ADD KEY `SALES_INVOICE_GRID_BILLING_NAME` (`billing_name`);
 ALTER TABLE `sales_invoice_grid` ADD FULLTEXT KEY `FTI_95D9C924DD6A8734EB8B5D01D60F90DE` (`increment_id`,`order_increment_id`,`billing_name`,`billing_address`,`shipping_address`,`customer_name`,`customer_email`);
-
---
--- Indexes for table `sales_invoice_item`
---
-ALTER TABLE `sales_invoice_item`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_INVOICE_ITEM_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `sales_order`
---
-ALTER TABLE `sales_order`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_ORDER_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_ORDER_STATUS` (`status`),
-  ADD KEY `SALES_ORDER_STATE` (`state`),
-  ADD KEY `SALES_ORDER_STORE_ID` (`store_id`),
-  ADD KEY `SALES_ORDER_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_ORDER_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `SALES_ORDER_EXT_ORDER_ID` (`ext_order_id`),
-  ADD KEY `SALES_ORDER_QUOTE_ID` (`quote_id`),
-  ADD KEY `SALES_ORDER_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_ORDER_SEND_EMAIL` (`send_email`),
-  ADD KEY `SALES_ORDER_EMAIL_SENT` (`email_sent`);
-
---
--- Indexes for table `sales_order_address`
---
-ALTER TABLE `sales_order_address`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_ORDER_ADDRESS_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `sales_order_aggregated_created`
---
-ALTER TABLE `sales_order_aggregated_created`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_ORDER_AGGREGATED_CREATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_ORDER_AGGREGATED_CREATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_order_aggregated_updated`
---
-ALTER TABLE `sales_order_aggregated_updated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_ORDER_AGGREGATED_UPDATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_ORDER_AGGREGATED_UPDATED_STORE_ID` (`store_id`);
 
 --
 -- Indexes for table `sales_order_grid`
 --
-ALTER TABLE `sales_order_grid`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_ORDER_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_ORDER_GRID_STATUS` (`status`),
-  ADD KEY `SALES_ORDER_GRID_STORE_ID` (`store_id`),
-  ADD KEY `SALES_ORDER_GRID_BASE_GRAND_TOTAL` (`base_grand_total`),
-  ADD KEY `SALES_ORDER_GRID_BASE_TOTAL_PAID` (`base_total_paid`),
-  ADD KEY `SALES_ORDER_GRID_GRAND_TOTAL` (`grand_total`),
-  ADD KEY `SALES_ORDER_GRID_TOTAL_PAID` (`total_paid`),
-  ADD KEY `SALES_ORDER_GRID_SHIPPING_NAME` (`shipping_name`),
-  ADD KEY `SALES_ORDER_GRID_BILLING_NAME` (`billing_name`),
-  ADD KEY `SALES_ORDER_GRID_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_ORDER_GRID_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `SALES_ORDER_GRID_UPDATED_AT` (`updated_at`);
 ALTER TABLE `sales_order_grid` ADD FULLTEXT KEY `FTI_65B9E9925EC58F0C7C2E2F6379C233E7` (`increment_id`,`billing_name`,`shipping_name`,`shipping_address`,`billing_address`,`customer_name`,`customer_email`);
-
---
--- Indexes for table `sales_order_item`
---
-ALTER TABLE `sales_order_item`
-  ADD PRIMARY KEY (`item_id`),
-  ADD KEY `SALES_ORDER_ITEM_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_ORDER_ITEM_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_order_payment`
---
-ALTER TABLE `sales_order_payment`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_ORDER_PAYMENT_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `sales_order_status`
---
-ALTER TABLE `sales_order_status`
-  ADD PRIMARY KEY (`status`);
-
---
--- Indexes for table `sales_order_status_history`
---
-ALTER TABLE `sales_order_status_history`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_ORDER_STATUS_HISTORY_PARENT_ID` (`parent_id`),
-  ADD KEY `SALES_ORDER_STATUS_HISTORY_CREATED_AT` (`created_at`);
-
---
--- Indexes for table `sales_order_status_label`
---
-ALTER TABLE `sales_order_status_label`
-  ADD PRIMARY KEY (`status`,`store_id`),
-  ADD KEY `SALES_ORDER_STATUS_LABEL_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_order_status_state`
---
-ALTER TABLE `sales_order_status_state`
-  ADD PRIMARY KEY (`status`,`state`);
-
---
--- Indexes for table `sales_order_tax`
---
-ALTER TABLE `sales_order_tax`
-  ADD PRIMARY KEY (`tax_id`),
-  ADD KEY `SALES_ORDER_TAX_ORDER_ID_PRIORITY_POSITION` (`order_id`,`priority`,`position`);
-
---
--- Indexes for table `sales_order_tax_item`
---
-ALTER TABLE `sales_order_tax_item`
-  ADD PRIMARY KEY (`tax_item_id`),
-  ADD UNIQUE KEY `SALES_ORDER_TAX_ITEM_TAX_ID_ITEM_ID` (`tax_id`,`item_id`),
-  ADD KEY `SALES_ORDER_TAX_ITEM_ITEM_ID` (`item_id`),
-  ADD KEY `SALES_ORDER_TAX_ITEM_ASSOCIATED_ITEM_ID_SALES_ORDER_ITEM_ITEM_ID` (`associated_item_id`);
-
---
--- Indexes for table `sales_payment_transaction`
---
-ALTER TABLE `sales_payment_transaction`
-  ADD PRIMARY KEY (`transaction_id`),
-  ADD UNIQUE KEY `SALES_PAYMENT_TRANSACTION_ORDER_ID_PAYMENT_ID_TXN_ID` (`order_id`,`payment_id`,`txn_id`),
-  ADD KEY `SALES_PAYMENT_TRANSACTION_PARENT_ID` (`parent_id`),
-  ADD KEY `SALES_PAYMENT_TRANSACTION_PAYMENT_ID` (`payment_id`);
-
---
--- Indexes for table `sales_refunded_aggregated`
---
-ALTER TABLE `sales_refunded_aggregated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_REFUNDED_AGGREGATED_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_REFUNDED_AGGREGATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_refunded_aggregated_order`
---
-ALTER TABLE `sales_refunded_aggregated_order`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_REFUNDED_AGGREGATED_ORDER_PERIOD_STORE_ID_ORDER_STATUS` (`period`,`store_id`,`order_status`),
-  ADD KEY `SALES_REFUNDED_AGGREGATED_ORDER_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_sequence_meta`
---
-ALTER TABLE `sales_sequence_meta`
-  ADD PRIMARY KEY (`meta_id`),
-  ADD UNIQUE KEY `SALES_SEQUENCE_META_ENTITY_TYPE_STORE_ID` (`entity_type`,`store_id`);
-
---
--- Indexes for table `sales_sequence_profile`
---
-ALTER TABLE `sales_sequence_profile`
-  ADD PRIMARY KEY (`profile_id`),
-  ADD UNIQUE KEY `SALES_SEQUENCE_PROFILE_META_ID_PREFIX_SUFFIX` (`meta_id`,`prefix`,`suffix`);
-
---
--- Indexes for table `sales_shipment`
---
-ALTER TABLE `sales_shipment`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_SHIPMENT_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_SHIPMENT_STORE_ID` (`store_id`),
-  ADD KEY `SALES_SHIPMENT_TOTAL_QTY` (`total_qty`),
-  ADD KEY `SALES_SHIPMENT_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_SHIPMENT_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_SHIPMENT_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_SHIPMENT_SEND_EMAIL` (`send_email`),
-  ADD KEY `SALES_SHIPMENT_EMAIL_SENT` (`email_sent`);
-
---
--- Indexes for table `sales_shipment_comment`
---
-ALTER TABLE `sales_shipment_comment`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_SHIPMENT_COMMENT_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_SHIPMENT_COMMENT_PARENT_ID` (`parent_id`);
 
 --
 -- Indexes for table `sales_shipment_grid`
 --
-ALTER TABLE `sales_shipment_grid`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD UNIQUE KEY `SALES_SHIPMENT_GRID_INCREMENT_ID_STORE_ID` (`increment_id`,`store_id`),
-  ADD KEY `SALES_SHIPMENT_GRID_STORE_ID` (`store_id`),
-  ADD KEY `SALES_SHIPMENT_GRID_TOTAL_QTY` (`total_qty`),
-  ADD KEY `SALES_SHIPMENT_GRID_ORDER_INCREMENT_ID` (`order_increment_id`),
-  ADD KEY `SALES_SHIPMENT_GRID_SHIPMENT_STATUS` (`shipment_status`),
-  ADD KEY `SALES_SHIPMENT_GRID_ORDER_STATUS` (`order_status`),
-  ADD KEY `SALES_SHIPMENT_GRID_CREATED_AT` (`created_at`),
-  ADD KEY `SALES_SHIPMENT_GRID_UPDATED_AT` (`updated_at`),
-  ADD KEY `SALES_SHIPMENT_GRID_ORDER_CREATED_AT` (`order_created_at`),
-  ADD KEY `SALES_SHIPMENT_GRID_SHIPPING_NAME` (`shipping_name`),
-  ADD KEY `SALES_SHIPMENT_GRID_BILLING_NAME` (`billing_name`);
 ALTER TABLE `sales_shipment_grid` ADD FULLTEXT KEY `FTI_086B40C8955F167B8EA76653437879B4` (`increment_id`,`order_increment_id`,`shipping_name`,`customer_name`,`customer_email`,`billing_address`,`shipping_address`);
 
---
--- Indexes for table `sales_shipment_item`
---
-ALTER TABLE `sales_shipment_item`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_SHIPMENT_ITEM_PARENT_ID` (`parent_id`);
-
---
--- Indexes for table `sales_shipment_track`
---
-ALTER TABLE `sales_shipment_track`
-  ADD PRIMARY KEY (`entity_id`),
-  ADD KEY `SALES_SHIPMENT_TRACK_PARENT_ID` (`parent_id`),
-  ADD KEY `SALES_SHIPMENT_TRACK_ORDER_ID` (`order_id`),
-  ADD KEY `SALES_SHIPMENT_TRACK_CREATED_AT` (`created_at`);
-
---
--- Indexes for table `sales_shipping_aggregated`
---
-ALTER TABLE `sales_shipping_aggregated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `SALES_SHPP_AGGRED_PERIOD_STORE_ID_ORDER_STS_SHPP_DESCRIPTION` (`period`,`store_id`,`order_status`,`shipping_description`),
-  ADD KEY `SALES_SHIPPING_AGGREGATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `sales_shipping_aggregated_order`
---
-ALTER TABLE `sales_shipping_aggregated_order`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UNQ_C05FAE47282EEA68654D0924E946761F` (`period`,`store_id`,`order_status`,`shipping_description`),
-  ADD KEY `SALES_SHIPPING_AGGREGATED_ORDER_STORE_ID` (`store_id`);
-
---
--- Indexes for table `search_query`
---
-ALTER TABLE `search_query`
-  ADD PRIMARY KEY (`query_id`),
-  ADD UNIQUE KEY `SEARCH_QUERY_QUERY_TEXT_STORE_ID` (`query_text`,`store_id`),
-  ADD KEY `SEARCH_QUERY_QUERY_TEXT_STORE_ID_POPULARITY` (`query_text`,`store_id`,`popularity`),
-  ADD KEY `SEARCH_QUERY_STORE_ID` (`store_id`),
-  ADD KEY `SEARCH_QUERY_IS_PROCESSED` (`is_processed`),
-  ADD KEY `SEARCH_QUERY_SYNONYM_FOR` (`synonym_for`);
-
---
--- Indexes for table `sendfriend_log`
---
-ALTER TABLE `sendfriend_log`
-  ADD PRIMARY KEY (`log_id`),
-  ADD KEY `SENDFRIEND_LOG_IP` (`ip`),
-  ADD KEY `SENDFRIEND_LOG_TIME` (`time`);
-
---
--- Indexes for table `sequence_creditmemo_0`
---
-ALTER TABLE `sequence_creditmemo_0`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_creditmemo_1`
---
-ALTER TABLE `sequence_creditmemo_1`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_invoice_0`
---
-ALTER TABLE `sequence_invoice_0`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_invoice_1`
---
-ALTER TABLE `sequence_invoice_1`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_order_0`
---
-ALTER TABLE `sequence_order_0`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_order_1`
---
-ALTER TABLE `sequence_order_1`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_shipment_0`
---
-ALTER TABLE `sequence_shipment_0`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `sequence_shipment_1`
---
-ALTER TABLE `sequence_shipment_1`
-  ADD PRIMARY KEY (`sequence_value`);
-
---
--- Indexes for table `session`
---
-ALTER TABLE `session`
-  ADD PRIMARY KEY (`session_id`);
-
---
--- Indexes for table `setup_module`
---
-ALTER TABLE `setup_module`
-  ADD PRIMARY KEY (`module`);
-
---
--- Indexes for table `shipping_tablerate`
---
-ALTER TABLE `shipping_tablerate`
-  ADD PRIMARY KEY (`pk`),
-  ADD UNIQUE KEY `UNQ_D60821CDB2AFACEE1566CFC02D0D4CAA` (`website_id`,`dest_country_id`,`dest_region_id`,`dest_zip`,`condition_name`,`condition_value`);
-
---
--- Indexes for table `sitemap`
---
-ALTER TABLE `sitemap`
-  ADD PRIMARY KEY (`sitemap_id`),
-  ADD KEY `SITEMAP_STORE_ID` (`store_id`);
-
---
--- Indexes for table `store`
---
-ALTER TABLE `store`
-  ADD PRIMARY KEY (`store_id`),
-  ADD UNIQUE KEY `STORE_CODE` (`code`),
-  ADD KEY `STORE_WEBSITE_ID` (`website_id`),
-  ADD KEY `STORE_IS_ACTIVE_SORT_ORDER` (`is_active`,`sort_order`),
-  ADD KEY `STORE_GROUP_ID` (`group_id`);
-
---
--- Indexes for table `store_group`
---
-ALTER TABLE `store_group`
-  ADD PRIMARY KEY (`group_id`),
-  ADD KEY `STORE_GROUP_WEBSITE_ID` (`website_id`),
-  ADD KEY `STORE_GROUP_DEFAULT_STORE_ID` (`default_store_id`);
-
---
--- Indexes for table `store_website`
---
-ALTER TABLE `store_website`
-  ADD PRIMARY KEY (`website_id`),
-  ADD UNIQUE KEY `STORE_WEBSITE_CODE` (`code`),
-  ADD KEY `STORE_WEBSITE_SORT_ORDER` (`sort_order`),
-  ADD KEY `STORE_WEBSITE_DEFAULT_GROUP_ID` (`default_group_id`);
-
---
--- Indexes for table `tax_calculation`
---
-ALTER TABLE `tax_calculation`
-  ADD PRIMARY KEY (`tax_calculation_id`),
-  ADD KEY `TAX_CALCULATION_TAX_CALCULATION_RULE_ID` (`tax_calculation_rule_id`),
-  ADD KEY `TAX_CALCULATION_CUSTOMER_TAX_CLASS_ID` (`customer_tax_class_id`),
-  ADD KEY `TAX_CALCULATION_PRODUCT_TAX_CLASS_ID` (`product_tax_class_id`),
-  ADD KEY `TAX_CALC_TAX_CALC_RATE_ID_CSTR_TAX_CLASS_ID_PRD_TAX_CLASS_ID` (`tax_calculation_rate_id`,`customer_tax_class_id`,`product_tax_class_id`);
-
---
--- Indexes for table `tax_calculation_rate`
---
-ALTER TABLE `tax_calculation_rate`
-  ADD PRIMARY KEY (`tax_calculation_rate_id`),
-  ADD KEY `TAX_CALCULATION_RATE_TAX_COUNTRY_ID_TAX_REGION_ID_TAX_POSTCODE` (`tax_country_id`,`tax_region_id`,`tax_postcode`),
-  ADD KEY `TAX_CALCULATION_RATE_CODE` (`code`),
-  ADD KEY `IDX_CA799F1E2CB843495F601E56C84A626D` (`tax_calculation_rate_id`,`tax_country_id`,`tax_region_id`,`zip_is_range`,`tax_postcode`);
-
---
--- Indexes for table `tax_calculation_rate_title`
---
-ALTER TABLE `tax_calculation_rate_title`
-  ADD PRIMARY KEY (`tax_calculation_rate_title_id`),
-  ADD KEY `TAX_CALCULATION_RATE_TITLE_TAX_CALCULATION_RATE_ID_STORE_ID` (`tax_calculation_rate_id`,`store_id`),
-  ADD KEY `TAX_CALCULATION_RATE_TITLE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `tax_calculation_rule`
---
-ALTER TABLE `tax_calculation_rule`
-  ADD PRIMARY KEY (`tax_calculation_rule_id`),
-  ADD KEY `TAX_CALCULATION_RULE_PRIORITY_POSITION` (`priority`,`position`),
-  ADD KEY `TAX_CALCULATION_RULE_CODE` (`code`);
-
---
--- Indexes for table `tax_class`
---
-ALTER TABLE `tax_class`
-  ADD PRIMARY KEY (`class_id`);
-
---
--- Indexes for table `tax_order_aggregated_created`
---
-ALTER TABLE `tax_order_aggregated_created`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `TAX_ORDER_AGGRED_CREATED_PERIOD_STORE_ID_CODE_PERCENT_ORDER_STS` (`period`,`store_id`,`code`,`percent`,`order_status`),
-  ADD KEY `TAX_ORDER_AGGREGATED_CREATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `tax_order_aggregated_updated`
---
-ALTER TABLE `tax_order_aggregated_updated`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `TAX_ORDER_AGGRED_UPDATED_PERIOD_STORE_ID_CODE_PERCENT_ORDER_STS` (`period`,`store_id`,`code`,`percent`,`order_status`),
-  ADD KEY `TAX_ORDER_AGGREGATED_UPDATED_STORE_ID` (`store_id`);
-
---
--- Indexes for table `theme`
---
-ALTER TABLE `theme`
-  ADD PRIMARY KEY (`theme_id`);
-
---
--- Indexes for table `theme_file`
---
-ALTER TABLE `theme_file`
-  ADD PRIMARY KEY (`theme_files_id`),
-  ADD KEY `THEME_FILE_THEME_ID_THEME_THEME_ID` (`theme_id`);
-
---
--- Indexes for table `translation`
---
-ALTER TABLE `translation`
-  ADD PRIMARY KEY (`key_id`),
-  ADD UNIQUE KEY `TRANSLATION_STORE_ID_LOCALE_CRC_STRING_STRING` (`store_id`,`locale`,`crc_string`,`string`);
-
---
--- Indexes for table `ui_bookmark`
---
-ALTER TABLE `ui_bookmark`
-  ADD PRIMARY KEY (`bookmark_id`),
-  ADD KEY `UI_BOOKMARK_USER_ID_NAMESPACE_IDENTIFIER` (`user_id`,`namespace`,`identifier`);
-
---
--- Indexes for table `url_rewrite`
---
-ALTER TABLE `url_rewrite`
-  ADD PRIMARY KEY (`url_rewrite_id`),
-  ADD UNIQUE KEY `URL_REWRITE_REQUEST_PATH_STORE_ID` (`request_path`,`store_id`),
-  ADD KEY `URL_REWRITE_TARGET_PATH` (`target_path`),
-  ADD KEY `URL_REWRITE_STORE_ID_ENTITY_ID` (`store_id`,`entity_id`);
-
---
--- Indexes for table `variable`
---
-ALTER TABLE `variable`
-  ADD PRIMARY KEY (`variable_id`),
-  ADD UNIQUE KEY `VARIABLE_CODE` (`code`);
-
---
--- Indexes for table `variable_value`
---
-ALTER TABLE `variable_value`
-  ADD PRIMARY KEY (`value_id`),
-  ADD UNIQUE KEY `VARIABLE_VALUE_VARIABLE_ID_STORE_ID` (`variable_id`,`store_id`),
-  ADD KEY `VARIABLE_VALUE_STORE_ID` (`store_id`);
-
---
--- Indexes for table `weee_tax`
---
-ALTER TABLE `weee_tax`
-  ADD PRIMARY KEY (`value_id`),
-  ADD KEY `WEEE_TAX_WEBSITE_ID` (`website_id`),
-  ADD KEY `WEEE_TAX_ENTITY_ID` (`entity_id`),
-  ADD KEY `WEEE_TAX_COUNTRY` (`country`),
-  ADD KEY `WEEE_TAX_ATTRIBUTE_ID` (`attribute_id`);
-
---
--- Indexes for table `widget`
---
-ALTER TABLE `widget`
-  ADD PRIMARY KEY (`widget_id`),
-  ADD KEY `WIDGET_WIDGET_CODE` (`widget_code`);
-
---
--- Indexes for table `widget_instance`
---
-ALTER TABLE `widget_instance`
-  ADD PRIMARY KEY (`instance_id`),
-  ADD KEY `WIDGET_INSTANCE_THEME_ID_THEME_THEME_ID` (`theme_id`);
-
---
--- Indexes for table `widget_instance_page`
---
-ALTER TABLE `widget_instance_page`
-  ADD PRIMARY KEY (`page_id`),
-  ADD KEY `WIDGET_INSTANCE_PAGE_INSTANCE_ID` (`instance_id`);
-
---
--- Indexes for table `widget_instance_page_layout`
---
-ALTER TABLE `widget_instance_page_layout`
-  ADD UNIQUE KEY `WIDGET_INSTANCE_PAGE_LAYOUT_LAYOUT_UPDATE_ID_PAGE_ID` (`layout_update_id`,`page_id`),
-  ADD KEY `WIDGET_INSTANCE_PAGE_LAYOUT_PAGE_ID` (`page_id`);
-
---
--- Indexes for table `wishlist`
---
-ALTER TABLE `wishlist`
-  ADD PRIMARY KEY (`wishlist_id`),
-  ADD UNIQUE KEY `WISHLIST_CUSTOMER_ID` (`customer_id`),
-  ADD KEY `WISHLIST_SHARED` (`shared`);
-
---
--- Indexes for table `wishlist_item`
---
-ALTER TABLE `wishlist_item`
-  ADD PRIMARY KEY (`wishlist_item_id`),
-  ADD KEY `WISHLIST_ITEM_WISHLIST_ID` (`wishlist_id`),
-  ADD KEY `WISHLIST_ITEM_PRODUCT_ID` (`product_id`),
-  ADD KEY `WISHLIST_ITEM_STORE_ID` (`store_id`);
-
---
--- Indexes for table `wishlist_item_option`
---
-ALTER TABLE `wishlist_item_option`
-  ADD PRIMARY KEY (`option_id`),
-  ADD KEY `FK_A014B30B04B72DD0EAB3EECD779728D6` (`wishlist_item_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `adminnotification_inbox`
---
-ALTER TABLE `adminnotification_inbox`
-  MODIFY `notification_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Notification id';
---
--- AUTO_INCREMENT for table `admin_passwords`
---
-ALTER TABLE `admin_passwords`
-  MODIFY `password_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Password Id';
---
--- AUTO_INCREMENT for table `admin_user`
---
-ALTER TABLE `admin_user`
-  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'User ID', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `authorization_role`
---
-ALTER TABLE `authorization_role`
-  MODIFY `role_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Role ID', AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `authorization_rule`
---
-ALTER TABLE `authorization_rule`
-  MODIFY `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule ID', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `cataloginventory_stock`
---
-ALTER TABLE `cataloginventory_stock`
-  MODIFY `stock_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Stock Id', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `cataloginventory_stock_item`
---
-ALTER TABLE `cataloginventory_stock_item`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
---
--- AUTO_INCREMENT for table `catalogrule`
---
-ALTER TABLE `catalogrule`
-  MODIFY `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Id';
---
--- AUTO_INCREMENT for table `catalogrule_product`
---
-ALTER TABLE `catalogrule_product`
-  MODIFY `rule_product_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Product Id';
---
--- AUTO_INCREMENT for table `catalogrule_product_price`
---
-ALTER TABLE `catalogrule_product_price`
-  MODIFY `rule_product_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Product PriceId';
---
--- AUTO_INCREMENT for table `catalog_category_entity`
---
-ALTER TABLE `catalog_category_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `catalog_category_entity_datetime`
---
-ALTER TABLE `catalog_category_entity_datetime`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID', AUTO_INCREMENT=15;
---
--- AUTO_INCREMENT for table `catalog_category_entity_decimal`
---
-ALTER TABLE `catalog_category_entity_decimal`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID', AUTO_INCREMENT=7;
---
--- AUTO_INCREMENT for table `catalog_category_entity_int`
---
-ALTER TABLE `catalog_category_entity_int`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID', AUTO_INCREMENT=40;
---
--- AUTO_INCREMENT for table `catalog_category_entity_text`
---
-ALTER TABLE `catalog_category_entity_text`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID', AUTO_INCREMENT=33;
---
--- AUTO_INCREMENT for table `catalog_category_entity_varchar`
---
-ALTER TABLE `catalog_category_entity_varchar`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID', AUTO_INCREMENT=52;
---
--- AUTO_INCREMENT for table `catalog_compare_item`
---
-ALTER TABLE `catalog_compare_item`
-  MODIFY `catalog_compare_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Compare Item ID';
---
--- AUTO_INCREMENT for table `catalog_product_bundle_option`
---
-ALTER TABLE `catalog_product_bundle_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id';
---
--- AUTO_INCREMENT for table `catalog_product_bundle_option_value`
---
-ALTER TABLE `catalog_product_bundle_option_value`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `catalog_product_bundle_selection`
---
-ALTER TABLE `catalog_product_bundle_selection`
-  MODIFY `selection_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Selection Id';
---
--- AUTO_INCREMENT for table `catalog_product_entity`
---
-ALTER TABLE `catalog_product_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_datetime`
---
-ALTER TABLE `catalog_product_entity_datetime`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_decimal`
---
-ALTER TABLE `catalog_product_entity_decimal`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_gallery`
---
-ALTER TABLE `catalog_product_entity_gallery`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_int`
---
-ALTER TABLE `catalog_product_entity_int`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_media_gallery`
---
-ALTER TABLE `catalog_product_entity_media_gallery`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_media_gallery_value`
---
-ALTER TABLE `catalog_product_entity_media_gallery_value`
-  MODIFY `record_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Record Id';
---
--- AUTO_INCREMENT for table `catalog_product_entity_text`
---
-ALTER TABLE `catalog_product_entity_text`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_tier_price`
---
-ALTER TABLE `catalog_product_entity_tier_price`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_entity_varchar`
---
-ALTER TABLE `catalog_product_entity_varchar`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_link`
---
-ALTER TABLE `catalog_product_link`
-  MODIFY `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID';
---
--- AUTO_INCREMENT for table `catalog_product_link_attribute`
---
-ALTER TABLE `catalog_product_link_attribute`
-  MODIFY `product_link_attribute_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product Link Attribute ID', AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `catalog_product_link_attribute_decimal`
---
-ALTER TABLE `catalog_product_link_attribute_decimal`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_link_attribute_int`
---
-ALTER TABLE `catalog_product_link_attribute_int`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_link_attribute_varchar`
---
-ALTER TABLE `catalog_product_link_attribute_varchar`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_link_type`
---
-ALTER TABLE `catalog_product_link_type`
-  MODIFY `link_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link Type ID', AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `catalog_product_option`
---
-ALTER TABLE `catalog_product_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option ID';
---
--- AUTO_INCREMENT for table `catalog_product_option_price`
---
-ALTER TABLE `catalog_product_option_price`
-  MODIFY `option_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Price ID';
---
--- AUTO_INCREMENT for table `catalog_product_option_title`
---
-ALTER TABLE `catalog_product_option_title`
-  MODIFY `option_title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Title ID';
---
--- AUTO_INCREMENT for table `catalog_product_option_type_price`
---
-ALTER TABLE `catalog_product_option_type_price`
-  MODIFY `option_type_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type Price ID';
---
--- AUTO_INCREMENT for table `catalog_product_option_type_title`
---
-ALTER TABLE `catalog_product_option_type_title`
-  MODIFY `option_type_title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type Title ID';
---
--- AUTO_INCREMENT for table `catalog_product_option_type_value`
---
-ALTER TABLE `catalog_product_option_type_value`
-  MODIFY `option_type_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Type ID';
---
--- AUTO_INCREMENT for table `catalog_product_super_attribute`
---
-ALTER TABLE `catalog_product_super_attribute`
-  MODIFY `product_super_attribute_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product Super Attribute ID';
---
--- AUTO_INCREMENT for table `catalog_product_super_attribute_label`
---
-ALTER TABLE `catalog_product_super_attribute_label`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value ID';
---
--- AUTO_INCREMENT for table `catalog_product_super_link`
---
-ALTER TABLE `catalog_product_super_link`
-  MODIFY `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID';
---
--- AUTO_INCREMENT for table `checkout_agreement`
---
-ALTER TABLE `checkout_agreement`
-  MODIFY `agreement_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Agreement Id';
---
--- AUTO_INCREMENT for table `cms_block`
---
-ALTER TABLE `cms_block`
-  MODIFY `block_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Block ID', AUTO_INCREMENT=38;
---
--- AUTO_INCREMENT for table `cms_page`
---
-ALTER TABLE `cms_page`
-  MODIFY `page_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Page ID', AUTO_INCREMENT=8;
---
--- AUTO_INCREMENT for table `core_config_data`
---
-ALTER TABLE `core_config_data`
-  MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Config Id', AUTO_INCREMENT=43;
---
--- AUTO_INCREMENT for table `cron_schedule`
---
-ALTER TABLE `cron_schedule`
-  MODIFY `schedule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Schedule Id';
---
--- AUTO_INCREMENT for table `customer_address_entity`
---
-ALTER TABLE `customer_address_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `customer_address_entity_datetime`
---
-ALTER TABLE `customer_address_entity_datetime`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_address_entity_decimal`
---
-ALTER TABLE `customer_address_entity_decimal`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_address_entity_int`
---
-ALTER TABLE `customer_address_entity_int`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_address_entity_text`
---
-ALTER TABLE `customer_address_entity_text`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_address_entity_varchar`
---
-ALTER TABLE `customer_address_entity_varchar`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_entity`
---
-ALTER TABLE `customer_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `customer_entity_datetime`
---
-ALTER TABLE `customer_entity_datetime`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_entity_decimal`
---
-ALTER TABLE `customer_entity_decimal`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_entity_int`
---
-ALTER TABLE `customer_entity_int`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_entity_text`
---
-ALTER TABLE `customer_entity_text`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_entity_varchar`
---
-ALTER TABLE `customer_entity_varchar`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `customer_group`
---
-ALTER TABLE `customer_group`
-  MODIFY `customer_group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Customer Group Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `customer_log`
---
-ALTER TABLE `customer_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Log ID';
---
--- AUTO_INCREMENT for table `customer_visitor`
---
-ALTER TABLE `customer_visitor`
-  MODIFY `visitor_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Visitor ID', AUTO_INCREMENT=6;
---
--- AUTO_INCREMENT for table `design_change`
---
-ALTER TABLE `design_change`
-  MODIFY `design_change_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Design Change Id';
---
--- AUTO_INCREMENT for table `directory_country_format`
---
-ALTER TABLE `directory_country_format`
-  MODIFY `country_format_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Country Format Id';
---
--- AUTO_INCREMENT for table `directory_country_region`
---
-ALTER TABLE `directory_country_region`
-  MODIFY `region_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Region Id', AUTO_INCREMENT=512;
---
--- AUTO_INCREMENT for table `downloadable_link`
---
-ALTER TABLE `downloadable_link`
-  MODIFY `link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link ID';
---
--- AUTO_INCREMENT for table `downloadable_link_price`
---
-ALTER TABLE `downloadable_link_price`
-  MODIFY `price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Price ID';
---
--- AUTO_INCREMENT for table `downloadable_link_purchased`
---
-ALTER TABLE `downloadable_link_purchased`
-  MODIFY `purchased_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Purchased ID';
---
--- AUTO_INCREMENT for table `downloadable_link_purchased_item`
---
-ALTER TABLE `downloadable_link_purchased_item`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item ID';
---
--- AUTO_INCREMENT for table `downloadable_link_title`
---
-ALTER TABLE `downloadable_link_title`
-  MODIFY `title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Title ID';
---
--- AUTO_INCREMENT for table `downloadable_sample`
---
-ALTER TABLE `downloadable_sample`
-  MODIFY `sample_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Sample ID';
---
--- AUTO_INCREMENT for table `downloadable_sample_title`
---
-ALTER TABLE `downloadable_sample_title`
-  MODIFY `title_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Title ID';
---
--- AUTO_INCREMENT for table `eav_attribute`
---
-ALTER TABLE `eav_attribute`
-  MODIFY `attribute_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Id', AUTO_INCREMENT=134;
---
--- AUTO_INCREMENT for table `eav_attribute_group`
---
-ALTER TABLE `eav_attribute_group`
-  MODIFY `attribute_group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Group Id', AUTO_INCREMENT=17;
---
--- AUTO_INCREMENT for table `eav_attribute_label`
---
-ALTER TABLE `eav_attribute_label`
-  MODIFY `attribute_label_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Label Id';
---
--- AUTO_INCREMENT for table `eav_attribute_option`
---
-ALTER TABLE `eav_attribute_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `eav_attribute_option_swatch`
---
-ALTER TABLE `eav_attribute_option_swatch`
-  MODIFY `swatch_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Swatch ID';
---
--- AUTO_INCREMENT for table `eav_attribute_option_value`
---
-ALTER TABLE `eav_attribute_option_value`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Value Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `eav_attribute_set`
---
-ALTER TABLE `eav_attribute_set`
-  MODIFY `attribute_set_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Attribute Set Id', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `eav_entity`
---
-ALTER TABLE `eav_entity`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `eav_entity_attribute`
---
-ALTER TABLE `eav_entity_attribute`
-  MODIFY `entity_attribute_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Attribute Id', AUTO_INCREMENT=132;
---
--- AUTO_INCREMENT for table `eav_entity_datetime`
---
-ALTER TABLE `eav_entity_datetime`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `eav_entity_decimal`
---
-ALTER TABLE `eav_entity_decimal`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `eav_entity_int`
---
-ALTER TABLE `eav_entity_int`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `eav_entity_store`
---
-ALTER TABLE `eav_entity_store`
-  MODIFY `entity_store_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Store Id';
---
--- AUTO_INCREMENT for table `eav_entity_text`
---
-ALTER TABLE `eav_entity_text`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `eav_entity_type`
---
-ALTER TABLE `eav_entity_type`
-  MODIFY `entity_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Type Id', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `eav_entity_varchar`
---
-ALTER TABLE `eav_entity_varchar`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `eav_form_element`
---
-ALTER TABLE `eav_form_element`
-  MODIFY `element_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Element Id', AUTO_INCREMENT=43;
---
--- AUTO_INCREMENT for table `eav_form_fieldset`
---
-ALTER TABLE `eav_form_fieldset`
-  MODIFY `fieldset_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Fieldset Id';
---
--- AUTO_INCREMENT for table `eav_form_type`
---
-ALTER TABLE `eav_form_type`
-  MODIFY `type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Type Id', AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `email_template`
---
-ALTER TABLE `email_template`
-  MODIFY `template_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Template ID';
---
--- AUTO_INCREMENT for table `emthemes_config_data`
---
-ALTER TABLE `emthemes_config_data`
-  MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Config Id';
---
--- AUTO_INCREMENT for table `flag`
---
-ALTER TABLE `flag`
-  MODIFY `flag_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Flag Id';
---
--- AUTO_INCREMENT for table `gift_message`
---
-ALTER TABLE `gift_message`
-  MODIFY `gift_message_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'GiftMessage Id';
---
--- AUTO_INCREMENT for table `googleoptimizer_code`
---
-ALTER TABLE `googleoptimizer_code`
-  MODIFY `code_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Google experiment code id';
---
--- AUTO_INCREMENT for table `importexport_importdata`
---
-ALTER TABLE `importexport_importdata`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `import_history`
---
-ALTER TABLE `import_history`
-  MODIFY `history_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'History record Id';
---
--- AUTO_INCREMENT for table `indexer_state`
---
-ALTER TABLE `indexer_state`
-  MODIFY `state_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Indexer State Id', AUTO_INCREMENT=10;
---
--- AUTO_INCREMENT for table `integration`
---
-ALTER TABLE `integration`
-  MODIFY `integration_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Integration ID';
---
--- AUTO_INCREMENT for table `layout_link`
---
-ALTER TABLE `layout_link`
-  MODIFY `layout_link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Link Id', AUTO_INCREMENT=39;
---
--- AUTO_INCREMENT for table `layout_update`
---
-ALTER TABLE `layout_update`
-  MODIFY `layout_update_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Layout Update Id', AUTO_INCREMENT=39;
---
--- AUTO_INCREMENT for table `mview_state`
---
-ALTER TABLE `mview_state`
-  MODIFY `state_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'View State Id';
---
--- AUTO_INCREMENT for table `newsletter_problem`
---
-ALTER TABLE `newsletter_problem`
-  MODIFY `problem_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Problem Id';
---
--- AUTO_INCREMENT for table `newsletter_queue`
---
-ALTER TABLE `newsletter_queue`
-  MODIFY `queue_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Queue Id';
---
--- AUTO_INCREMENT for table `newsletter_queue_link`
---
-ALTER TABLE `newsletter_queue_link`
-  MODIFY `queue_link_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Queue Link Id';
---
--- AUTO_INCREMENT for table `newsletter_subscriber`
---
-ALTER TABLE `newsletter_subscriber`
-  MODIFY `subscriber_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Subscriber Id';
---
--- AUTO_INCREMENT for table `newsletter_template`
---
-ALTER TABLE `newsletter_template`
-  MODIFY `template_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Template ID';
---
--- AUTO_INCREMENT for table `oauth_consumer`
---
-ALTER TABLE `oauth_consumer`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `oauth_token`
---
-ALTER TABLE `oauth_token`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity ID';
---
--- AUTO_INCREMENT for table `oauth_token_request_log`
---
-ALTER TABLE `oauth_token_request_log`
-  MODIFY `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Log Id';
---
--- AUTO_INCREMENT for table `paypal_billing_agreement`
---
-ALTER TABLE `paypal_billing_agreement`
-  MODIFY `agreement_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Agreement Id';
---
--- AUTO_INCREMENT for table `paypal_cert`
---
-ALTER TABLE `paypal_cert`
-  MODIFY `cert_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Cert Id';
---
--- AUTO_INCREMENT for table `paypal_payment_transaction`
---
-ALTER TABLE `paypal_payment_transaction`
-  MODIFY `transaction_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `paypal_settlement_report`
---
-ALTER TABLE `paypal_settlement_report`
-  MODIFY `report_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Report Id';
---
--- AUTO_INCREMENT for table `paypal_settlement_report_row`
---
-ALTER TABLE `paypal_settlement_report_row`
-  MODIFY `row_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Row Id';
---
--- AUTO_INCREMENT for table `persistent_session`
---
-ALTER TABLE `persistent_session`
-  MODIFY `persistent_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Session id';
---
--- AUTO_INCREMENT for table `product_alert_price`
---
-ALTER TABLE `product_alert_price`
-  MODIFY `alert_price_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product alert price id';
---
--- AUTO_INCREMENT for table `product_alert_stock`
---
-ALTER TABLE `product_alert_stock`
-  MODIFY `alert_stock_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Product alert stock id';
---
--- AUTO_INCREMENT for table `quote`
---
-ALTER TABLE `quote`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `quote_address`
---
-ALTER TABLE `quote_address`
-  MODIFY `address_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Address Id';
---
--- AUTO_INCREMENT for table `quote_address_item`
---
-ALTER TABLE `quote_address_item`
-  MODIFY `address_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Address Item Id';
---
--- AUTO_INCREMENT for table `quote_id_mask`
---
-ALTER TABLE `quote_id_mask`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `quote_item`
---
-ALTER TABLE `quote_item`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
---
--- AUTO_INCREMENT for table `quote_item_option`
---
-ALTER TABLE `quote_item_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id';
---
--- AUTO_INCREMENT for table `quote_payment`
---
-ALTER TABLE `quote_payment`
-  MODIFY `payment_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Payment Id';
---
--- AUTO_INCREMENT for table `quote_shipping_rate`
---
-ALTER TABLE `quote_shipping_rate`
-  MODIFY `rate_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rate Id';
---
--- AUTO_INCREMENT for table `rating`
---
-ALTER TABLE `rating`
-  MODIFY `rating_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rating Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `rating_entity`
---
-ALTER TABLE `rating_entity`
-  MODIFY `entity_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `rating_option`
---
-ALTER TABLE `rating_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rating Option Id', AUTO_INCREMENT=16;
---
--- AUTO_INCREMENT for table `rating_option_vote`
---
-ALTER TABLE `rating_option_vote`
-  MODIFY `vote_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Vote id';
---
--- AUTO_INCREMENT for table `rating_option_vote_aggregated`
---
-ALTER TABLE `rating_option_vote_aggregated`
-  MODIFY `primary_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Vote aggregation id';
---
--- AUTO_INCREMENT for table `reporting_counts`
---
-ALTER TABLE `reporting_counts`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `reporting_module_status`
---
-ALTER TABLE `reporting_module_status`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Module Id';
---
--- AUTO_INCREMENT for table `reporting_orders`
---
-ALTER TABLE `reporting_orders`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `reporting_system_updates`
---
-ALTER TABLE `reporting_system_updates`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `reporting_users`
---
-ALTER TABLE `reporting_users`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `report_compared_product_index`
---
-ALTER TABLE `report_compared_product_index`
-  MODIFY `index_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Index Id';
---
--- AUTO_INCREMENT for table `report_event`
---
-ALTER TABLE `report_event`
-  MODIFY `event_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Event Id';
---
--- AUTO_INCREMENT for table `report_event_types`
---
-ALTER TABLE `report_event_types`
-  MODIFY `event_type_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Event Type Id', AUTO_INCREMENT=7;
---
--- AUTO_INCREMENT for table `report_viewed_product_aggregated_daily`
---
-ALTER TABLE `report_viewed_product_aggregated_daily`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `report_viewed_product_aggregated_monthly`
---
-ALTER TABLE `report_viewed_product_aggregated_monthly`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `report_viewed_product_aggregated_yearly`
---
-ALTER TABLE `report_viewed_product_aggregated_yearly`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `report_viewed_product_index`
---
-ALTER TABLE `report_viewed_product_index`
-  MODIFY `index_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Index Id';
---
--- AUTO_INCREMENT for table `review`
---
-ALTER TABLE `review`
-  MODIFY `review_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review id';
---
--- AUTO_INCREMENT for table `review_detail`
---
-ALTER TABLE `review_detail`
-  MODIFY `detail_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review detail id';
---
--- AUTO_INCREMENT for table `review_entity`
---
-ALTER TABLE `review_entity`
-  MODIFY `entity_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Review entity id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `review_entity_summary`
---
-ALTER TABLE `review_entity_summary`
-  MODIFY `primary_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'Summary review entity id';
---
--- AUTO_INCREMENT for table `review_status`
---
-ALTER TABLE `review_status`
-  MODIFY `status_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Status id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `salesrule`
---
-ALTER TABLE `salesrule`
-  MODIFY `rule_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Id';
---
--- AUTO_INCREMENT for table `salesrule_coupon`
---
-ALTER TABLE `salesrule_coupon`
-  MODIFY `coupon_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Coupon Id';
---
--- AUTO_INCREMENT for table `salesrule_coupon_aggregated`
---
-ALTER TABLE `salesrule_coupon_aggregated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `salesrule_coupon_aggregated_order`
---
-ALTER TABLE `salesrule_coupon_aggregated_order`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `salesrule_coupon_aggregated_updated`
---
-ALTER TABLE `salesrule_coupon_aggregated_updated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `salesrule_customer`
---
-ALTER TABLE `salesrule_customer`
-  MODIFY `rule_customer_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rule Customer Id';
---
--- AUTO_INCREMENT for table `salesrule_label`
---
-ALTER TABLE `salesrule_label`
-  MODIFY `label_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Label Id';
---
--- AUTO_INCREMENT for table `sales_bestsellers_aggregated_daily`
---
-ALTER TABLE `sales_bestsellers_aggregated_daily`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_bestsellers_aggregated_monthly`
---
-ALTER TABLE `sales_bestsellers_aggregated_monthly`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_bestsellers_aggregated_yearly`
---
-ALTER TABLE `sales_bestsellers_aggregated_yearly`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_creditmemo`
---
-ALTER TABLE `sales_creditmemo`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_creditmemo_comment`
---
-ALTER TABLE `sales_creditmemo_comment`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_creditmemo_item`
---
-ALTER TABLE `sales_creditmemo_item`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_invoice`
---
-ALTER TABLE `sales_invoice`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_invoiced_aggregated`
---
-ALTER TABLE `sales_invoiced_aggregated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_invoiced_aggregated_order`
---
-ALTER TABLE `sales_invoiced_aggregated_order`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_invoice_comment`
---
-ALTER TABLE `sales_invoice_comment`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_invoice_item`
---
-ALTER TABLE `sales_invoice_item`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_order`
---
-ALTER TABLE `sales_order`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_order_address`
---
-ALTER TABLE `sales_order_address`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_order_aggregated_created`
---
-ALTER TABLE `sales_order_aggregated_created`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_order_aggregated_updated`
---
-ALTER TABLE `sales_order_aggregated_updated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_order_item`
---
-ALTER TABLE `sales_order_item`
-  MODIFY `item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Item Id';
---
--- AUTO_INCREMENT for table `sales_order_payment`
---
-ALTER TABLE `sales_order_payment`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_order_status_history`
---
-ALTER TABLE `sales_order_status_history`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_order_tax`
---
-ALTER TABLE `sales_order_tax`
-  MODIFY `tax_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Tax Id';
---
--- AUTO_INCREMENT for table `sales_order_tax_item`
---
-ALTER TABLE `sales_order_tax_item`
-  MODIFY `tax_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Tax Item Id';
---
--- AUTO_INCREMENT for table `sales_payment_transaction`
---
-ALTER TABLE `sales_payment_transaction`
-  MODIFY `transaction_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Transaction Id';
---
--- AUTO_INCREMENT for table `sales_refunded_aggregated`
---
-ALTER TABLE `sales_refunded_aggregated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_refunded_aggregated_order`
---
-ALTER TABLE `sales_refunded_aggregated_order`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_sequence_meta`
---
-ALTER TABLE `sales_sequence_meta`
-  MODIFY `meta_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `sales_sequence_profile`
---
-ALTER TABLE `sales_sequence_profile`
-  MODIFY `profile_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id', AUTO_INCREMENT=9;
---
--- AUTO_INCREMENT for table `sales_shipment`
---
-ALTER TABLE `sales_shipment`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_shipment_comment`
---
-ALTER TABLE `sales_shipment_comment`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_shipment_item`
---
-ALTER TABLE `sales_shipment_item`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_shipment_track`
---
-ALTER TABLE `sales_shipment_track`
-  MODIFY `entity_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Id';
---
--- AUTO_INCREMENT for table `sales_shipping_aggregated`
---
-ALTER TABLE `sales_shipping_aggregated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `sales_shipping_aggregated_order`
---
-ALTER TABLE `sales_shipping_aggregated_order`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `search_query`
---
-ALTER TABLE `search_query`
-  MODIFY `query_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Query ID';
---
--- AUTO_INCREMENT for table `sendfriend_log`
---
-ALTER TABLE `sendfriend_log`
-  MODIFY `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Log ID';
---
--- AUTO_INCREMENT for table `sequence_creditmemo_0`
---
-ALTER TABLE `sequence_creditmemo_0`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_creditmemo_1`
---
-ALTER TABLE `sequence_creditmemo_1`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_invoice_0`
---
-ALTER TABLE `sequence_invoice_0`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_invoice_1`
---
-ALTER TABLE `sequence_invoice_1`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_order_0`
---
-ALTER TABLE `sequence_order_0`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_order_1`
---
-ALTER TABLE `sequence_order_1`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_shipment_0`
---
-ALTER TABLE `sequence_shipment_0`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `sequence_shipment_1`
---
-ALTER TABLE `sequence_shipment_1`
-  MODIFY `sequence_value` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `shipping_tablerate`
---
-ALTER TABLE `shipping_tablerate`
-  MODIFY `pk` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary key';
---
--- AUTO_INCREMENT for table `sitemap`
---
-ALTER TABLE `sitemap`
-  MODIFY `sitemap_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Sitemap Id';
---
--- AUTO_INCREMENT for table `store`
---
-ALTER TABLE `store`
-  MODIFY `store_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Store Id', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `store_group`
---
-ALTER TABLE `store_group`
-  MODIFY `group_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Group Id', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `store_website`
---
-ALTER TABLE `store_website`
-  MODIFY `website_id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Website Id', AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `tax_calculation`
---
-ALTER TABLE `tax_calculation`
-  MODIFY `tax_calculation_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Id';
---
--- AUTO_INCREMENT for table `tax_calculation_rate`
---
-ALTER TABLE `tax_calculation_rate`
-  MODIFY `tax_calculation_rate_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rate Id', AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `tax_calculation_rate_title`
---
-ALTER TABLE `tax_calculation_rate_title`
-  MODIFY `tax_calculation_rate_title_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rate Title Id';
---
--- AUTO_INCREMENT for table `tax_calculation_rule`
---
-ALTER TABLE `tax_calculation_rule`
-  MODIFY `tax_calculation_rule_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Tax Calculation Rule Id';
---
--- AUTO_INCREMENT for table `tax_class`
---
-ALTER TABLE `tax_class`
-  MODIFY `class_id` smallint(6) NOT NULL AUTO_INCREMENT COMMENT 'Class Id', AUTO_INCREMENT=4;
---
--- AUTO_INCREMENT for table `tax_order_aggregated_created`
---
-ALTER TABLE `tax_order_aggregated_created`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `tax_order_aggregated_updated`
---
-ALTER TABLE `tax_order_aggregated_updated`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Id';
---
--- AUTO_INCREMENT for table `theme`
---
-ALTER TABLE `theme`
-  MODIFY `theme_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Theme identifier', AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `theme_file`
---
-ALTER TABLE `theme_file`
-  MODIFY `theme_files_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Theme files identifier';
---
--- AUTO_INCREMENT for table `translation`
---
-ALTER TABLE `translation`
-  MODIFY `key_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Key Id of Translation';
---
--- AUTO_INCREMENT for table `ui_bookmark`
---
-ALTER TABLE `ui_bookmark`
-  MODIFY `bookmark_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Bookmark identifier', AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `url_rewrite`
---
-ALTER TABLE `url_rewrite`
-  MODIFY `url_rewrite_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Rewrite Id', AUTO_INCREMENT=11;
---
--- AUTO_INCREMENT for table `variable`
---
-ALTER TABLE `variable`
-  MODIFY `variable_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Variable Id';
---
--- AUTO_INCREMENT for table `variable_value`
---
-ALTER TABLE `variable_value`
-  MODIFY `value_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Variable Value Id';
---
--- AUTO_INCREMENT for table `weee_tax`
---
-ALTER TABLE `weee_tax`
-  MODIFY `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value Id';
---
--- AUTO_INCREMENT for table `widget`
---
-ALTER TABLE `widget`
-  MODIFY `widget_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Widget Id';
---
--- AUTO_INCREMENT for table `widget_instance`
---
-ALTER TABLE `widget_instance`
-  MODIFY `instance_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Instance Id', AUTO_INCREMENT=38;
---
--- AUTO_INCREMENT for table `widget_instance_page`
---
-ALTER TABLE `widget_instance_page`
-  MODIFY `page_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Page Id', AUTO_INCREMENT=39;
---
--- AUTO_INCREMENT for table `wishlist`
---
-ALTER TABLE `wishlist`
-  MODIFY `wishlist_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Wishlist ID';
---
--- AUTO_INCREMENT for table `wishlist_item`
---
-ALTER TABLE `wishlist_item`
-  MODIFY `wishlist_item_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Wishlist item ID';
---
--- AUTO_INCREMENT for table `wishlist_item_option`
---
-ALTER TABLE `wishlist_item_option`
-  MODIFY `option_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Option Id';
 --
 -- Constraints for dumped tables
 --
@@ -14959,6 +12186,7 @@ ALTER TABLE `wishlist_item`
 --
 ALTER TABLE `wishlist_item_option`
   ADD CONSTRAINT `FK_A014B30B04B72DD0EAB3EECD779728D6` FOREIGN KEY (`wishlist_item_id`) REFERENCES `wishlist_item` (`wishlist_item_id`) ON DELETE CASCADE;
+SET FOREIGN_KEY_CHECKS=1;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
