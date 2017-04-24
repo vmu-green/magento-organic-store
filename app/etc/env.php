@@ -6,11 +6,11 @@ return array (
   ),
   'install' => 
   array (
-    'date' => 'Sun, 23 Apr 2017 07:50:40 +0000',
+    'date' => 'Wed, 15 Mar 2017 15:01:12 +0000',
   ),
   'crypt' => 
   array (
-    'key' => 'c2328bf122738502db64faec9d07578c',
+    'key' => '6bbed8b5ecad42b7d4ba609cc8066cb6',
   ),
   'session' => 
   array (
@@ -24,7 +24,7 @@ return array (
       'default' => 
       array (
         'host' => 'localhost',
-        'dbname' => 'magento5',
+        'dbname' => 'magento20',
         'username' => 'root',
         'password' => '',
         'active' => '1',

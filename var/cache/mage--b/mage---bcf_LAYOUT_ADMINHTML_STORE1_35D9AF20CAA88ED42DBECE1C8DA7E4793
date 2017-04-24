@@ -1,0 +1,13 @@
+a:4:{s:4:"hash";s:0:"";s:5:"mtime";i:1492877858;s:6:"expire";d:9999999999;s:4:"tags";s:67:"bcf_CATALOG_PRODUCT_CROSSSELL,bcf_LAYOUT_GENERAL_CACHE_TAG,bcf_MAGE";}
+<container name="root" label="Root">
+   <block class="Magento\Catalog\Block\Adminhtml\Product\Edit\Tab\Crosssell" name="catalog.product.edit.tab.crosssell"/>
+   <block class="Magento\Backend\Block\Widget\Grid\Serializer" name="crosssell_grid_serializer">
+      <arguments>
+         <argument name="input_names" xsi:type="string">position</argument>
+         <argument name="grid_block" xsi:type="string">catalog.product.edit.tab.crosssell</argument>
+         <argument name="callback" xsi:type="string">getSelectedCrossSellProducts</argument>
+         <argument name="input_element_name" xsi:type="string">links[crosssell]</argument>
+         <argument name="reload_param_name" xsi:type="string">products_crosssell</argument>
+      </arguments>
+   </block>
+</container>
