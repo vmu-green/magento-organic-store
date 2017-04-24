@@ -1,0 +1,769 @@
+a:4:{s:4:"hash";s:0:"";s:5:"mtime";i:1492934531;s:6:"expire";i:1493020931;s:4:"tags";s:43:"bcf_CATALOG_PRODUCT,bcf_BLOCK_HTML,bcf_MAGE";}
+
+                <div class="grid_noslider block widget block-products-list grid">
+                <div class="block-content ab903919abd26a881cb0f8cf29c4bcd6">
+            <!-- category_page_grid-->            <div class="product wrapper products-grid products-grid">
+                <ol class="product-items products list items widget-product-grid" >
+                                                                <li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                    <li class='label em_hot_label'><p>hot</p></li>                                    
+                                    </ul>
+                                    <a href="http://localhost/magento20/bo.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/3/_/3_4_10.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Bơ" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/3/_/3_4_10.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Bơ" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/4/" method="post">
+                                                            <input type="hidden" name="product" value="4">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC80Lw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"4","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"4","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/4"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/bo.html">
+                                        Bơ                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="4">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-4-final_price"                data-price-amount="12000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">12.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                                                        
+                                    </ul>
+                                    <a href="http://localhost/magento20/ca-chua.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/1/4/140-ca-chua.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="cà chua" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/1/4/140-ca-chua.jpg"
+                                                 width="250" height="250" 
+                                                 alt="cà chua" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/7/" method="post">
+                                                            <input type="hidden" name="product" value="7">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC83Lw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"7","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"7","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/7"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/ca-chua.html">
+                                        cà chua                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="7">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-7-final_price"                data-price-amount="20000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">20.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                    <li class='label em_new_label'><p>new</p></li><li class='label em_hot_label'><p>hot</p></li>                                    
+                                    </ul>
+                                    <a href="http://localhost/magento20/cai-bap.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/1/3/137-bapcaixanh.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Cải bắp" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/1/3/137-bapcaixanh.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Cải bắp" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/1/" method="post">
+                                                            <input type="hidden" name="product" value="1">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC8xLw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"1","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"1","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/1"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/cai-bap.html">
+                                        Cải bắp                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="1">
+    <span class="special-price">
+        
+
+<span class="price-container price-final_price tax weee"
+        >
+            <span class="price-label">Giá đặc biệt</span>
+        <span  id="old-price-1-final_price"                data-price-amount="1000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">1.000,00 ₫</span>    </span>
+        </span>
+    </span>
+    <span class="old-price">
+        
+
+<span class="price-container price-final_price tax weee"
+        >
+            <span class="price-label">Giá thông thường</span>
+        <span  id="old-price-1-final_price"                data-price-amount="24000"
+        data-price-type="oldPrice"
+        class="price-wrapper "
+        >
+        <span class="price">24.000,00 ₫</span>    </span>
+        </span>
+    </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                    <li class='label em_new_label'><p>new</p></li><li class='label em_sale_label'><p>sale</p></li>                                    
+                                    </ul>
+                                    <a href="http://localhost/magento20/ci-tim.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/1/3/136-sk4.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Cải tím" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/1/3/136-sk4.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Cải tím" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/2/" method="post">
+                                                            <input type="hidden" name="product" value="2">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC8yLw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"2","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"2","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/2"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/ci-tim.html">
+                                        Cải tím                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="2">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-2-final_price"                data-price-amount="35000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">35.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                    <li class='label em_hot_label'><p>hot</p></li>                                    
+                                    </ul>
+                                    <a href="http://localhost/magento20/chanh-da-lt.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/6/_/6_1_8.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Chanh Đà Lạt" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/6/_/6_1_8.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Chanh Đà Lạt" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/3/" method="post">
+                                                            <input type="hidden" name="product" value="3">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC8zLw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"3","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"3","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/3"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/chanh-da-lt.html">
+                                        Chanh Đà Lạt                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="3">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-3-final_price"                data-price-amount="34000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">34.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                    <li class='label em_hot_label'><p>hot</p></li>                                    
+                                    </ul>
+                                    <a href="http://localhost/magento20/chui.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/8/_/8_2.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="chuối" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/8/_/8_2.jpg"
+                                                 width="250" height="250" 
+                                                 alt="chuối" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/5/" method="post">
+                                                            <input type="hidden" name="product" value="5">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC81Lw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"5","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"5","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/5"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/chui.html">
+                                        chuối                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="5">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-5-final_price"                data-price-amount="12000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">12.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                                                        
+                                    </ul>
+                                    <a href="http://localhost/magento20/dau-tay.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/1/_/1_3_5.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Dâu tây" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/1/_/1_3_5.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Dâu tây" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/10/" method="post">
+                                                            <input type="hidden" name="product" value="10">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC8xMC8,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"10","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"10","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/10"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/dau-tay.html">
+                                        Dâu tây                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="10">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-10-final_price"                data-price-amount="90000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">90.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                                                                    </li><li class="product-item">                        <div class="product-item-info" data-container="product-grid">
+							<div class="product-shop-top">
+								                                                                                                                                                                                    <ul class="productlabels_icons">
+                                                                        
+                                    </ul>
+                                    <a href="http://localhost/magento20/khoai-tay.html" class="product photo product-item-photo" tabindex="-1">
+                                           
+                                        
+                                                  
+                                          <span class="product-image-container em-alt-hover"
+                              style="width:250px;">
+                                  <span class="product-image-wrapper"
+                                style="padding-bottom: 100%;">                
+                                          <img class="em-alt-hover img-responsive " src="http://localhost/magento20/pub/media/catalog/product/cache/1/thumbnail/250x250/beff4985b56e3afdbeabfc89641a4582/1/0/10_2_7.jpg"                                          
+                                          width="250" height="250" 
+                                          alt="Khoai tây" />
+                                           </span></span>
+          					                                                                                    <span class="product-image-container em-alt-org"
+                                          style="width:250px;">
+                                        <span class="product-image-wrapper"
+                                             style="padding-bottom: 100%;">
+                                            <img class="product-image-photo"
+                                                 src="http://localhost/magento20/pub/media/catalog/product/cache/1/small_image/250x250/beff4985b56e3afdbeabfc89641a4582/1/0/10_2_7.jpg"
+                                                 width="250" height="250" 
+                                                 alt="Khoai tây" /></span>
+                                    </span>
+                                    </a>
+                                    								<div class="em-element-display-hover bottom">
+									<div class="em-btn-addto">
+										<div class="product actions product-item-actions">										
+											                                                <div class="actions-primary">
+                                                                                                                                                                    <form data-role="tocart-form" action="http://localhost/magento20/checkout/cart/add/uenc/aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv/product/8/" method="post">
+                                                            <input type="hidden" name="product" value="8">
+                                                            <input type="hidden" name="uenc" value="aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAvY2hlY2tvdXQvY2FydC9hZGQvdWVuYy9hSFIwY0RvdkwyeHZZMkZzYUc5emRDOXRZV2RsYm5Sdk1qQXYvcHJvZHVjdC84Lw,,">
+                                                            <input name="form_key" type="hidden" value="1nlrICCUP5RROwNM" />                                                            <button type="submit"
+                                                                    title="Thêm vào giỏ hàng"
+                                                                    class="action tocart primary">
+                                                                <span>Thêm vào giỏ hàng</span>
+                                                            </button>
+                                                        </form>
+                                                                                                    </div>
+                                            								                                                <div data-role="add-to-links" class="actions-secondary">
+                                                                                                            <a href="#"
+                                                           class="action towishlist"
+                                                           title="Thêm vào danh sách thích"
+                                                           aria-label="Thêm vào danh sách thích"
+                                                           data-post='{"action":"http:\/\/localhost\/magento20\/wishlist\/index\/add\/","data":{"product":"8","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                           data-action="add-to-wishlist"
+                                                           role="button">
+                                                            <span>Thêm vào danh sách thích</span>
+                                                        </a>
+                                                                                                                                                            <a href="#"
+                                                       class="action tocompare"
+                                                       title="Thêm vào để so sánh"
+                                                       aria-label="Thêm vào để so sánh"
+                                                       data-post='{"action":"http:\/\/localhost\/magento20\/catalog\/product_compare\/add\/","data":{"product":"8","uenc":"aHR0cDovL2xvY2FsaG9zdC9tYWdlbnRvMjAv"}}'
+                                                       role="button">
+                                                        <span>Thêm vào để so sánh</span>
+                                                    </a>
+                                                </div>
+                                                                                        									<a class="qs-button " href="javascript:void(0)" data-href="http://localhost/magento20/quickshop/index/view/id/8"><span><span>Quick Shop</span></span></a>								 
+										</div>
+									</div>
+								</div>
+                            </div>
+                            <div class="product-item-details">
+								                                                                <strong class="product name product-item-name">
+                                    <a class="product-item-link"
+                                       href="http://localhost/magento20/khoai-tay.html">
+                                        Khoai tây                                    </a>
+                                </strong>
+                                                                                                                                
+                                                                                                
+                                
+                                                                                                <div class="price-box price-final_price" data-role="priceBox" data-product-id="8">
+    
+
+<span class="price-container price-final_price tax weee"
+        >
+        <span  id="old-price-8-final_price"                data-price-amount="21000"
+        data-price-type="finalPrice"
+        class="price-wrapper "
+        >
+        <span class="price">21.000,00 ₫</span>    </span>
+        </span>
+
+</div>                                                                                                 
+                                                                                                 
+                                
+                            </div>
+                        </div>
+                        </li>                                    </ol>
+            </div>
+                                        <script type="text/x-magento-init">
+                {
+                    "[data-role=tocart-form], .form.map.checkout": {
+                        "catalogAddToCart": {}
+                    }
+                }
+                </script>
+                    </div>
+    </div>   
+
+<script type="text/javascript">
+    require(['jquery','equalElement','domReady!'],function($){
+            $('.ab903919abd26a881cb0f8cf29c4bcd6 .product-items').equalElement({
+                  target: '.product-item-details'                
+            });           
+        });
+</script>
